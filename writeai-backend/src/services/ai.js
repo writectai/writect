@@ -26,27 +26,34 @@ const BUILTIN_MODELS = [
   { id: 'gpt-4o-mini', provider: 'openai', label: 'gpt-4o-mini' },
   { id: 'gpt-4o', provider: 'openai', label: 'gpt-4o' },
   { id: 'gpt-4-turbo', provider: 'openai', label: 'gpt-4-turbo' },
-  { id: 'gemini-2.5-flash', provider: 'gemini', label: 'Gemini 2.5 Flash (recommended)' },
-  { id: 'gemini-2.5-flash-lite', provider: 'gemini', label: 'Gemini 2.5 Flash Lite' },
-  { id: 'gemini-2.5-pro', provider: 'gemini', label: 'Gemini 2.5 Pro' }
+  { id: 'gemini-3.6-flash', provider: 'gemini', label: 'Gemini 3.6 Flash (recommended)' },
+  { id: 'gemini-3.5-flash', provider: 'gemini', label: 'Gemini 3.5 Flash' },
+  { id: 'gemini-3.5-flash-lite', provider: 'gemini', label: 'Gemini 3.5 Flash Lite' },
+  { id: 'gemini-flash-latest', provider: 'gemini', label: 'Gemini Flash (latest alias)' },
+  { id: 'gemini-flash-lite-latest', provider: 'gemini', label: 'Gemini Flash Lite (latest alias)' }
 ];
 
 const LEGACY_GEMINI_MODEL_MAP = {
-  'gemini-1.5-flash': 'gemini-2.5-flash',
-  'gemini-1.5-flash-latest': 'gemini-2.5-flash',
-  'gemini-1.5-flash-002': 'gemini-2.5-flash',
-  'gemini-1.5-flash-8b': 'gemini-2.5-flash-lite',
-  'gemini-1.5-pro': 'gemini-2.5-pro',
-  'gemini-1.5-pro-latest': 'gemini-2.5-pro',
-  'gemini-1.5-pro-002': 'gemini-2.5-pro',
-  'gemini-2.0-flash': 'gemini-2.5-flash',
-  'gemini-2.0-flash-lite': 'gemini-2.5-flash-lite'
+  'gemini-1.5-flash': 'gemini-3.6-flash',
+  'gemini-1.5-flash-latest': 'gemini-3.6-flash',
+  'gemini-1.5-flash-002': 'gemini-3.6-flash',
+  'gemini-1.5-flash-8b': 'gemini-3.5-flash-lite',
+  'gemini-1.5-pro': 'gemini-3.5-flash',
+  'gemini-1.5-pro-latest': 'gemini-3.5-flash',
+  'gemini-1.5-pro-002': 'gemini-3.5-flash',
+  'gemini-2.0-flash': 'gemini-3.6-flash',
+  'gemini-2.0-flash-lite': 'gemini-3.5-flash-lite',
+  'gemini-2.5-flash': 'gemini-3.6-flash',
+  'gemini-2.5-flash-lite': 'gemini-3.5-flash-lite',
+  'gemini-2.5-pro': 'gemini-3.5-flash'
 };
 
 const GEMINI_FALLBACK_CHAIN = [
-  'gemini-2.5-flash',
-  'gemini-2.5-flash-lite',
-  'gemini-2.5-pro'
+  'gemini-3.6-flash',
+  'gemini-3.5-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-flash-latest',
+  'gemini-flash-lite-latest'
 ];
 
 const ACTION_TEMPERATURE = {
@@ -162,7 +169,7 @@ async function runWithGPT(action, text, extra = '', modelName = 'gpt-4o-mini') {
   };
 }
 
-async function runWithGemini(action, text, extra = '', modelName = 'gemini-2.5-flash') {
+async function runWithGemini(action, text, extra = '', modelName = 'gemini-3.6-flash') {
   const keys = await getApiKeys();
   if (!keys.gemini) throw new Error('Gemini API key not configured');
 
@@ -297,14 +304,14 @@ async function runAction(action, text, extra = '', options = {}) {
     }
   } else if (!models.gpt_enabled) {
     if (!models.gemini_enabled) throw new Error('All AI models are disabled');
-    result = await runWithGeminiFallback(action, text, extra, models.fallback || 'gemini-2.5-flash-lite');
+    result = await runWithGeminiFallback(action, text, extra, models.fallback || 'gemini-3.5-flash-lite');
   } else {
     try {
       result = await runWithGPT(action, text, extra, models.primary || 'gpt-4o-mini');
     } catch (err) {
       if (!models.gemini_enabled) throw err;
       console.error('GPT failed, falling back to Gemini:', err.message);
-      result = await runWithGeminiFallback(action, text, extra, models.fallback || 'gemini-2.5-flash-lite');
+      result = await runWithGeminiFallback(action, text, extra, models.fallback || 'gemini-3.5-flash-lite');
     }
   }
 

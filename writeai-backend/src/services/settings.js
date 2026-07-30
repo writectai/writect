@@ -3,7 +3,7 @@ const db = require('../db/postgres');
 const DEFAULTS = {
   models: {
     primary: 'gpt-4o-mini',
-    fallback: 'gemini-2.5-flash-lite',
+    fallback: 'gemini-3.5-flash-lite',
     gpt_enabled: true,
     gemini_enabled: true,
     custom_models: []
