@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
+const fs = require('fs');
 const config = require('./config');
 
 const authRoutes = require('./routes/auth');
@@ -74,22 +75,34 @@ app.use('/admin/api', adminRoutes);
 
 const webRoot = path.resolve(__dirname, 'web', 'public');
 
-function sendWebPage(res, file, next) {
-  res.sendFile(path.join(webRoot, file), (err) => {
-    if (err) next(err);
+function sendWebPage(res, file) {
+  const filePath = path.join(webRoot, file);
+  if (!fs.existsSync(filePath)) {
+    console.error(`Web page missing: ${filePath}`);
+    return res.status(404).type('html').send(
+      '<!doctype html><title>WriteAI</title><p>Page not found. Redeploy the Node app with the latest zip.</p>'
+    );
+  }
+  res.sendFile(filePath, (err) => {
+    if (err && !res.headersSent) {
+      console.error(`sendFile failed for ${filePath}:`, err.message);
+      return res.status(404).type('html').send(
+        '<!doctype html><title>WriteAI</title><p>Page not found.</p>'
+      );
+    }
   });
 }
 
-app.get('/login', (req, res, next) => {
-  sendWebPage(res, 'login.html', next);
+app.get('/login', (req, res) => {
+  sendWebPage(res, 'login.html');
 });
 
-app.get(/^\/app(\/.*)?$/, (req, res, next) => {
-  sendWebPage(res, 'app.html', next);
+app.get(/^\/app(\/.*)?$/, (req, res) => {
+  sendWebPage(res, 'app.html');
 });
 
-app.get('/', (req, res, next) => {
-  sendWebPage(res, 'index.html', next);
+app.get('/', (req, res) => {
+  sendWebPage(res, 'index.html');
 });
 
 app.use(express.static(webRoot));
@@ -99,6 +112,10 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.use((err, req, res, next) => {
   if (err.message === 'Not allowed by CORS') {
     return res.status(403).json({ error: 'cors_error', message: 'Origin not allowed' });
+  }
+  // Don't turn missing static pages into JSON 500 for browsers
+  if (err.status === 404 || err.code === 'ENOENT' || err.name === 'NotFoundError') {
+    return res.status(404).type('html').send('<!doctype html><title>Not found</title><p>Not found</p>');
   }
   console.error(err);
   res.status(500).json({ error: 'internal_error', message: 'Something went wrong' });

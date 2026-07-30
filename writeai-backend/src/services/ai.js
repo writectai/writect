@@ -209,24 +209,52 @@ function isQuotaOrRateLimit(err) {
     || /429|quota|rate.?limit|too many requests/i.test(err.message || '');
 }
 
+function isOverloaded(err) {
+  return err.status === 503
+    || /503|high demand|overloaded|unavailable|try again later|resource.?exhausted/i.test(err.message || '');
+}
+
 function isModelUnavailable(err) {
   return isQuotaOrRateLimit(err)
+    || isOverloaded(err)
     || err.status === 404
-    || /not found|404|is not found for api version/i.test(err.message || '');
+    || /not found|404|is not found for api version|no longer available/i.test(err.message || '');
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function runWithGeminiFallback(action, text, extra, preferredModel) {
   const start = resolveGeminiModel(preferredModel);
-  const chain = [start, ...GEMINI_FALLBACK_CHAIN.filter((m) => m !== start)];
+  // Prefer lite models after the chosen one — they usually have more free capacity under load
+  const preferredOrder = [
+    start,
+    'gemini-3.5-flash-lite',
+    'gemini-flash-lite-latest',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash',
+    'gemini-flash-latest',
+    ...GEMINI_FALLBACK_CHAIN
+  ];
+  const chain = [...new Set(preferredOrder)];
   let lastErr;
 
   for (const modelName of chain) {
-    try {
-      return await runWithGemini(action, text, extra, modelName);
-    } catch (err) {
-      lastErr = err;
-      if (!isModelUnavailable(err)) throw err;
-      console.error(`Gemini ${modelName} unavailable (${err.status || 'error'}), trying next model...`);
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        return await runWithGemini(action, text, extra, modelName);
+      } catch (err) {
+        lastErr = err;
+        if (!isModelUnavailable(err)) throw err;
+        if (isOverloaded(err) && attempt === 1) {
+          console.error(`Gemini ${modelName} overloaded (503), retrying once...`);
+          await sleep(800);
+          continue;
+        }
+        console.error(`Gemini ${modelName} unavailable (${err.status || 'error'}), trying next model...`);
+        break;
+      }
     }
   }
 
@@ -254,8 +282,8 @@ function parseAiError(err) {
     return { status: 503, code: 'ai_unavailable', message: unavailable };
   }
 
-  if (isQuotaOrRateLimit(err)) {
-    console.error('[AI quota]', err.message);
+  if (isQuotaOrRateLimit(err) || isOverloaded(err)) {
+    console.error('[AI busy]', err.message);
     return { status: 429, code: 'ai_quota_exceeded', message: busy };
   }
 
