@@ -116,7 +116,7 @@ function sendWebPage(res, file) {
   try {
     let html = fs.readFileSync(filePath, 'utf8');
     // Bust CDN/browser cache after deploys
-    const v = process.env.ASSET_VERSION || '20260731';
+    const v = process.env.ASSET_VERSION || '20260731b';
     html = html
       .replace(/(href|src)="(\/(?:css|js)\/[^"]+)"/g, `$1="$2?v=${v}"`)
       .replace('<head>', '<head>\n  <base href="/">');

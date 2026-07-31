@@ -71,6 +71,13 @@
       location.href = '/login';
       return false;
     }
+    // Seed user early so chat works even if /user/me is slow/fails
+    if (data?.user) {
+      user = {
+        ...data.user,
+        usage: data.user.usage || { count: 0, limit: null }
+      };
+    }
     return true;
   }
 
@@ -80,9 +87,15 @@
       WriteAIApi.apiFetch('/user/models')
     ]);
 
-    if (!meRes.ok) throw new Error('Failed to load profile');
-    user = meRes.data;
-    models = modelsRes.ok ? modelsRes.data.models : [];
+    if (!meRes.ok) {
+      throw new Error(meRes.data?.message || 'Failed to load profile');
+    }
+
+    user = {
+      ...meRes.data,
+      usage: meRes.data.usage || { count: 0, limit: meRes.data.plan === 'pro' ? null : 20 }
+    };
+    models = modelsRes.ok ? (modelsRes.data.models || []) : [];
 
     renderUser();
     renderModels();
@@ -91,36 +104,46 @@
   }
 
   function renderUser() {
+    if (!user) return;
     const isPro = user.plan === 'pro';
-    const name = user.name || user.email.split('@')[0];
+    const name = user.name || (user.email ? user.email.split('@')[0] : 'User');
+    const usage = user.usage || { count: 0, limit: isPro ? null : 20 };
 
     $('sidebar-name').textContent = name;
     $('sidebar-plan').textContent = isPro ? 'Pro plan' : 'Free plan';
-    $('settings-name').textContent = name;
-    $('settings-email').textContent = user.email;
+    if ($('settings-name')) $('settings-name').textContent = name;
+    if ($('settings-email')) $('settings-email').textContent = user.email || '';
 
     const badge = $('plan-badge');
-    badge.textContent = isPro ? 'Pro' : 'Free';
-    badge.className = `badge ${isPro ? 'badge-pro' : 'badge-free'}`;
-
-    $('settings-plan').textContent = isPro ? 'Pro — Unlimited' : 'Free';
-
-    const avatarEl = $('sidebar-avatar');
-    if (user.avatar_url) {
-      avatarEl.innerHTML = `<img src="${user.avatar_url}" alt="">`;
-    } else {
-      avatarEl.textContent = initials(user.name, user.email);
+    if (badge) {
+      badge.textContent = isPro ? 'Pro' : 'Free';
+      badge.className = `badge ${isPro ? 'badge-pro' : 'badge-free'}`;
     }
 
-    if (isPro || user.usage.limit === null) {
-      $('usage-text').textContent = 'Unlimited actions';
-      $('usage-bar-wrap').classList.add('hidden');
-    } else {
-      const { count, limit } = user.usage;
-      $('usage-text').textContent = `${count} / ${limit} actions`;
-      const pct = Math.min(100, Math.round((count / limit) * 100));
-      $('usage-bar-fill').style.width = `${pct}%`;
-      $('usage-bar-wrap').classList.remove('hidden');
+    if ($('settings-plan')) {
+      $('settings-plan').textContent = isPro ? 'Pro — Unlimited' : 'Free';
+    }
+
+    const avatarEl = $('sidebar-avatar');
+    if (avatarEl) {
+      if (user.avatar_url) {
+        avatarEl.innerHTML = `<img src="${user.avatar_url}" alt="">`;
+      } else {
+        avatarEl.textContent = initials(user.name, user.email);
+      }
+    }
+
+    if ($('usage-text')) {
+      if (isPro || usage.limit === null) {
+        $('usage-text').textContent = 'Unlimited actions';
+        $('usage-bar-wrap')?.classList.add('hidden');
+      } else {
+        const { count, limit } = usage;
+        $('usage-text').textContent = `${count} / ${limit} actions`;
+        const pct = Math.min(100, Math.round((count / limit) * 100));
+        if ($('usage-bar-fill')) $('usage-bar-fill').style.width = `${pct}%`;
+        $('usage-bar-wrap')?.classList.remove('hidden');
+      }
     }
   }
 
@@ -142,6 +165,7 @@
 
   function renderBilling() {
     const wrap = $('billing-actions');
+    if (!wrap || !user) return;
     wrap.innerHTML = '';
     const isPro = user.plan === 'pro';
     const hasBilling = user.has_billing;
@@ -263,7 +287,9 @@
     $('chat-empty')?.remove();
     const wrap = document.createElement('div');
     wrap.className = `msg ${role}`;
-    const avatarText = role === 'user' ? initials(user.name, user.email) : 'W';
+    const avatarText = role === 'user'
+      ? initials(user?.name, user?.email)
+      : 'W';
     const attachHtml = renderAttachmentsHtml(attachments);
     wrap.innerHTML = `
       <div class="msg-avatar">${role === 'assistant' ? 'W' : avatarText}</div>
@@ -499,58 +525,75 @@
     const attachments = [...pendingAttachments];
     if ((!text && !attachments.length) || isSending) return;
 
+    if (!user) {
+      try {
+        await loadUser();
+      } catch (err) {
+        showToast('Please sign in again.');
+        return;
+      }
+    }
+
     isSending = true;
-    $('send-btn').disabled = true;
+    updateSendState();
     input.value = '';
     pendingAttachments = [];
     renderAttachPreview();
     autoResize(input);
 
-    const displayText = text || (attachments.some((a) => a.type === 'image') ? 'Attached image' : 'Attached file');
-    const chat = ensureChat(displayText);
-    chat.messages.push({ role: 'user', content: displayText, attachments });
-    appendMessage('user', displayText, true, attachments);
+    try {
+      const displayText = text || (attachments.some((a) => a.type === 'image') ? 'Attached image' : 'Attached file');
+      const chat = ensureChat(displayText);
+      chat.messages.push({ role: 'user', content: displayText, attachments });
+      appendMessage('user', displayText, true, attachments);
 
-    const loadingEl = document.createElement('div');
-    loadingEl.className = 'msg assistant';
-    loadingEl.innerHTML = `
-      <div class="msg-avatar">W</div>
-      <div class="msg-body"><div class="msg-loading"><span class="msg-spin"></span> Thinking…</div></div>`;
-    $('chat-messages').appendChild(loadingEl);
-    $('chat-messages').scrollTop = $('chat-messages').scrollHeight;
+      const loadingEl = document.createElement('div');
+      loadingEl.className = 'msg assistant';
+      loadingEl.innerHTML = `
+        <div class="msg-avatar">W</div>
+        <div class="msg-body"><div class="msg-loading"><span class="msg-spin"></span> Thinking…</div></div>`;
+      $('chat-messages').appendChild(loadingEl);
+      $('chat-messages').scrollTop = $('chat-messages').scrollHeight;
 
-    const model = $('model-select').value;
-    const extra = [
-      PROMPTS[selectedLength],
-      model ? `Prefer model: ${model}` : ''
-    ].filter(Boolean).join(' ');
+      const model = $('model-select')?.value || '';
+      const extra = [
+        PROMPTS[selectedLength],
+        model ? `Prefer model: ${model}` : ''
+      ].filter(Boolean).join(' ');
 
-    const { ok, data } = await WriteAIApi.apiFetch('/action', {
-      method: 'POST',
-      body: JSON.stringify({ action: 'chat', text: buildApiText(text, attachments), extra })
-    });
+      const { ok, data } = await WriteAIApi.apiFetch('/action', {
+        method: 'POST',
+        body: JSON.stringify({ action: 'chat', text: buildApiText(text, attachments), extra })
+      });
 
-    loadingEl.remove();
+      loadingEl.remove();
 
-    if (!ok) {
-      const errMsg = data.message || 'Something went wrong. Please try again.';
-      appendMessage('assistant', `⚠️ ${errMsg}`);
+      if (!ok) {
+        const errMsg = data.message || 'Something went wrong. Please try again.';
+        appendMessage('assistant', `⚠️ ${errMsg}`);
+        return;
+      }
+
+      chat.messages.push({ role: 'assistant', content: data.result });
+      chat.updatedAt = Date.now();
+      saveChats();
+      appendMessage('assistant', data.result);
+
+      const meRes = await WriteAIApi.apiFetch('/user/me');
+      if (meRes.ok) {
+        user = {
+          ...meRes.data,
+          usage: meRes.data.usage || { count: 0, limit: meRes.data.plan === 'pro' ? null : 20 }
+        };
+        renderUser();
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Could not send message. Please try again.');
+    } finally {
       isSending = false;
       updateSendState();
-      return;
     }
-
-    chat.messages.push({ role: 'assistant', content: data.result });
-    chat.updatedAt = Date.now();
-    saveChats();
-    appendMessage('assistant', data.result);
-
-    // Refresh usage
-    const meRes = await WriteAIApi.apiFetch('/user/me');
-    if (meRes.ok) { user = meRes.data; renderUser(); }
-
-    isSending = false;
-    updateSendState();
   }
 
   function autoResize(el) {
@@ -657,8 +700,14 @@
       await loadUser();
       renderHistory();
     } catch (err) {
-      showToast('Failed to load your account.');
       console.error(err);
+      if (user) {
+        renderUser();
+        renderHistory();
+        showToast('Some account details failed to load. Chat may still work.');
+      } else {
+        showToast('Failed to load your account. Try signing in again.');
+      }
     }
   }
 
