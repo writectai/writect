@@ -103,11 +103,24 @@
     handleQueryParams();
   }
 
+  function subscriptionLabel(status, isPro) {
+    if (!isPro) return 'Not subscribed';
+    const map = {
+      active: 'Active',
+      trialing: 'Trial',
+      past_due: 'Past due — update payment',
+      canceled: 'Canceled',
+      none: 'Active (admin)'
+    };
+    return map[status] || status || 'Active';
+  }
+
   function renderUser() {
     if (!user) return;
     const isPro = user.plan === 'pro';
     const name = user.name || (user.email ? user.email.split('@')[0] : 'User');
     const usage = user.usage || { count: 0, limit: isPro ? null : 20 };
+    const subStatus = user.subscription_status || (isPro ? 'active' : 'none');
 
     $('sidebar-name').textContent = name;
     $('sidebar-plan').textContent = isPro ? 'Pro plan' : 'Free plan';
@@ -122,6 +135,29 @@
 
     if ($('settings-plan')) {
       $('settings-plan').textContent = isPro ? 'Pro — Unlimited' : 'Free';
+    }
+    if ($('settings-subscription')) {
+      $('settings-subscription').textContent = subscriptionLabel(subStatus, isPro);
+    }
+    if ($('settings-price')) {
+      $('settings-price').textContent = isPro ? '$7 / month' : '$0 / month';
+    }
+
+    const note = $('subscription-note');
+    if (note) {
+      if (!isPro && usage.limit != null && usage.count >= usage.limit) {
+        note.hidden = false;
+        note.textContent = 'You have used all free actions this month. Upgrade to Pro for unlimited access.';
+      } else if (isPro && !user.has_billing) {
+        note.hidden = false;
+        note.textContent = 'Your Pro plan was assigned by an admin. No Stripe billing account is linked.';
+      } else if (subStatus === 'past_due') {
+        note.hidden = false;
+        note.textContent = 'Payment failed. Update your card in Manage billing to keep Pro access.';
+      } else {
+        note.hidden = true;
+        note.textContent = '';
+      }
     }
 
     const avatarEl = $('sidebar-avatar');
@@ -144,6 +180,25 @@
         if ($('usage-bar-fill')) $('usage-bar-fill').style.width = `${pct}%`;
         $('usage-bar-wrap')?.classList.remove('hidden');
       }
+    }
+
+    renderTopUpgrade();
+  }
+
+  function renderTopUpgrade() {
+    let btn = $('top-upgrade-btn');
+    if (!user || user.plan === 'pro') {
+      btn?.remove();
+      return;
+    }
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'top-upgrade-btn';
+      btn.type = 'button';
+      btn.className = 'btn btn-primary top-upgrade-btn';
+      btn.textContent = 'Upgrade to Pro';
+      btn.addEventListener('click', startCheckout);
+      $('topbar-actions')?.prepend(btn);
     }
   }
 
@@ -169,13 +224,22 @@
     wrap.innerHTML = '';
     const isPro = user.plan === 'pro';
     const hasBilling = user.has_billing;
+    const billingConfigured = user.billing_configured !== false;
 
     if (!isPro) {
       const btn = document.createElement('button');
       btn.className = 'btn btn-primary';
-      btn.textContent = 'Upgrade to Pro — $7/mo';
+      btn.textContent = billingConfigured ? 'Upgrade to Pro — $7/mo' : 'Upgrade to Pro — $7/mo';
       btn.addEventListener('click', startCheckout);
       wrap.appendChild(btn);
+
+      const features = document.createElement('ul');
+      features.className = 'plan-features';
+      features.innerHTML = `
+        <li>Unlimited AI actions</li>
+        <li>Priority models</li>
+        <li>Cancel anytime in Stripe portal</li>`;
+      wrap.appendChild(features);
       return;
     }
 
@@ -195,7 +259,13 @@
 
   async function startCheckout() {
     const { ok, data } = await WriteAIApi.apiFetch('/billing/checkout', { method: 'POST' });
-    if (!ok) return showToast(data.message || 'Could not start checkout.');
+    if (!ok) {
+      showToast(data.message || 'Could not start checkout.');
+      if (data.error === 'billing_not_configured') {
+        showSettings();
+      }
+      return;
+    }
     location.href = data.url;
   }
 
@@ -281,6 +351,24 @@
     chat.messages.forEach((m) => appendMessage(m.role, m.content, false, m.attachments || []));
     renderHistory();
     showChat();
+  }
+
+  function appendUpgradePrompt(message) {
+    $('chat-empty')?.remove();
+    const wrap = document.createElement('div');
+    wrap.className = 'msg assistant';
+    wrap.innerHTML = `
+      <div class="msg-avatar">W</div>
+      <div class="msg-body">
+        <div class="upgrade-card">
+          <p>⚠️ ${escapeHtml(message)}</p>
+          <p class="upgrade-card-sub">Pro unlocks unlimited AI actions for $7/month. Cancel anytime.</p>
+          <button type="button" class="btn btn-primary" id="chat-upgrade-btn">Upgrade to Pro — $7/mo</button>
+        </div>
+      </div>`;
+    $('chat-messages').appendChild(wrap);
+    $('chat-upgrade-btn')?.addEventListener('click', startCheckout);
+    $('chat-messages').scrollTop = $('chat-messages').scrollHeight;
   }
 
   function appendMessage(role, content, scroll = true, attachments = []) {
@@ -569,8 +657,12 @@
       loadingEl.remove();
 
       if (!ok) {
-        const errMsg = data.message || 'Something went wrong. Please try again.';
-        appendMessage('assistant', `⚠️ ${errMsg}`);
+        if (data.error === 'free_limit_reached') {
+          appendUpgradePrompt(data.message || 'You\'ve used all free actions this month.');
+        } else {
+          const errMsg = data.message || 'Something went wrong. Please try again.';
+          appendMessage('assistant', `⚠️ ${errMsg}`);
+        }
         return;
       }
 

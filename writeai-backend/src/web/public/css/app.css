@@ -778,10 +778,36 @@
 
 .settings-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
   margin-top: 16px;
 }
+
+.plan-features {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.top-upgrade-btn {
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  border-radius: 10px !important;
+}
+
+.upgrade-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.upgrade-card p { margin: 0; }
+.upgrade-card-sub { color: var(--ink-soft); font-size: 13px; }
+.upgrade-card .btn { align-self: flex-start; }
 
 .btn-danger {
   background: rgba(239, 68, 68, 0.1);

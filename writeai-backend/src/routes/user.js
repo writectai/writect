@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const authMiddleware = require('../middleware/auth');
+const config = require('../config');
 const { getMonthlyCount, getFreeLimit } = require('../services/usage');
 const { getSetting } = require('../services/settings');
 const { getModelConfig, resolveModelList } = require('../services/ai');
@@ -28,14 +29,16 @@ router.get('/me', authMiddleware, async (req, res) => {
   const { userId, email, name, avatar_url, plan, subscription_status, stripe_customer_id } = req.user;
   const count = await getMonthlyCount(userId);
   const limit = plan === 'pro' ? null : await getFreeLimit();
+  const billingConfigured = !!(config.stripe.secretKey && config.stripe.proPriceId);
 
   res.json({
     email,
     name,
     avatar_url,
     plan,
-    subscription_status,
+    subscription_status: subscription_status || (plan === 'pro' ? 'active' : 'none'),
     has_billing: !!stripe_customer_id,
+    billing_configured: billingConfigured,
     usage: { count, limit }
   });
 });
