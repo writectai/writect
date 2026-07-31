@@ -21,7 +21,7 @@ for (const name of ['writeai-backend.zip', 'writeai-backend-upload.zip']) {
   }
 }
 
-const SKIP = new Set(['node_modules', '.env', '.git']);
+const SKIP = new Set(['node_modules', '.env', '.git', '.htaccess']);
 
 function copyDir(from, to) {
   fs.mkdirSync(to, { recursive: true });

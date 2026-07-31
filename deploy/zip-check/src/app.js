@@ -19,12 +19,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(helmet({
-  contentSecurityPolicy: false,
-  crossOriginEmbedderPolicy: false,
-  crossOriginOpenerPolicy: false,
-  crossOriginResourcePolicy: { policy: 'cross-origin' },
-  originAgentCluster: false,
-  referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
+  contentSecurityPolicy: false
 }));
 app.use(morgan('dev'));
 
@@ -78,71 +73,31 @@ app.use('/billing', billingRoutes);
 app.use('/user', userRoutes);
 app.use('/admin/api', adminRoutes);
 
-const webRoot = resolveWebRoot();
-
-function resolveWebRoot() {
-  const candidates = [
-    path.resolve(__dirname, 'web', 'public'),
-    path.resolve(__dirname, '..', 'web', 'public'),
-    path.resolve(process.cwd(), 'src', 'web', 'public'),
-    path.resolve(process.cwd(), 'web', 'public'),
-    path.resolve(__dirname, '..', 'public_html'),
-    path.resolve(process.cwd(), 'public_html')
-  ];
-
-  for (const dir of candidates) {
-    if (fs.existsSync(path.join(dir, 'index.html'))) {
-      console.log(`WriteAI web root: ${dir}`);
-      return dir;
-    }
-  }
-
-  console.error('WriteAI web root NOT FOUND. Tried:', candidates);
-  return candidates[0];
-}
+const webRoot = path.resolve(__dirname, 'web', 'public');
 
 function sendWebPage(res, file) {
   const filePath = path.join(webRoot, file);
-
   if (!fs.existsSync(filePath)) {
-    console.error(`Web page missing: ${filePath} (webRoot=${webRoot})`);
+    console.error(`Web page missing: ${filePath}`);
     return res.status(404).type('html').send(
-      '<!doctype html><html><head><meta charset="utf-8"><title>WriteAI</title></head>'
-      + '<body style="font-family:sans-serif;padding:40px"><h1>Page not found</h1>'
-      + '<p>Frontend files are missing on the server. Redeploy the latest Node.js zip.</p></body></html>'
+      '<!doctype html><title>WriteAI</title><p>Page not found. Redeploy the Node app with the latest zip.</p>'
     );
   }
-
-  try {
-    let html = fs.readFileSync(filePath, 'utf8');
-    // Bust CDN/browser cache after deploys
-    const v = process.env.ASSET_VERSION || '20260731';
-    html = html
-      .replace(/(href|src)="(\/(?:css|js)\/[^"]+)"/g, `$1="$2?v=${v}"`)
-      .replace('<head>', '<head>\n  <base href="/">');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.status(200).type('html').send(html);
-  } catch (err) {
-    console.error(`Failed reading ${filePath}:`, err.message);
-    res.status(500).type('html').send(
-      '<!doctype html><title>WriteAI</title><p>Could not load page.</p>'
-    );
-  }
+  res.sendFile(filePath, (err) => {
+    if (err && !res.headersSent) {
+      console.error(`sendFile failed for ${filePath}:`, err.message);
+      return res.status(404).type('html').send(
+        '<!doctype html><title>WriteAI</title><p>Page not found.</p>'
+      );
+    }
+  });
 }
 
 app.get('/login', (req, res) => {
   sendWebPage(res, 'login.html');
 });
 
-app.get('/login/', (req, res) => {
-  sendWebPage(res, 'login.html');
-});
-
-app.get(['/app', '/app/'], (req, res) => {
-  sendWebPage(res, 'app.html');
-});
-
-app.get(/^\/app\/.+/, (req, res) => {
+app.get(/^\/app(\/.*)?$/, (req, res) => {
   sendWebPage(res, 'app.html');
 });
 
@@ -150,11 +105,9 @@ app.get('/', (req, res) => {
   sendWebPage(res, 'index.html');
 });
 
-app.use('/css', express.static(path.join(webRoot, 'css'), { maxAge: '1h', fallthrough: false }));
-app.use('/js', express.static(path.join(webRoot, 'js'), { maxAge: '1h', fallthrough: false }));
-app.use(express.static(webRoot, { fallthrough: true }));
+app.use(express.static(webRoot));
 
-app.get('/health', (req, res) => res.json({ status: 'ok', webRoot }));
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use((err, req, res, next) => {
   if (err.message === 'Not allowed by CORS') {
