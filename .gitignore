@@ -1,4 +1,10 @@
-﻿deploy/hostinger/
+﻿node_modules/
+.env
+.env.local
+*.log
+.DS_Store
+Thumbs.db
+deploy/hostinger/
 deploy/writeai-backend-staging/
 deploy/zip-check/
 deploy/*.zip
