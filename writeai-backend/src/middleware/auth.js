@@ -12,7 +12,9 @@ module.exports = async (req, res, next) => {
     const decoded = jwt.verify(token, config.jwt.secret);
 
     const result = await db.query(
-      `SELECT id, email, name, avatar_url, plan, role, is_active, subscription_status, stripe_customer_id
+      `SELECT id, email, name, avatar_url, plan, role, is_active, subscription_status, stripe_customer_id,
+              google_id, auth_provider,
+              (password_hash IS NOT NULL AND password_hash <> '') AS has_password
        FROM users WHERE id = $1`,
       [decoded.userId]
     );
@@ -32,6 +34,8 @@ module.exports = async (req, res, next) => {
 
     req.user = user;
     req.user.userId = user.id;
+    req.user.has_password = !!user.has_password;
+    req.user.has_google = !!user.google_id;
     next();
   } catch (err) {
     res.status(401).json({ error: 'invalid_token', message: 'Your session expired. Please sign in again.' });

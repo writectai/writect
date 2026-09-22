@@ -17,7 +17,7 @@ const MODEL_COSTS = {
   'gemini-1.5-pro': { input: 1.25, output: 5.0 }
 };
 
-const PRO_PRICE = 7;
+const PRO_PRICE = 9.99;
 
 function estimateTokenCost(model, inputTokens, outputTokens) {
   const rates = MODEL_COSTS[model] || MODEL_COSTS['gpt-4o-mini'];

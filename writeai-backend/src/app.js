@@ -11,6 +11,8 @@ const actionRoutes = require('./routes/action');
 const billingRoutes = require('./routes/billing');
 const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
+const { rateLimit } = require('./middleware/rateLimit');
+const { saveUninstallFeedback } = require('./services/uninstallFeedback');
 
 const app = express();
 
@@ -78,6 +80,56 @@ app.use('/billing', billingRoutes);
 app.use('/user', userRoutes);
 app.use('/admin/api', adminRoutes);
 
+/** Simple in-memory throttle when Redis is unavailable (uninstall form spam). */
+const uninstallHits = new Map();
+function allowUninstallFeedback(ip) {
+  const now = Date.now();
+  const key = ip || 'unknown';
+  const row = uninstallHits.get(key) || { n: 0, t: now };
+  if (now - row.t > 60_000) {
+    row.n = 0;
+    row.t = now;
+  }
+  row.n += 1;
+  uninstallHits.set(key, row);
+  if (uninstallHits.size > 5000) {
+    for (const [k, v] of uninstallHits) {
+      if (now - v.t > 120_000) uninstallHits.delete(k);
+    }
+  }
+  return row.n <= 10;
+}
+
+app.post(
+  '/api/feedback/uninstall',
+  rateLimit({ windowMs: 60_000, max: 10, keyPrefix: 'uninstall_fb' }),
+  async (req, res) => {
+    try {
+      const ip = req.ip || req.headers['x-forwarded-for'] || '';
+      if (!allowUninstallFeedback(String(ip))) {
+        return res.status(429).json({
+          error: 'rate_limit_exceeded',
+          message: 'Too many requests. Please try again later.'
+        });
+      }
+
+      const row = await saveUninstallFeedback({
+        reason: req.body?.reason,
+        notes: req.body?.notes,
+        source: req.body?.source || 'extension_uninstall',
+        userAgent: req.headers['user-agent'] || '',
+        ipAddress: Array.isArray(ip) ? ip[0] : String(ip).split(',')[0].trim()
+      });
+
+      res.json({ ok: true, id: row.id });
+    } catch (err) {
+      console.error('[uninstall feedback] save failed:', err.message || err);
+      // Still acknowledge so the user sees the thank-you screen.
+      res.json({ ok: true, stored: false });
+    }
+  }
+);
+
 const webRoot = resolveWebRoot();
 
 function resolveWebRoot() {
@@ -92,12 +144,12 @@ function resolveWebRoot() {
 
   for (const dir of candidates) {
     if (fs.existsSync(path.join(dir, 'index.html'))) {
-      console.log(`WriteAI web root: ${dir}`);
+      console.log(`Writect web root: ${dir}`);
       return dir;
     }
   }
 
-  console.error('WriteAI web root NOT FOUND. Tried:', candidates);
+  console.error('Writect web root NOT FOUND. Tried:', candidates);
   return candidates[0];
 }
 
@@ -107,7 +159,7 @@ function sendWebPage(res, file) {
   if (!fs.existsSync(filePath)) {
     console.error(`Web page missing: ${filePath} (webRoot=${webRoot})`);
     return res.status(404).type('html').send(
-      '<!doctype html><html><head><meta charset="utf-8"><title>WriteAI</title></head>'
+      '<!doctype html><html><head><meta charset="utf-8"><title>Writect</title></head>'
       + '<body style="font-family:sans-serif;padding:40px"><h1>Page not found</h1>'
       + '<p>Frontend files are missing on the server. Redeploy the latest Node.js zip.</p></body></html>'
     );
@@ -116,7 +168,7 @@ function sendWebPage(res, file) {
   try {
     let html = fs.readFileSync(filePath, 'utf8');
     // Bust CDN/browser cache after deploys
-    const v = process.env.ASSET_VERSION || '20260731c';
+    const v = process.env.ASSET_VERSION || '20260813n';
     html = html
       .replace(/(href|src)="(\/(?:css|js)\/[^"]+)"/g, `$1="$2?v=${v}"`)
       .replace('<head>', '<head>\n  <base href="/">');
@@ -125,7 +177,7 @@ function sendWebPage(res, file) {
   } catch (err) {
     console.error(`Failed reading ${filePath}:`, err.message);
     res.status(500).type('html').send(
-      '<!doctype html><title>WriteAI</title><p>Could not load page.</p>'
+      '<!doctype html><title>Writect</title><p>Could not load page.</p>'
     );
   }
 }
@@ -138,12 +190,36 @@ app.get('/login/', (req, res) => {
   sendWebPage(res, 'login.html');
 });
 
+app.get(['/reset-password', '/reset-password/'], (req, res) => {
+  sendWebPage(res, 'reset-password.html');
+});
+
+app.get(['/uninstall', '/uninstall/'], (req, res) => {
+  sendWebPage(res, 'uninstall.html');
+});
+
 app.get(['/app', '/app/'], (req, res) => {
   sendWebPage(res, 'app.html');
 });
 
 app.get(/^\/app\/.+/, (req, res) => {
   sendWebPage(res, 'app.html');
+});
+
+app.get(['/privacy', '/privacy/'], (req, res) => {
+  sendWebPage(res, 'privacy.html');
+});
+
+app.get(['/terms', '/terms/'], (req, res) => {
+  sendWebPage(res, 'terms.html');
+});
+
+app.get(['/cookies', '/cookies/'], (req, res) => {
+  sendWebPage(res, 'cookies.html');
+});
+
+app.get(['/contact', '/contact/', '/support', '/support/'], (req, res) => {
+  sendWebPage(res, 'contact.html');
 });
 
 app.get('/', (req, res) => {

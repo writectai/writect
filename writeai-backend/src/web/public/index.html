@@ -3,46 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WriteAI — Your AI Writing Assistant for Every Website</title>
-  <meta name="description" content="Fix grammar, translate, rephrase, summarize, and chat with AI on any site. Free Chrome extension + web app.">
+  <title>Writect — Write Better, Faster</title>
+  <meta name="description" content="No more copy-pasting. Highlight text in Gmail, WhatsApp, Outlook, or any web app, and let Writect fix it on the spot.">
+  <link rel="icon" type="image/png" href="/img/Writect-logo-icon.png">
   <script>
     (function () {
-      var t = localStorage.getItem('writeai_web_theme') || 'dark';
-      document.documentElement.dataset.theme = t;
+      document.documentElement.dataset.theme = 'light';
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/shared.css">
   <link rel="stylesheet" href="/css/landing.css">
 </head>
 <body class="landing">
 
-  <!-- Header -->
   <nav class="landing-nav">
     <div class="container landing-nav-inner">
-      <a href="/" class="logo">
-        <span class="logo-mark">W</span>
-        WriteAI
+      <a href="/" class="logo" aria-label="Writect AI">
+        <img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="168" height="32">
       </a>
 
       <div class="landing-nav-center">
-        <a href="#demos">Demos</a>
-        <a href="#integrations">Integrations</a>
-        <a href="#features">Features</a>
-        <a href="#testimonials">Reviews</a>
+        <a href="#demos">Examples</a>
+        <a href="#page-assistant">Page Assistant</a>
+        <a href="#integrations">Where it works</a>
+        <a href="#features">Tools</a>
+        <a href="#testimonials">Feedback</a>
         <a href="#pricing">Pricing</a>
       </div>
 
       <div class="landing-nav-right">
-        <button class="theme-toggle" id="theme-toggle" type="button" title="Toggle theme" aria-label="Toggle theme">
-          <svg id="theme-icon-dark" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          <svg id="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
         <a href="/login" class="btn btn-ghost">Sign in</a>
         <button class="btn btn-chrome" data-install-ext type="button">
-          <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2a10 10 0 0 1 8.66 5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3.34 7A10 10 0 0 1 12 2v10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-          Install extension
+          <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+          Install Free Extension
         </button>
         <button class="nav-mobile-toggle" id="nav-mobile-toggle" type="button" aria-label="Menu">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -51,74 +46,387 @@
     </div>
   </nav>
 
-  <!-- Mobile nav -->
   <div class="mobile-nav" id="mobile-nav">
     <div class="mobile-nav-panel">
-      <a href="/" class="logo" style="margin-bottom:12px"><span class="logo-mark">W</span>WriteAI</a>
-      <a href="#demos">Demos</a>
-      <a href="#integrations">Integrations</a>
-      <a href="#features">Features</a>
-      <a href="#testimonials">Reviews</a>
+      <div class="mobile-nav-head">
+        <a href="/" class="logo" aria-label="Writect AI"><img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="150" height="34"></a>
+        <button class="mobile-nav-x" id="mobile-nav-close" type="button" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <a href="#demos">Examples</a>
+      <a href="#page-assistant">Page Assistant</a>
+      <a href="#integrations">Where it works</a>
+      <a href="#features">Tools</a>
+      <a href="#testimonials">Feedback</a>
       <a href="#pricing">Pricing</a>
       <a href="/login">Sign in</a>
       <a href="/app">Web app</a>
-      <button class="btn btn-primary" data-install-ext type="button" style="margin-top:12px">Install extension</button>
-      <button class="btn btn-ghost" id="mobile-nav-close" type="button" style="margin-top:8px">Close</button>
+      <button class="btn btn-chrome" data-install-ext type="button" style="margin-top:12px">
+        <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+        Install Free Chrome Extension
+      </button>
     </div>
   </div>
 
-  <!-- Hero -->
   <section class="hero">
     <div class="hero-bg"></div>
     <div class="container hero-grid">
       <div class="hero-copy reveal">
-        <span class="section-label">AI writing, everywhere</span>
-        <h1>Your personal AI writing assistant.<br><span class="gradient">Use on any site.</span></h1>
-        <p class="hero-lead">Write emails & messages, fix grammar, improve writing, translate, summarize, and chat with the most intelligent AI models — in seconds, without switching tabs.</p>
+        <span class="section-label">Your writing, made easier</span>
+        <h1>Write better.<br><span class="gradient">Without switching apps.</span></h1>
 
         <div class="hero-checks">
-          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Free to try</div>
-          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Blazingly fast</div>
-          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Highest quality responses</div>
-          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Powered by Gemini & GPT</div>
-          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Deep site integration</div>
-          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Lightweight extension</div>
+          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Write better emails</div>
+          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Improve chats &amp; messages</div>
+          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Fix comments before you post</div>
+          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Write better social media posts</div>
+          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Improve documents &amp; online forms</div>
+          <div class="hero-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Get writing help anywhere on the web</div>
         </div>
 
         <div class="hero-actions">
-          <button class="btn btn-primary" data-install-ext type="button">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></svg>
-            Install free extension
+          <button class="btn btn-chrome" data-install-ext type="button">
+            <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+            Install Free Chrome Extension
           </button>
           <a href="/login" class="btn btn-secondary">Open web app →</a>
-        </div>
-
-        <div class="hero-social">
-          <div class="hero-avatars"><span>A</span><span>M</span><span>S</span><span>J</span><span>+</span></div>
-          <span>Join thousands of happy writers who save hours every week</span>
         </div>
       </div>
 
       <div class="hero-visual reveal">
-        <div class="hero-demo-wrap">
-          <div class="demo-browser-bar"><span></span><span></span><span></span></div>
-          <div class="demo-tabs">
-            <span class="demo-tab">Email draft</span>
-            <span class="demo-tab active">Fix grammar</span>
-            <span class="demo-tab">Translate</span>
-            <span class="demo-tab">Summarize</span>
+        <div class="hero-demo-wrap hero-app-stage">
+          <div class="hero-app-tabs" aria-hidden="true">
+            <div class="hero-app-tab-list">
+              <span class="hero-app-tab on" data-app-tab="gmail">Gmail</span>
+              <span class="hero-app-tab" data-app-tab="whatsapp">WhatsApp</span>
+              <span class="hero-app-tab" data-app-tab="linkedin">LinkedIn</span>
+            </div>
+            <div class="demo-float-badge"><span class="dot"></span> Live preview</div>
           </div>
-          <div class="demo-scene">
-            <div class="demo-float-badge"><span class="dot"></span> Live demo</div>
-            <p class="demo-page-text">Select any text on a page — like <span class="hl">Recreate a style vou like</span> — and let WriteAI fix it instantly.</p>
-            <div class="demo-toolbar">
+
+          <div class="gm-compose demo-scene is-app-gmail" id="hero-compose">
+            <div class="gm-compose-head">
+              <span id="hero-compose-title">New Message</span>
+              <span class="gm-compose-win" aria-hidden="true">— □ ✕</span>
+            </div>
+            <div class="gm-field" id="hero-field-to"><span>To</span><em id="hero-mail-to">alex@company.com</em></div>
+            <div class="gm-field" id="hero-field-subject"><span>Subject</span><em id="hero-mail-subject">Deck for Friday</em></div>
+            <div class="gm-compose-body" id="hero-page-text">
+              Hi Alex,<br><br>
+              <span class="hl" id="hero-hl"><span class="hl-fill"></span><span class="hl-label" id="hero-hl-label">Please send the file tommorow so we can review it.</span><svg class="hero-pointer" id="hero-pointer" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" stroke="#0f172a" stroke-width="1.35" stroke-linejoin="round" d="M5.2 2.8v14.6l3.5-3.3 2.3 5.5 2.3-1-2.4-5.5 4.9-.3z"/></svg></span>
+              <br><br>
+              Thanks,<br>Sam
+            </div>
+            <div class="gm-compose-foot">
+              <button type="button" class="gm-send" id="hero-send-btn" tabindex="-1">
+                <span class="gm-send-label">Send</span>
+                <svg class="gm-send-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+              </button>
+              <button type="button" class="gm-ai-chip" id="hero-ai-chip" tabindex="-1">
+                <img class="gm-ai-mark" src="/img/Writect-logo-icon.png" alt="" width="20" height="20">
+                <span id="hero-ai-label">AI Compose</span>
+              </button>
+              <div class="gm-wa-input" id="hero-wa-input" aria-hidden="true">Type a message</div>
+            </div>
+
+            <div class="demo-toolbar" id="hero-toolbar">
+              <div class="demo-toolbar-brand">
+                <img class="demo-brand-logo" src="/img/Writect-AI-logo-white.png" alt="Writect AI" height="20">
+              </div>
               <div class="demo-toolbar-top">
-                <span class="demo-tool on" data-tool="Fix">Fix</span>
+                <span class="demo-tool" data-tool="Fix">Fix</span>
                 <span class="demo-tool" data-tool="Rephrase">Rephrase</span>
                 <span class="demo-tool" data-tool="Translate">Translate</span>
                 <span class="demo-tool" data-tool="Summarize">Summarize</span>
               </div>
+              <div class="demo-status" id="hero-status" hidden></div>
               <div class="demo-result" id="hero-result"></div>
+              <div class="demo-toolbar-foot" id="hero-toolbar-foot" hidden>
+                <span class="demo-foot-btn" data-foot="Replace">Replace</span>
+                <span class="demo-foot-btn ghost" data-foot="Copy">Copy</span>
+              </div>
+            </div>
+
+            <div class="demo-compose-panel" id="hero-compose-panel" hidden>
+              <div class="dcp-glow" aria-hidden="true"></div>
+              <header class="dcp-head">
+                <div class="dcp-brand">
+                  <div>
+                    <img class="dcp-logo" src="/img/Writect-AI-logo-white.png" alt="Writect AI" height="22">
+                    <div class="dcp-meta" id="hero-panel-meta">New draft</div>
+                  </div>
+                </div>
+                <span class="dcp-x" aria-hidden="true">×</span>
+              </header>
+              <div class="dcp-body">
+                <div class="dcp-row">
+                  <div class="dcp-dd"><span>Tone</span><b>Professional</b></div>
+                  <div class="dcp-dd"><span>Length</span><b>Medium</b></div>
+                </div>
+                <div class="dcp-dd wide"><span>Model</span><b>GPT-4o mini</b></div>
+                <div class="dcp-prompt" id="hero-compose-prompt">What should the draft say? (optional)</div>
+                <div class="dcp-generate" id="hero-compose-generate">Generate →</div>
+              </div>
+            </div>
+
+            <svg class="demo-click-pointer" id="hero-click-pointer" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" stroke="#0f172a" stroke-width="1.35" stroke-linejoin="round" d="M5.2 2.8v14.6l3.5-3.3 2.3 5.5 2.3-1-2.4-5.5 4.9-.3z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="marquee-section">
+    <div class="marquee-head container">
+      <h2>Stay on your page.</h2>
+      <p>Writect pops up right next to your words.</p>
+    </div>
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <span class="marquee-item marquee-gmail"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>Gmail</span>
+        <span class="marquee-item marquee-docs"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Google Docs</span>
+        <span class="marquee-item marquee-linkedin"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>LinkedIn</span>
+        <span class="marquee-item marquee-slack"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.528 2.528 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.528 2.528 0 0 1-2.52-2.523 2.528 2.528 0 0 1 2.52-2.52h6.313A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg>Slack</span>
+        <span class="marquee-item marquee-notion"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V4H7zm2 2h6v2H9V6zm0 4h6v2H9v-2zm0 4h4v2H9v-2z"/></svg>Notion</span>
+        <span class="marquee-item marquee-outlook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>Outlook</span>
+        <span class="marquee-item marquee-whatsapp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>WhatsApp</span>
+        <span class="marquee-item marquee-facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>Facebook</span>
+        <span class="marquee-item marquee-instagram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.9a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>Instagram</span>
+        <span class="marquee-item marquee-x"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>X</span>
+        <span class="marquee-item marquee-teams"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.63 9.93v3.32l-2.02.64v-2.06l-3.36 1.07v7.1h-3.2v-6.04L4 16.1V12.7l8.05-2.55V8.03L4 10.58V7.18l8.05-2.55V1h3.2v3.93l5.38-1.71v3.32l-5.38 1.7v1.97l5.38-1.7z"/></svg>Teams</span>
+        <span class="marquee-item marquee-gmail"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>Gmail</span>
+        <span class="marquee-item marquee-docs"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Google Docs</span>
+        <span class="marquee-item marquee-linkedin"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>LinkedIn</span>
+        <span class="marquee-item marquee-slack"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.528 2.528 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.528 2.528 0 0 1-2.52-2.523 2.528 2.528 0 0 1 2.52-2.52h6.313A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg>Slack</span>
+        <span class="marquee-item marquee-notion"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V4H7zm2 2h6v2H9V6zm0 4h6v2H9v-2zm0 4h4v2H9v-2z"/></svg>Notion</span>
+        <span class="marquee-item marquee-outlook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>Outlook</span>
+        <span class="marquee-item marquee-whatsapp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>WhatsApp</span>
+        <span class="marquee-item marquee-facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>Facebook</span>
+        <span class="marquee-item marquee-instagram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.9a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>Instagram</span>
+        <span class="marquee-item marquee-x"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>X</span>
+        <span class="marquee-item marquee-teams"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.63 9.93v3.32l-2.02.64v-2.06l-3.36 1.07v7.1h-3.2v-6.04L4 16.1V12.7l8.05-2.55V8.03L4 10.58V7.18l8.05-2.55V1h3.2v3.93l5.38-1.71v3.32l-5.38 1.7v1.97l5.38-1.7z"/></svg>Teams</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="demos-section" id="demos">
+    <div class="container demos-header reveal">
+      <span class="section-label">Quick examples</span>
+      <h2 class="section-title">What Writect does with selected text</h2>
+      <p class="section-sub" style="margin:0 auto">Watch the flow — select words, pick an action, get better writing without leaving the page.</p>
+    </div>
+    <div class="pin" data-pin data-pin-fill="lg">
+      <div class="pin-sticky">
+        <div class="carousel-nav" aria-label="Carousel">
+          <button type="button" class="carousel-btn carousel-prev" aria-label="Previous">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button type="button" class="carousel-btn carousel-next" aria-label="Next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+        <div class="pin-viewport hscroll">
+          <div class="demo-cards-scroll pin-track">
+      <article class="demo-card">
+        <div class="demo-card-head">
+          <span class="icon icon-fix" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.4 3.6a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4L16.4 3.6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 15.5 15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="18.2" cy="5.8" r="1.1" fill="currentColor" opacity=".35"/></svg>
+          </span>
+          <h3>Fix grammar &amp; spelling</h3>
+        </div>
+        <div class="demo-card-visual demo-flow demo-flow--1">
+          <div class="demo-page">
+            <p class="demo-line">Please send the <mark class="sel">file tommorow</mark> so we can review it.</p>
+            <svg class="demo-pointer" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" stroke="#1e1b4b" stroke-width="1.35" stroke-linejoin="round" d="M5.2 2.8v14.6l3.5-3.3 2.3 5.5 2.3-1-2.4-5.5 4.9-.3z"/></svg>
+          </div>
+          <div class="demo-ai-box">
+            <div class="demo-ai-bar">
+              <span class="demo-ai-mark" aria-hidden="true"></span>
+              <span class="demo-ai-act on">Fix</span>
+              <span class="demo-ai-act">Rephrase</span>
+              <span class="demo-ai-act">Translate</span>
+            </div>
+            <p class="demo-ai-busy"><span class="demo-dots" aria-hidden="true"></span> Fixing grammar…</p>
+            <p class="demo-ai-out">Please send the file tomorrow so we can review it.</p>
+          </div>
+        </div>
+        <div class="demo-card-foot">Select → Fix → copy or replace without leaving the page.</div>
+      </article>
+      <article class="demo-card">
+        <div class="demo-card-head">
+          <span class="icon icon-translate" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M3 12h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 3c2.5 2.8 3.8 5.8 3.8 9S14.5 18.2 12 21c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z" stroke="currentColor" stroke-width="2"/><path d="M7.5 7.2h9M8.2 16.8h7.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".45"/></svg>
+          </span>
+          <h3>Translate in place</h3>
+        </div>
+        <div class="demo-card-visual demo-flow demo-flow--2">
+          <div class="demo-page">
+            <p class="demo-line"><mark class="sel">Please send the file tomorrow.</mark></p>
+            <svg class="demo-pointer" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" stroke="#1e1b4b" stroke-width="1.35" stroke-linejoin="round" d="M5.2 2.8v14.6l3.5-3.3 2.3 5.5 2.3-1-2.4-5.5 4.9-.3z"/></svg>
+          </div>
+          <div class="demo-ai-box">
+            <div class="demo-ai-bar">
+              <span class="demo-ai-mark" aria-hidden="true"></span>
+              <span class="demo-ai-act">Fix</span>
+              <span class="demo-ai-act">Rephrase</span>
+              <span class="demo-ai-act on">Translate</span>
+            </div>
+            <p class="demo-ai-busy"><span class="demo-dots" aria-hidden="true"></span> Translating…</p>
+            <p class="demo-ai-out" lang="ar" dir="rtl">يرجى إرسال الملف غداً.</p>
+          </div>
+        </div>
+        <div class="demo-card-foot">Pick a language from the toolbar or right-click menu.</div>
+      </article>
+      <article class="demo-card">
+        <div class="demo-card-head">
+          <span class="icon icon-rephrase" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/><path d="M8 12h5"/><path d="M8 16h3"/></svg>
+          </span>
+          <h3>Rephrase the tone</h3>
+        </div>
+        <div class="demo-card-visual demo-flow demo-flow--3">
+          <div class="demo-page">
+            <p class="demo-line"><mark class="sel">hey can u check this when u get a chance</mark></p>
+            <svg class="demo-pointer" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" stroke="#1e1b4b" stroke-width="1.35" stroke-linejoin="round" d="M5.2 2.8v14.6l3.5-3.3 2.3 5.5 2.3-1-2.4-5.5 4.9-.3z"/></svg>
+          </div>
+          <div class="demo-ai-box">
+            <div class="demo-ai-bar">
+              <span class="demo-ai-mark" aria-hidden="true"></span>
+              <span class="demo-ai-act">Fix</span>
+              <span class="demo-ai-act on">Rephrase</span>
+              <span class="demo-ai-act">Summarize</span>
+            </div>
+            <p class="demo-ai-busy"><span class="demo-dots" aria-hidden="true"></span> Rephrasing…</p>
+            <p class="demo-ai-out">Hi — could you review this when you have a moment? Thanks.</p>
+          </div>
+        </div>
+        <div class="demo-card-foot">Shift casual notes into clearer, more professional wording.</div>
+      </article>
+      <article class="demo-card">
+        <div class="demo-card-head">
+          <span class="icon icon-summarize" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M8 3h7l4 4v13a1.5 1.5 0 0 1-1.5 1.5H8A1.5 1.5 0 0 1 6.5 20V4.5A1.5 1.5 0 0 1 8 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15 3v4h4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 11h7M9 14.5h7M9 18h4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 11h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".35"/></svg>
+          </span>
+          <h3>Summarize long text</h3>
+        </div>
+        <div class="demo-card-visual demo-flow demo-flow--4">
+          <div class="demo-page">
+            <p class="demo-line"><mark class="sel">Sprint goals, blocked tickets, hiring needs, and next week’s launch checklist…</mark></p>
+            <svg class="demo-pointer" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" stroke="#1e1b4b" stroke-width="1.35" stroke-linejoin="round" d="M5.2 2.8v14.6l3.5-3.3 2.3 5.5 2.3-1-2.4-5.5 4.9-.3z"/></svg>
+          </div>
+          <div class="demo-ai-box">
+            <div class="demo-ai-bar">
+              <span class="demo-ai-mark" aria-hidden="true"></span>
+              <span class="demo-ai-act">Fix</span>
+              <span class="demo-ai-act">Rephrase</span>
+              <span class="demo-ai-act on">Summarize</span>
+            </div>
+            <p class="demo-ai-busy"><span class="demo-dots" aria-hidden="true"></span> Summarizing…</p>
+            <p class="demo-ai-out">Goals on track. Two tickets blocked. One open hire. Launch checklist due Friday.</p>
+          </div>
+        </div>
+        <div class="demo-card-foot">Turn long threads and notes into short prose you can skim.</div>
+      </article>
+          </div>
+        </div>
+        <div class="pin-progress"><div class="pin-progress-fill"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="container reveal">
+      <span class="section-label">Getting started</span>
+      <h2 class="section-title">Professional Writing in 3 Simple Steps</h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><h3>Install &amp; sign in</h3><p>Add the Chrome extension and connect with Google.</p></div>
+        <div class="step"><div class="step-num">2</div><h3>Highlight text</h3><p>Select words in email, docs, chats, or any webpage.</p></div>
+        <div class="step"><div class="step-num">3</div><h3>Click &amp; Improve</h3><p>Choose to fix, rephrase, or summarize, and watch your text update automatically.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-assistant" id="page-assistant">
+    <div class="container page-assistant-grid reveal">
+      <div class="page-assistant-copy">
+        <span class="section-label">From Long Texts to Simple Summaries.</span>
+        <h2 class="section-title">Stop reading everything. Let AI find what matters.</h2>
+        <p class="section-sub" style="margin:0">Writect reads the page with you. Summarize it, simplify it, extract the key points, or ask questions—without copying, pasting, or opening another tab.</p>
+        <ul class="pa-list">
+          <li>
+            <span class="pa-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3h7l4 4v13a1.5 1.5 0 0 1-1.5 1.5H8A1.5 1.5 0 0 1 6.5 20V4.5A1.5 1.5 0 0 1 8 3z"/><path d="M15 3v4h4"/><path d="M9 11h7M9 14.5h7M9 18h4.5"/></svg>
+            </span>
+            <div>
+              <strong>Summarize &amp; get key points</strong>
+              <span>Turn long articles, documents, and email threads into clear, easy-to-read summaries.</span>
+            </div>
+          </li>
+          <li>
+            <span class="pa-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9.5 9h.01M12 9h.01M14.5 9h.01"/></svg>
+            </span>
+            <div>
+              <strong>Ask questions about the page</strong>
+              <span>Get instant answers based on the content you’re reading—without switching tabs or searching again.</span>
+            </div>
+          </li>
+          <li>
+            <span class="pa-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+            </span>
+            <div>
+              <strong>Make complex content simple</strong>
+              <span>Simplify difficult text and understand the important points faster.</span>
+            </div>
+          </li>
+        </ul>
+        <button class="btn btn-primary pa-cta" data-install-ext type="button">
+          <svg class="pa-cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+          Try Page Assistant free →
+        </button>
+      </div>
+      <div class="pa-stage" aria-hidden="true">
+        <div class="pa-browser">
+          <div class="pa-chrome">
+            <span></span><span></span><span></span>
+            <em>Writect — Page Assistant</em>
+          </div>
+          <div class="pa-browser-body">
+            <div class="pa-article">
+              <div class="pa-line"></div>
+              <div class="pa-line short"></div>
+              <div class="pa-line"></div>
+              <p class="pa-highlight">Artificial intelligence is transforming how businesses operate, helping them automate processes, improve decision-making, and create better customer experiences.</p>
+              <div class="pa-line"></div>
+              <div class="pa-line mid"></div>
+              <div class="pa-line short"></div>
+              <div class="pa-line"></div>
+              <div class="pa-line mid"></div>
+            </div>
+            <div class="pa-panel">
+              <div class="pa-meta">
+                <span class="pa-dot"></span>
+                <div>
+                  <strong>Article · example.com</strong>
+                  <small>Ready · 9k chars</small>
+                </div>
+                <span class="pa-x">×</span>
+              </div>
+              <div class="pa-chips">
+                <span class="on">Summarize</span>
+                <span>Key points</span>
+                <span>Simplify</span>
+              </div>
+              <div class="pa-answer">
+                <header><b>Summary</b><i>Copy</i></header>
+                <p>AI is helping businesses automate processes, improve decision-making, and create better customer experiences.</p>
+              </div>
+              <div class="pa-ask">
+                <span>Ask about this page…</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9l20-7z"/></svg>
+              </div>
             </div>
           </div>
         </div>
@@ -126,166 +434,136 @@
     </div>
   </section>
 
-  <!-- Platform marquee -->
-  <section class="marquee-section">
-    <div class="marquee-head container">
-      <h2>Stop switching tabs.</h2>
-      <p>Use AI on any site, instantly.</p>
-    </div>
-    <div class="marquee-wrap">
-      <div class="marquee-track">
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>Gmail</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Google Docs</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>LinkedIn</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.528 2.528 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.528 2.528 0 0 1-2.52-2.523 2.528 2.528 0 0 1 2.52-2.52h6.313A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg>Slack</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V4H7zm2 2h6v2H9V6zm0 4h6v2H9v-2zm0 4h4v2H9v-2z"/></svg>Notion</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>Outlook</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>WhatsApp</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>Facebook</span>
-        <!-- duplicate for seamless loop -->
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>Gmail</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Google Docs</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>LinkedIn</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.528 2.528 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.528 2.528 0 0 1-2.52-2.523 2.528 2.528 0 0 1 2.52-2.52h6.313A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg>Slack</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V4H7zm2 2h6v2H9V6zm0 4h6v2H9v-2zm0 4h4v2H9v-2z"/></svg>Notion</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>Outlook</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>WhatsApp</span>
-        <span class="marquee-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>Facebook</span>
-      </div>
-    </div>
-  </section>
 
-  <!-- Animated demos -->
-  <section class="demos-section" id="demos">
-    <div class="container demos-header reveal">
-      <span class="section-label">See it in action</span>
-      <h2 class="section-title">Watch WriteAI transform your text</h2>
-      <p class="section-sub" style="margin:0 auto">Auto-playing demos of real extension actions — fix, translate, and rephrase in one click.</p>
-    </div>
-    <div class="pin" data-pin>
-      <div class="pin-sticky">
-        <div class="pin-viewport hscroll">
-          <div class="demo-cards-scroll pin-track">
-      <article class="demo-card">
-        <div class="demo-card-head">
-          <span class="icon" style="background:#ede9fe">✏️</span>
-          <h3>Fix grammar & spelling</h3>
-        </div>
-        <div class="demo-card-visual anim-fix">
-          <p class="bad-text">Recreate a style vou like and build an outfit you love.</p>
-          <p class="good-text">Recreate a style you like and build an outfit you love.</p>
-          <div class="mini-toolbar"><span class="on">Fix</span><span>Rephrase</span><span>Translate</span></div>
-        </div>
-        <div class="demo-card-foot">Select text → click Fix → copy or replace instantly.</div>
-      </article>
-      <article class="demo-card">
-        <div class="demo-card-head">
-          <span class="icon" style="background:#dbeafe">🌐</span>
-          <h3>Translate to any language</h3>
-        </div>
-        <div class="demo-card-visual anim-translate">
-          <p class="src">Recreate a style you like.</p>
-          <p class="dst">دوبارہ تخلیق کریں — ایک انداز جو آپ کو پسند ہو۔</p>
-          <div class="mini-toolbar"><span>Fix</span><span>Rephrase</span><span class="on">Translate</span></div>
-        </div>
-        <div class="demo-card-foot">Right-click or use the toolbar to translate in context.</div>
-      </article>
-      <article class="demo-card">
-        <div class="demo-card-head">
-          <span class="icon" style="background:#fce7f3">🔄</span>
-          <h3>Rephrase professionally</h3>
-        </div>
-        <div class="demo-card-visual anim-rephrase">
-          <p class="before">Thanks for getting back to me so fast, really appreciate it.</p>
-          <p class="after">Thank you for your prompt response — I truly appreciate your quick turnaround.</p>
-          <div class="mini-toolbar"><span>Fix</span><span class="on">Rephrase</span><span>Summarize</span></div>
-        </div>
-        <div class="demo-card-foot">Make casual text professional — or the other way around.</div>
-      </article>
-      <article class="demo-card">
-        <div class="demo-card-head">
-          <span class="icon" style="background:#d1fae5">📋</span>
-          <h3>Summarize long content</h3>
-        </div>
-        <div class="demo-card-visual anim-rephrase">
-          <p class="before">A 3-page article about quarterly planning, budget allocation, team restructuring, and new product launches across three regions…</p>
-          <p class="after">• Q3 focus: budget reallocation<br>• Team restructure in EMEA<br>• 2 product launches planned</p>
-          <div class="mini-toolbar"><span>Fix</span><span>Rephrase</span><span class="on">Summarize</span></div>
-        </div>
-        <div class="demo-card-foot">Condense articles, emails, and docs into actionable bullets.</div>
-      </article>
-          </div>
-        </div>
-        <div class="pin-progress"><div class="pin-progress-fill"></div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Mid CTA -->
-  <section class="cta-inline">
-    <div class="container cta-inline-inner reveal">
-      <div>
-        <h2>Use WriteAI on any site</h2>
-        <p>Install the free Chrome extension — takes less than 30 seconds.</p>
-      </div>
-      <div class="cta-inline-actions">
-        <button class="btn btn-primary" data-install-ext type="button">Install free extension →</button>
-        <a href="/login" class="btn btn-secondary">Try web app</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Integrations scroll -->
   <section class="integrations" id="integrations">
     <div class="container reveal">
-      <span class="section-label">Works where you work</span>
-      <h2 class="section-title">Reply in your voice, on every platform</h2>
-      <p class="section-sub">WriteAI floats over Gmail, LinkedIn, WhatsApp Web, Slack, and more — no tab switching.</p>
+      <span class="section-label">Where it works</span>
+      <h2 class="section-title">Helpful on the apps you already open</h2>
+      <p class="section-sub">Use Writect on Gmail, LinkedIn, WhatsApp Web, Slack, Outlook, Facebook, Instagram, and more — same account as the web app.</p>
     </div>
     <div class="pin" data-pin>
       <div class="pin-sticky">
+        <div class="carousel-nav" aria-label="Carousel">
+          <button type="button" class="carousel-btn carousel-prev" aria-label="Previous">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button type="button" class="carousel-btn carousel-next" aria-label="Next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
         <div class="pin-viewport hscroll">
           <div class="integration-scroll pin-track">
-      <article class="integration-card">
-        <div class="integration-card-head">💼 LinkedIn</div>
-        <div class="integration-mock">
-          <div class="mock-msg">Hi, saw your profile — would love to connect about the role.</div>
-          <div class="mock-widget">
-            <div class="w-head"><span class="w-logo">W</span> WriteAI</div>
-            Hi! I'd be delighted to connect and discuss the opportunity further. Looking forward to hearing from you.
+        <article class="integration-card app-linkedin">
+          <div class="integration-card-head">
+            <span class="app-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            </span>
+            LinkedIn
           </div>
-        </div>
-      </article>
-      <article class="integration-card">
-        <div class="integration-card-head">📧 Gmail</div>
-        <div class="integration-mock">
-          <div class="mock-msg">Can you send the report by EOD? Need it for the board meeting.</div>
-          <div class="mock-widget">
-            <div class="w-head"><span class="w-logo">W</span> WriteAI</div>
-            Absolutely — I'll have the report sent over by end of day today. Please let me know if you need anything else.
+          <div class="integration-mock">
+            <div class="mock-msg">saw your post about hiring — interested in learning more</div>
+            <div class="mock-widget">
+              <div class="w-head"><img class="w-brand-logo" src="/img/Writect-AI-logo.png" alt="Writect AI" height="18"></div>
+              <p class="mock-write"><span class="mock-write-text">I saw your post about the open role and would welcome a short conversation about the opportunity.</span><span class="mock-caret" aria-hidden="true"></span></p>
+            </div>
           </div>
-        </div>
-      </article>
-      <article class="integration-card">
-        <div class="integration-card-head">💬 WhatsApp Web</div>
-        <div class="integration-mock">
-          <div class="mock-msg">r u free tmw for coffee?</div>
-          <div class="mock-widget">
-            <div class="w-head"><span class="w-logo">W</span> WriteAI</div>
-            Are you free tomorrow for coffee? Would love to catch up!
+        </article>
+        <article class="integration-card app-gmail">
+          <div class="integration-card-head">
+            <span class="app-badge" aria-hidden="true">
+              <svg class="gmail-mark" viewBox="0 -31.5 256 256" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid">
+                <path d="M58.1818182,192.049515 L58.1818182,93.1404244 L27.5066233,65.0770089 L0,49.5040608 L0,174.59497 C0,184.253152 7.82545455,192.049515 17.4545455,192.049515 L58.1818182,192.049515 Z" fill="#4285F4"/>
+                <path d="M197.818182,192.049515 L238.545455,192.049515 C248.203636,192.049515 256,184.224061 256,174.59497 L256,49.5040608 L224.844415,67.3422767 L197.818182,93.1404244 L197.818182,192.049515 Z" fill="#34A853"/>
+                <polygon fill="#EA4335" points="58.1818182 93.1404244 54.0077618 54.4932827 58.1818182 17.5040608 128 69.8676972 197.818182 17.5040608 202.487488 52.4960089 197.818182 93.1404244 128 145.504061"/>
+                <path d="M197.818182,17.5040608 L197.818182,93.1404244 L256,49.5040608 L256,26.2313335 C256,4.64587897 231.36,-7.65957557 214.109091,5.28587897 L197.818182,17.5040608 Z" fill="#FBBC04"/>
+                <path d="M0,49.5040608 L26.7588051,69.5731646 L58.1818182,93.1404244 L58.1818182,17.5040608 L41.8909091,5.28587897 C24.6109091,-7.65957557 0,4.64587897 0,26.2313335 L0,49.5040608 Z" fill="#C5221F"/>
+              </svg>
+            </span>
+            Gmail
           </div>
-        </div>
-      </article>
-      <article class="integration-card">
-        <div class="integration-card-head">⚡ Slack</div>
-        <div class="integration-mock">
-          <div class="mock-msg">the deploy failed can someone look</div>
-          <div class="mock-widget">
-            <div class="w-head"><span class="w-logo">W</span> WriteAI</div>
-            The deployment has failed — could someone from the team take a look when available? Thanks!
+          <div class="integration-mock">
+            <div class="mock-msg">need the deck by friday for the client call</div>
+            <div class="mock-widget">
+              <div class="w-head"><img class="w-brand-logo" src="/img/Writect-AI-logo.png" alt="Writect AI" height="18"></div>
+              <p class="mock-write"><span class="mock-write-text">Could you share the deck by Friday ahead of the client call? Happy to adjust if the timing is tight.</span><span class="mock-caret" aria-hidden="true"></span></p>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+        <article class="integration-card app-whatsapp">
+          <div class="integration-card-head">
+            <span class="app-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+            </span>
+            WhatsApp Web
+          </div>
+          <div class="integration-mock">
+            <div class="mock-msg">can we move the call to 4?</div>
+            <div class="mock-widget">
+              <div class="w-head"><img class="w-brand-logo" src="/img/Writect-AI-logo-white.png" alt="Writect AI" height="18"></div>
+              <p class="mock-write"><span class="mock-write-text">Would it work if we moved the call to 4:00? Let me know what suits you.</span><span class="mock-caret" aria-hidden="true"></span></p>
+            </div>
+          </div>
+        </article>
+        <article class="integration-card app-slack">
+          <div class="integration-card-head">
+            <span class="app-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.528 2.528 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.528 2.528 0 0 1-2.52-2.523 2.528 2.528 0 0 1 2.52-2.52h6.313A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg>
+            </span>
+            Slack
+          </div>
+          <div class="integration-mock">
+            <div class="mock-msg">build is red again anyone free</div>
+            <div class="mock-widget">
+              <div class="w-head"><img class="w-brand-logo" src="/img/Writect-AI-logo-white.png" alt="Writect AI" height="18"></div>
+              <p class="mock-write"><span class="mock-write-text">The build is failing again — is anyone available to take a look?</span><span class="mock-caret" aria-hidden="true"></span></p>
+            </div>
+          </div>
+        </article>
+        <article class="integration-card app-outlook">
+          <div class="integration-card-head">
+            <span class="app-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3h9A2.5 2.5 0 0 1 16 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 2 18.5v-13zM18 7h2.5A1.5 1.5 0 0 1 22 8.5v7a1.5 1.5 0 0 1-1.5 1.5H18V7zm-9 8.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg>
+            </span>
+            Outlook
+          </div>
+          <div class="integration-mock">
+            <div class="mock-msg">pls confirm if you got my last email thx</div>
+            <div class="mock-widget">
+              <div class="w-head"><img class="w-brand-logo" src="/img/Writect-AI-logo.png" alt="Writect AI" height="18"></div>
+              <p class="mock-write"><span class="mock-write-text">Just checking whether you received my last email — happy to resend if helpful. Thanks!</span><span class="mock-caret" aria-hidden="true"></span></p>
+            </div>
+          </div>
+        </article>
+        <article class="integration-card app-facebook">
+          <div class="integration-card-head">
+            <span class="app-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-7H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.88h-2.34v7A10 10 0 0 0 22 12z"/></svg>
+            </span>
+            Facebook
+          </div>
+          <div class="integration-mock">
+            <div class="mock-msg">great event yesterday everyone should come next time</div>
+            <div class="mock-widget">
+              <div class="w-head"><img class="w-brand-logo" src="/img/Writect-AI-logo-white.png" alt="Writect AI" height="18"></div>
+              <p class="mock-write"><span class="mock-write-text">Yesterday’s event was fantastic — hope to see everyone at the next one!</span><span class="mock-caret" aria-hidden="true"></span></p>
+            </div>
+          </div>
+        </article>
+        <article class="integration-card app-instagram">
+          <div class="integration-card-head">
+            <span class="app-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.9a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+            </span>
+            Instagram
+          </div>
+          <div class="integration-mock">
+            <div class="mock-msg">new drop this friday dont miss it</div>
+            <div class="mock-widget">
+              <div class="w-head"><img class="w-brand-logo" src="/img/Writect-AI-logo-white.png" alt="Writect AI" height="18"></div>
+              <p class="mock-write"><span class="mock-write-text">New drop this Friday — don’t miss it. Link in bio.</span><span class="mock-caret" aria-hidden="true"></span></p>
+            </div>
+          </div>
+        </article>
           </div>
         </div>
         <div class="pin-progress"><div class="pin-progress-fill"></div></div>
@@ -293,87 +571,107 @@
     </div>
   </section>
 
-  <!-- Trust stats -->
-  <section class="trust-stats">
-    <div class="container reveal">
-      <span class="section-label">Trusted globally</span>
-      <h2 class="section-title">Built for individuals & teams</h2>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="num">10K+</div><div class="label">Active users</div></div>
-        <div class="stat-card"><div class="num">4.9★</div><div class="label">Average rating</div></div>
-        <div class="stat-card"><div class="num">500+</div><div class="label">Companies</div></div>
-        <div class="stat-card"><div class="num">&lt;1MB</div><div class="label">Extension size</div></div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Features -->
   <section class="features" id="features">
     <div class="container reveal">
-      <span class="section-label">Features</span>
-      <h2 class="section-title">Packed with everything you need</h2>
-      <p class="section-sub">Extension + web app — one account, all your writing tools.</p>
+      <span class="section-label">Tools</span>
+      <h2 class="section-title">Everything in one Writect account</h2>
+      <p class="section-sub">Tap a tool to try it instantly — no new tab, no copy-paste maze. Same account for extension and web app.</p>
       <div class="features-grid">
-        <article class="feature-card"><div class="feature-icon">✏️</div><h3>Fix grammar</h3><p>One-click polish for typos, punctuation, and awkward phrasing.</p></article>
-        <article class="feature-card"><div class="feature-icon">🌐</div><h3>Translate</h3><p>Any language, any page — select text and translate in context.</p></article>
-        <article class="feature-card"><div class="feature-icon">🔄</div><h3>Rephrase</h3><p>Adjust tone from casual to professional without losing meaning.</p></article>
-        <article class="feature-card"><div class="feature-icon">📋</div><h3>Summarize</h3><p>Turn long content into concise, actionable bullet points.</p></article>
-        <article class="feature-card"><div class="feature-icon">💡</div><h3>Explain</h3><p>Plain-language explanations for complex text you select.</p></article>
-        <article class="feature-card"><div class="feature-icon">💬</div><h3>Web chat</h3><p>Draft emails, posts, and ideas in a full chat workspace.</p></article>
-        <article class="feature-card"><div class="feature-icon">🖱️</div><h3>Right-click menu</h3><p>Quick actions from any selection — no toolbar needed.</p></article>
-        <article class="feature-card"><div class="feature-icon">⌨️</div><h3>Keyboard shortcut</h3><p>Select text and transform it without leaving the page.</p></article>
-        <article class="feature-card"><div class="feature-icon">🔒</div><h3>Private & secure</h3><p>Your data is encrypted in transit and never used for training.</p></article>
+        <button type="button" class="feature-card" data-tool="fix">
+          <span class="feature-icon fi-fix" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
+          <h3>Fix grammar</h3>
+          <p>Correct spelling, punctuation, and small wording issues in one pass.</p>
+          <span class="feature-try">Try it →</span>
+        </button>
+        <button type="button" class="feature-card" data-tool="translate">
+          <span class="feature-icon fi-translate" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20"/><path d="M12 2a15 15 0 0 0 0 20"/></svg></span>
+          <h3>Translate</h3>
+          <p>Convert selected text to another language without leaving the page.</p>
+          <span class="feature-try">Try it →</span>
+        </button>
+        <button type="button" class="feature-card" data-tool="rephrase">
+          <span class="feature-icon fi-rephrase" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
+          <h3>Rephrase</h3>
+          <p>Rewrite for clarity or a more professional tone while keeping the meaning.</p>
+          <span class="feature-try">Try it →</span>
+        </button>
+        <button type="button" class="feature-card" data-tool="summarize">
+          <span class="feature-icon fi-summarize" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></span>
+          <h3>Summarize</h3>
+          <p>Compress long messages into short paragraphs you can act on.</p>
+          <span class="feature-try">Try it →</span>
+        </button>
+        <button type="button" class="feature-card" data-tool="explain">
+          <span class="feature-icon fi-explain" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+          <h3>Explain</h3>
+          <p>Get a plain-language reading of dense or technical text.</p>
+          <span class="feature-try">Try it →</span>
+        </button>
+        <button type="button" class="feature-card" data-tool="chat">
+          <span class="feature-icon fi-chat" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+          <h3>Web chat</h3>
+          <p>Draft emails, posts, and outlines in a full chat workspace.</p>
+          <span class="feature-try">Open workspace →</span>
+        </button>
+        <button type="button" class="feature-card" data-tool="page">
+          <span class="feature-icon fi-page" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M14 8h4"/><path d="M14 12h4"/><path d="M14 16h3"/></svg></span>
+          <h3>Page Assistant</h3>
+          <p>Chrome side panel to summarize pages, ask questions, and switch models.</p>
+          <span class="feature-try">See how →</span>
+        </button>
+        <button type="button" class="feature-card" data-tool="menu">
+          <span class="feature-icon fi-menu" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h12"/><circle cx="19" cy="18" r="2"/></svg></span>
+          <h3>Right-click menu</h3>
+          <p>Run actions from the context menu when you prefer not to use the toolbar.</p>
+          <span class="feature-try">See how →</span>
+        </button>
+        <button type="button" class="feature-card" data-tool="replace">
+          <span class="feature-icon fi-replace" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h12"/><path d="M4 12h16"/><path d="M4 17h10"/><path d="M18 15l3 3-3 3"/></svg></span>
+          <h3>Replace in place</h3>
+          <p>Swap the selection with the improved text when you are editing a field.</p>
+          <span class="feature-try">See how →</span>
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- How it works -->
-  <section class="how">
-    <div class="container reveal">
-      <span class="section-label">How it works</span>
-      <h2 class="section-title">Get started in 3 steps</h2>
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><h3>Install extension</h3><p>Add WriteAI to Chrome in one click. Sign in with Google.</p></div>
-        <div class="step"><div class="step-num">2</div><h3>Select any text</h3><p>Highlight text on Gmail, LinkedIn, Docs, or any website.</p></div>
-        <div class="step"><div class="step-num">3</div><h3>Transform instantly</h3><p>Fix, translate, rephrase — copy or replace in place.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials -->
   <section class="testimonials" id="testimonials">
     <div class="container reveal">
-      <span class="section-label">Testimonials</span>
-      <h2 class="section-title">Loved by writers everywhere</h2>
+      <span class="section-label">Feedback</span>
+      <h2 class="section-title">What early users tell us</h2>
     </div>
-    <div class="pin" data-pin>
+    <div class="pin" data-pin data-pin-fill="lg">
       <div class="pin-sticky">
+        <div class="carousel-nav" aria-label="Carousel">
+          <button type="button" class="carousel-btn carousel-prev" aria-label="Previous">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button type="button" class="carousel-btn carousel-next" aria-label="Next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
         <div class="pin-viewport hscroll">
           <div class="testimonial-scroll pin-track">
       <article class="testimonial-card">
         <div class="testimonial-stars">★★★★★</div>
-        <blockquote>"WriteAI saves me at least an hour a day on emails. The grammar fix is scary good — and it works right inside Gmail."</blockquote>
-        <div class="testimonial-author"><div class="av">L</div><div><div class="name">Lara M.</div><div class="role">Marketing Manager</div></div></div>
+        <blockquote>"I keep Writect for Gmail cleanup. Fix and rephrase are enough for most of my outbound mail."</blockquote>
+        <div class="testimonial-author"><div class="av">N</div><div><div class="name">Nadia F.</div><div class="role">Account executive</div></div></div>
       </article>
       <article class="testimonial-card">
         <div class="testimonial-stars">★★★★★</div>
-        <blockquote>"I write in both French and English. The translate feature is reliable and fast — no more copying into Google Translate."</blockquote>
-        <div class="testimonial-author"><div class="av">B</div><div><div class="name">Benoit R.</div><div class="role">Consultant</div></div></div>
+        <blockquote>"Translate from the toolbar is faster than bouncing between tabs when I reply to bilingual threads."</blockquote>
+        <div class="testimonial-author"><div class="av">K</div><div><div class="name">Karim H.</div><div class="role">Support lead</div></div></div>
       </article>
       <article class="testimonial-card">
         <div class="testimonial-stars">★★★★★</div>
-        <blockquote>"As a student, the summarize and explain tools are game-changers for research papers. The free tier is generous too."</blockquote>
-        <div class="testimonial-author"><div class="av">J</div><div><div class="name">Joshua K.</div><div class="role">Graduate Student</div></div></div>
+        <blockquote>"I draft longer posts in the web app, then use the extension for last-pass edits on LinkedIn."</blockquote>
+        <div class="testimonial-author"><div class="av">E</div><div><div class="name">Elena V.</div><div class="role">Freelance writer</div></div></div>
       </article>
       <article class="testimonial-card">
         <div class="testimonial-stars">★★★★★</div>
-        <blockquote>"No need to visit multiple sites for rephrasing or spell-checking. Very efficient — I upgraded to Pro within a week."</blockquote>
-        <div class="testimonial-author"><div class="av">R</div><div><div class="name">Rana S.</div><div class="role">Operations Lead</div></div></div>
-      </article>
-      <article class="testimonial-card">
-        <div class="testimonial-stars">★★★★★</div>
-        <blockquote>"The web app chat is perfect for drafting LinkedIn posts. Extension for quick fixes, app for longer writing — brilliant combo."</blockquote>
-        <div class="testimonial-author"><div class="av">S</div><div><div class="name">Sam T.</div><div class="role">Content Creator</div></div></div>
+        <blockquote>"Summarize helps me skim long Slack threads before standup. Free tier covered me until I needed Pro."</blockquote>
+        <div class="testimonial-author"><div class="av">D</div><div><div class="name">Devon P.</div><div class="role">Engineering manager</div></div></div>
       </article>
           </div>
         </div>
@@ -382,87 +680,186 @@
     </div>
   </section>
 
-  <!-- Pricing -->
   <section class="pricing" id="pricing">
     <div class="container reveal">
-      <span class="section-label">Pricing</span>
-      <h2 class="section-title">Simple, honest pricing</h2>
-      <p class="section-sub">Start free. Upgrade when you need unlimited actions.</p>
+      <div class="pricing-head">
+        <span class="section-label">Pricing</span>
+        <h2 class="section-title">Write better with a plan that&nbsp;fits</h2>
+        <p class="section-sub">Start free. Upgrade when you need every model and higher limits.</p>
+      </div>
       <div class="pricing-grid">
-        <div class="price-card">
-          <h3>Free</h3>
-          <div class="amount">$0 <small>/ month</small></div>
-          <ul>
-            <li>50 AI actions per month</li>
-            <li>All writing tools</li>
-            <li>Chrome extension</li>
-            <li>Web app access</li>
+        <article class="price-card price-card--free">
+          <div class="price-card-top">
+            <h3>Free</h3>
+            <p class="price-audience">For getting started</p>
+          </div>
+          <div class="price-amount-row">
+            <span class="price-currency">$</span>
+            <span class="price-amount">0</span>
+            <span class="price-meta">
+              <span class="price-unit">USD</span>
+              <span class="price-period">/ month</span>
+            </span>
+          </div>
+          <p class="price-note">Free forever · No credit card required.</p>
+          <a href="/login" class="btn btn-secondary price-cta">Create account</a>
+          <ul class="price-features">
+            <li>10 AI actions/day · 300/month</li>
+            <li>Fast AI models</li>
+            <li>Basic writing &amp; rewriting</li>
+            <li>Short &amp; medium replies</li>
+            <li>Chrome Extension + Web App</li>
+            <li>Selection tools on any page</li>
+            <li>Limited Page Assistant</li>
           </ul>
-          <a href="/login" class="btn btn-secondary" style="width:100%">Get started free</a>
-        </div>
-        <div class="price-card featured">
-          <h3>Pro</h3>
-          <div class="amount">$7 <small>/ month</small></div>
-          <ul>
-            <li>Unlimited AI actions</li>
-            <li>Priority AI models</li>
-            <li>Extension + web app</li>
-            <li>Cancel anytime</li>
+        </article>
+        <article class="price-card price-card--pro">
+          <span class="price-badge">Most popular</span>
+          <div class="price-card-top">
+            <h3>Pro</h3>
+            <p class="price-audience">For daily writing</p>
+          </div>
+          <div class="price-amount-row">
+            <span class="price-currency">$</span>
+            <span class="price-amount">9.99</span>
+            <span class="price-meta">
+              <span class="price-unit">USD</span>
+              <span class="price-period">/ month</span>
+            </span>
+          </div>
+          <p class="price-note">Cancel anytime · billed monthly</p>
+          <a href="/login" class="btn btn-primary price-cta">Get started</a>
+          <ul class="price-features">
+            <li>3,000 AI actions/month · 150/day</li>
+            <li>All AI models</li>
+            <li>Advanced writing &amp; rewriting</li>
+            <li>Longer AI responses</li>
+            <li>Chrome Extension + Web App</li>
+            <li>Selection tools</li>
+            <li>Full Page Assistant</li>
           </ul>
-          <a href="/login" class="btn btn-primary" style="width:100%">Upgrade to Pro</a>
-        </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- Final CTA -->
-  <section class="cta-band reveal">
-    <h2>Ready to write smarter?</h2>
-    <p>Join WriteAI free — no credit card required.</p>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-primary" data-install-ext type="button">Install free extension →</button>
-      <a href="/login" class="btn btn-secondary" style="background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.2)">Open web app</a>
+  <section class="faq-section" id="faq">
+    <div class="container reveal">
+      <span class="section-label">FAQs</span>
+      <h2 class="section-title">Questions, answered</h2>
+      <p class="section-sub">Everything you need to know before you install.</p>
+      <div class="pricing-faqs">
+        <details class="pricing-faq">
+          <summary>Is Writect free to use?</summary>
+          <p>Yes. Free includes the Chrome Extension, web app, selection tools, 10 AI actions per day (300 per month max), and Limited Page Assistant. Pro is $9.99/month with 3,000 AI actions/month (150/day) and Full Page Assistant.</p>
+        </details>
+        <details class="pricing-faq">
+          <summary>What counts as an AI action?</summary>
+          <p>Most tools use 1 AI action. Long writing uses 2. Page Assistant uses 3. Very large pages or requests use 5. Limits reset daily and monthly (UTC).</p>
+        </details>
+        <details class="pricing-faq">
+          <summary>How do I cancel Pro?</summary>
+          <p>Open the web app → Settings → Manage billing. You can cancel anytime; access continues until the end of the billing period.</p>
+        </details>
+        <details class="pricing-faq">
+          <summary>Where can I use Writect?</summary>
+          <p>On Chromium browsers (Chrome, Edge, and similar) — highlight text on Gmail, Docs, LinkedIn, WhatsApp Web, and more, or use Page Assistant from the side panel.</p>
+        </details>
+      </div>
     </div>
   </section>
 
-  <!-- Footer -->
+  <section class="cta-lamp" id="cta-lamp" aria-label="Install Writect">
+    <div class="cta-lamp-stage">
+      <div class="cta-lamp-fixture" aria-hidden="true">
+        <div class="cta-lamp-housing">
+          <span class="cta-lamp-slot"></span>
+        </div>
+        <div class="cta-lamp-bar"></div>
+        <div class="cta-lamp-flare"></div>
+        <div class="cta-lamp-beam"></div>
+        <div class="cta-lamp-wash"></div>
+        <div class="cta-lamp-motes">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+      <div class="cta-lamp-content">
+        <p class="cta-lamp-kicker">Ready when you are</p>
+        <h2>One account.<br>Every page you write on.</h2>
+        <p class="cta-lamp-sub">Highlight text in Gmail, WhatsApp, Outlook, and more — fix it on the spot. Free to start.</p>
+        <button class="btn btn-chrome btn-chrome-on-dark" data-install-ext type="button">
+          <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+          Install Free Chrome Extension
+        </button>
+      </div>
+    </div>
+  </section>
+
   <footer class="landing-footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="/" class="logo"><span class="logo-mark">W</span>WriteAI</a>
-          <p>Your personal AI writing assistant. Fix, translate, rephrase, and chat — on any website.</p>
-          <button class="btn btn-chrome" data-install-ext type="button" style="margin-top:16px">Install extension</button>
+          <a href="/" class="logo logo--footer" aria-label="Writect AI">
+            <img class="logo-img" src="/img/Writect-AI-logo-white.png" alt="Writect AI" width="160" height="36">
+          </a>
+          <p>In-page writing tools plus a web chat workspace — fix, translate, rephrase, summarize, and draft.</p>
+          <button class="btn btn-chrome" data-install-ext type="button" style="margin-top:16px">
+            <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+            Install Free Chrome Extension
+          </button>
         </div>
         <div class="footer-col">
           <h4>Product</h4>
-          <a href="#features">Features</a>
+          <a href="#features">Tools</a>
           <a href="#pricing">Pricing</a>
-          <a href="#demos">Demos</a>
+          <a href="#demos">Examples</a>
           <a href="/app">Web app</a>
         </div>
         <div class="footer-col">
           <h4>Account</h4>
           <a href="/login">Sign in</a>
-          <a href="/login">Sign up free</a>
-          <a href="/app">Dashboard</a>
+          <a href="/login">Create account</a>
+          <a href="/contact">Contact / Support</a>
         </div>
         <div class="footer-col">
-          <h4>Company</h4>
-          <a href="#testimonials">Reviews</a>
-          <a href="#integrations">Integrations</a>
+          <h4>Legal</h4>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/cookies">Cookie Policy</a>
+          <a href="/contact">Contact / Support</a>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2026 WriteAI. All rights reserved.</span>
+        <span>© 2026 Writect. All rights reserved.</span>
         <div class="footer-badges">
           <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Encrypted in transit</span>
-          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Not used for AI training</span>
-          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Private & secure</span>
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>We don’t train our own models on your writing</span>
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Secure Google sign-in</span>
         </div>
       </div>
     </div>
   </footer>
+
+
+  <div class="tool-modal" id="tool-modal" hidden>
+    <div class="tool-modal-backdrop" data-close-modal></div>
+    <div class="tool-modal-panel" role="dialog" aria-modal="true" aria-labelledby="tool-modal-title">
+      <header class="tool-modal-head">
+        <div>
+          <p class="tool-modal-kicker">Try Writect</p>
+          <h3 id="tool-modal-title">Fix grammar</h3>
+        </div>
+        <button type="button" class="tool-modal-close" data-close-modal aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </header>
+      <div class="tool-modal-body" id="tool-modal-body"></div>
+      <footer class="tool-modal-foot">
+        <button type="button" class="btn btn-secondary" data-close-modal>Close</button>
+        <a href="/login" class="btn btn-primary">Continue in app</a>
+      </footer>
+    </div>
+  </div>
 
   <div id="toast" class="toast"></div>
   <script src="/js/config.js"></script>

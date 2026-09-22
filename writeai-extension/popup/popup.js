@@ -1,4 +1,5 @@
 const $ = (id) => document.getElementById(id);
+const WEB_APP = 'https://writeai.wr-demo.com/app';
 
 const signedOut = $('signed-out');
 const signedIn = $('signed-in');
@@ -34,7 +35,6 @@ function showSignedIn(user) {
   const isPro = user.plan === 'pro';
   const hasBilling = !!user.has_billing;
 
-  // Avatar
   const avatar = $('avatar');
   const fallback = $('avatar-fallback');
   fallback.textContent = initialsFrom(user);
@@ -55,42 +55,57 @@ function showSignedIn(user) {
   $('email').textContent = user.email;
 
   const badge = $('plan-badge');
-  badge.textContent = isPro ? '✦ Pro' : 'Free';
+  badge.textContent = isPro ? 'Pro' : 'Free';
   badge.className = `plan-badge ${isPro ? 'plan-pro' : 'plan-free'}`;
 
-  const usageCard = $('usage-card');
-  const usageText = $('usage-text');
-  const usageBar = $('usage-bar');
-  const usageFill = $('usage-fill');
-  const usagePct = $('usage-pct');
-  const proPerks = $('pro-perks');
+  const usagePanel = $('usage-panel');
+  const proStatus = $('pro-status');
+  const usage = user.usage || {};
+  const count = usage.count || 0;
+  const limit = usage.limit;
+  const remaining = usage.remaining != null
+    ? usage.remaining
+    : (limit != null ? Math.max(0, limit - count) : null);
+  const dailyCount = usage.daily_count || 0;
+  const dailyLimit = usage.daily_limit;
 
-  if (isPro) {
-    usageCard.classList.add('is-pro');
-    usageText.textContent = 'Unlimited';
-    usageBar.classList.add('hidden');
-    usagePct.textContent = '';
-    proPerks.classList.remove('hidden');
+  proStatus.classList.add('hidden');
+
+  if (limit == null && dailyLimit == null) {
+    usagePanel.classList.add('hidden');
+    proStatus.textContent = isPro ? 'Pro account · all tools & models' : 'Free account';
+    proStatus.classList.remove('hidden');
   } else {
-    usageCard.classList.remove('is-pro');
-    proPerks.classList.add('hidden');
-    const { count, limit } = user.usage || { count: 0, limit: 20 };
-    const pct = limit ? Math.round((count / limit) * 100) : 0;
-    usageText.textContent = `${count} / ${limit} actions`;
-    usagePct.textContent = `${pct}%`;
-    usageBar.classList.remove('hidden');
-    usageFill.style.width = `${Math.min(100, pct)}%`;
-    usageFill.classList.toggle('is-warning', pct >= 80);
+    usagePanel.classList.remove('hidden');
+    if (limit != null) {
+      $('actions-used').textContent = `${count.toLocaleString()} / ${limit.toLocaleString()} used`;
+      const pct = Math.min(100, Math.round((count / Math.max(limit, 1)) * 100));
+      const fill = $('actions-fill');
+      fill.style.width = `${pct}%`;
+      fill.classList.toggle('is-warning', pct >= 80);
+      $('actions-remaining').textContent = `${(remaining || 0).toLocaleString()} remaining`;
+    } else {
+      $('actions-used').textContent = `${count.toLocaleString()} used`;
+      $('actions-fill').style.width = '0%';
+      $('actions-remaining').textContent = '';
+    }
+    $('daily-used').textContent = dailyLimit != null
+      ? `${dailyCount.toLocaleString()} / ${dailyLimit.toLocaleString()} actions`
+      : `${dailyCount.toLocaleString()} actions`;
+    const resetEl = $('usage-reset');
+    if (usage.resets_at) {
+      const d = new Date(`${usage.resets_at}T00:00:00Z`);
+      resetEl.textContent = `Daily: 00:00 UTC · Monthly: ${d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })}`;
+    } else {
+      resetEl.textContent = 'Daily: 00:00 UTC';
+    }
   }
 
-  // Billing buttons — only show what's relevant
   const billingSection = $('billing-section');
   const upgradeBtn = $('upgrade-btn');
   const manageBtn = $('manage-btn');
 
   if (isPro) {
-    // Pro via admin: no billing buttons at all
-    // Pro via Stripe: show manage only
     if (hasBilling) {
       billingSection.classList.remove('hidden');
       upgradeBtn.classList.add('hidden');
@@ -99,7 +114,6 @@ function showSignedIn(user) {
       billingSection.classList.add('hidden');
     }
   } else {
-    // Free user: show upgrade (Stripe may or may not be configured)
     billingSection.classList.remove('hidden');
     upgradeBtn.classList.remove('hidden');
     manageBtn.classList.add('hidden');
@@ -125,10 +139,33 @@ $('sign-in-btn').addEventListener('click', () => {
   window.close();
 });
 
+$('email-sign-in-btn')?.addEventListener('click', () => {
+  chrome.runtime.sendMessage({ type: 'OPEN_LOGIN_PAGE' });
+  window.close();
+});
+
 $('sign-out-btn').addEventListener('click', async () => {
   await chrome.runtime.sendMessage({ type: 'SIGN_OUT' });
   showSignedOut();
   showToast('Signed out');
+});
+
+$('open-app-btn').addEventListener('click', () => {
+  chrome.tabs.create({ url: WEB_APP });
+  window.close();
+});
+
+$('open-sidepanel-btn')?.addEventListener('click', async () => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const res = await chrome.runtime.sendMessage({
+    type: 'OPEN_SIDE_PANEL',
+    tabId: tab?.id
+  }).catch(() => null);
+  if (!res?.ok) {
+    showToast(res?.error || 'Could not open Page Assistant', true);
+    return;
+  }
+  window.close();
 });
 
 $('upgrade-btn').addEventListener('click', async () => {
@@ -141,7 +178,7 @@ $('upgrade-btn').addEventListener('click', async () => {
       window.close();
     } else {
       showToast(
-        res?.message || 'Billing is not configured yet. Contact support or ask your admin to enable Stripe.',
+        res?.message || 'Billing is not configured yet. Contact support.',
         true
       );
     }
@@ -167,6 +204,20 @@ $('manage-btn').addEventListener('click', async () => {
   } finally {
     btn.disabled = false;
   }
+});
+
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg?.type !== 'USAGE_UPDATED' || !msg.usage) return;
+  chrome.runtime.sendMessage({ type: 'GET_USER' }).then((res) => {
+    if (res?.user) showSignedIn({ ...res.user, usage: msg.usage });
+  }).catch(() => {});
+});
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'local' || !changes.usage?.newValue) return;
+  chrome.runtime.sendMessage({ type: 'GET_USER' }).then((res) => {
+    if (res?.user) showSignedIn({ ...res.user, usage: changes.usage.newValue });
+  }).catch(() => {});
 });
 
 async function init() {

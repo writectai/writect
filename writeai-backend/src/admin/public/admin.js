@@ -6,6 +6,7 @@ let token = localStorage.getItem(TOKEN_KEY) || '';
 let usersPage = 1;
 let usagePage = 1;
 let auditPage = 1;
+let feedbackPage = 1;
 let currentTab = 'overview';
 let chartInstances = {};
 
@@ -16,14 +17,20 @@ const PAGE_META = {
   users: { title: 'Users', subtitle: 'Manage accounts, plans, and access' },
   subscriptions: { title: 'Subscriptions', subtitle: 'Stripe billing overview' },
   usage: { title: 'Usage Logs', subtitle: 'AI action history and token usage' },
+  feedback: { title: 'Feedback', subtitle: 'Extension uninstall reasons and notes' },
   models: { title: 'AI Config', subtitle: 'Models, providers, and plan limits' },
   system: { title: 'System', subtitle: 'Health checks and extension announcements' },
   account: { title: 'Admin Settings', subtitle: 'Your profile and account security' }
 };
 
-const VALID_TABS = ['overview', 'analytics', 'activity', 'users', 'subscriptions', 'usage', 'models', 'system', 'account'];
+const VALID_TABS = ['overview', 'analytics', 'activity', 'users', 'subscriptions', 'usage', 'feedback', 'models', 'system', 'account'];
 
-const CHART_COLORS = ['#7c3aed', '#6366f1', '#0891b2', '#059669', '#d97706', '#db2777', '#4f46e5', '#0d9488'];
+const CHART_COLORS = ['#F21862', '#6B0FB3', '#0891b2', '#059669', '#d97706', '#db2777', '#4f46e5', '#0d9488'];
+
+function formatNum(n) {
+  const num = Number(n) || 0;
+  return num.toLocaleString('en-US');
+}
 
 function destroyChart(id) {
   if (chartInstances[id]) {
@@ -40,7 +47,7 @@ function chartGridColor() {
   return document.documentElement.dataset.theme === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
 }
 
-function renderSparklineSvg(rows, color = '#6366f1') {
+function renderSparklineSvg(rows, color = '#6B0FB3') {
   if (!rows.length) return '';
   const values = rows.map((r) => r.count);
   const max = Math.max(...values, 1);
@@ -74,7 +81,7 @@ function renderLineChart(canvasId, labels, values, label = 'Actions') {
       datasets: [{
         label,
         data: values,
-        borderColor: '#6366f1',
+        borderColor: '#6B0FB3',
         backgroundColor: 'rgba(99, 102, 241, 0.12)',
         fill: true,
         tension: 0.35,
@@ -359,11 +366,23 @@ function renderBarChart(containerId, rows, labelKey, valueKey) {
     const pct = Math.round((r[valueKey] / max) * 100);
     const label = r[labelKey] || 'unknown';
     const val = typeof r[valueKey] === 'number' && r[valueKey] < 1 && r[valueKey] > 0
-      ? r[valueKey].toFixed(4) : r[valueKey];
+      ? r[valueKey].toFixed(4)
+      : formatNum(r[valueKey]);
+    const tokenTotal = r.tokens != null
+      ? Number(r.tokens)
+      : ((r.input_tokens != null || r.output_tokens != null)
+        ? (Number(r.input_tokens) || 0) + (Number(r.output_tokens) || 0)
+        : null);
+    const tokensHtml = tokenTotal != null
+      ? `<span class="bar-tokens">${formatNum(tokenTotal)} tok total</span>`
+      : '';
     return `<div class="bar-row">
       <div class="bar-label" title="${label}">${label}</div>
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-      <div class="bar-value">${val}</div>
+      <div class="bar-value">
+        <span class="bar-count">${val} actions</span>
+        ${tokensHtml}
+      </div>
     </div>`;
   }).join('')}</div>`;
 }
@@ -417,27 +436,27 @@ async function loadOverview() {
   const spark = renderSparklineSvg(charts.sparkline_7d || []);
 
   document.getElementById('stats-grid').innerHTML = `
-    <div class="stat-card" style="--accent-color: linear-gradient(90deg,#6366f1,#818cf8)">
+    <div class="stat-card" style="--accent-color: linear-gradient(90deg,#6B0FB3,#818cf8)">
       <div class="stat-top"><span class="stat-label">Total Users</span><div class="stat-icon">👥</div></div>
       <div class="stat-value">${s.total}</div>
       <div class="stat-meta">${data.new_users_7d} new this week</div>
       ${spark}
     </div>
-    <div class="stat-card" style="--accent-color: linear-gradient(90deg,#7c3aed,#a78bfa)">
+    <div class="stat-card" style="--accent-color: linear-gradient(90deg,#F21862,#D20A72)">
       <div class="stat-top"><span class="stat-label">Pro Users</span><div class="stat-icon">⭐</div></div>
       <div class="stat-value">${s.pro}</div>
       <div class="stat-meta">${s.total ? Math.round((s.pro / s.total) * 100) : 0}% conversion</div>
     </div>
-    <div class="stat-card" style="--accent-color: linear-gradient(90deg,#0891b2,#22d3ee)">
-      <div class="stat-top"><span class="stat-label">Free Users</span><div class="stat-icon">🆓</div></div>
-      <div class="stat-value">${s.free}</div>
-      <div class="stat-meta">${s.active} active accounts</div>
-    </div>
     <div class="stat-card" style="--accent-color: linear-gradient(90deg,#059669,#34d399)">
-      <div class="stat-top"><span class="stat-label">Actions</span><div class="stat-icon">⚡</div></div>
-      <div class="stat-value">${u.total_actions}</div>
-      <div class="stat-meta">${u.month} · this month</div>
+      <div class="stat-top"><span class="stat-label">AI Actions</span><div class="stat-icon">⚡</div></div>
+      <div class="stat-value">${formatNum(u.total_actions)}</div>
+      <div class="stat-meta">${u.month} · billed ${formatNum(u.billed_actions || u.total_actions)}</div>
       <div class="stat-trend ${trend.dir}">${trend.text}</div>
+    </div>
+    <div class="stat-card" style="--accent-color: linear-gradient(90deg,#d97706,#fbbf24)">
+      <div class="stat-top"><span class="stat-label">Tokens</span><div class="stat-icon">🔢</div></div>
+      <div class="stat-value">${formatNum(u.total_tokens || 0)}</div>
+      <div class="stat-meta">${formatNum(u.input_tokens || 0)} in · ${formatNum(u.output_tokens || 0)} out</div>
     </div>
   `;
 
@@ -463,14 +482,14 @@ async function loadAnalytics() {
     <div class="stat-card" style="--accent-color: linear-gradient(90deg,#059669,#34d399)">
       <div class="stat-top"><span class="stat-label">Est. MRR</span><div class="stat-icon">💰</div></div>
       <div class="stat-value">$${data.mrr_usd}</div>
-      <div class="stat-meta">${data.users.pro} pro × $7/mo</div>
+      <div class="stat-meta">${data.users.pro} pro × $9.99/mo</div>
     </div>
     <div class="stat-card" style="--accent-color: linear-gradient(90deg,#d97706,#fbbf24)">
       <div class="stat-top"><span class="stat-label">Est. AI Cost</span><div class="stat-icon">🤖</div></div>
       <div class="stat-value">$${data.estimated_ai_cost_usd}</div>
       <div class="stat-meta">${data.usage.total_actions} actions · ${days}d</div>
     </div>
-    <div class="stat-card" style="--accent-color: linear-gradient(90deg,#6366f1,#818cf8)">
+    <div class="stat-card" style="--accent-color: linear-gradient(90deg,#6B0FB3,#818cf8)">
       <div class="stat-top"><span class="stat-label">Margin Est.</span><div class="stat-icon">📈</div></div>
       <div class="stat-value">$${data.margin_estimate_usd}</div>
       <div class="stat-meta">${data.conversion_rate}% conversion · ${data.avg_actions_per_user} avg/user</div>
@@ -481,7 +500,7 @@ async function loadAnalytics() {
     'revenue-cost-chart',
     ['MRR', 'AI Cost', 'Margin'],
     [data.mrr_usd, data.estimated_ai_cost_usd, Math.max(0, data.margin_estimate_usd)],
-    ['#22c55e', '#f59e0b', '#6366f1']
+    ['#22c55e', '#f59e0b', '#6B0FB3']
   );
 
   renderBarChart('cost-by-model', data.cost_by_model, 'model', 'estimated_cost_usd');
@@ -638,7 +657,8 @@ async function loadUsers(page = 1) {
       </div>`
     },
     { label: 'Plan', render: (r) => `<span class="badge badge-${r.plan}">${r.plan}</span>` },
-    { label: 'Actions', render: (r) => r.actions_this_month },
+    { label: 'Actions', render: (r) => formatNum(r.actions_this_month) },
+    { label: 'Tokens (month)', render: (r) => formatNum(r.tokens_this_month || 0) },
     { label: 'Status', render: (r) => `<span class="badge ${r.is_active ? 'badge-active' : 'badge-inactive'}">${r.is_active ? 'Active' : 'Disabled'}</span>` },
     { label: 'Joined', render: (r) => new Date(r.created_at).toLocaleDateString() },
     {
@@ -701,12 +721,88 @@ async function loadUsage(page = 1) {
   renderTable('usage-table', [
     { label: 'User', render: (r) => r.email || r.user_id },
     { label: 'Action', render: (r) => r.action.replace(/_/g, ' ') },
+    { label: 'Cost', render: (r) => r.action_cost ?? 1 },
     { label: 'Model', render: (r) => r.model || '—' },
-    { label: 'Tokens', render: (r) => `${r.input_tokens || 0} / ${r.output_tokens || 0}` },
+    { label: 'Tokens (in / out)', render: (r) => `${r.input_tokens || 0} / ${r.output_tokens || 0}` },
     { label: 'Time', render: (r) => new Date(r.created_at).toLocaleString() }
   ], data.usage, 'No usage logs for this month');
 
   renderPagination('usage-pagination', data.pagination, loadUsage);
+}
+
+async function loadFeedback(page = 1) {
+  feedbackPage = page;
+  const search = document.getElementById('feedback-search')?.value.trim() || '';
+  const reason = document.getElementById('feedback-reason')?.value || '';
+  const params = new URLSearchParams({ page, limit: 50 });
+  if (search) params.set('search', search);
+  if (reason) params.set('reason', reason);
+
+  const data = await api(`/feedback/uninstall?${params}`);
+
+  const breakdownEl = document.getElementById('feedback-breakdown');
+  if (breakdownEl) {
+    const total = data.pagination?.total || 0;
+    const chips = (data.breakdown || []).map((b) =>
+      `<span class="feedback-chip"><strong>${formatNum(b.count)}</strong> ${escapeHtml(b.label)}</span>`
+    ).join('');
+    breakdownEl.innerHTML = total
+      ? `<div class="feedback-breakdown-inner"><span class="feedback-total">${formatNum(total)} responses</span>${chips}</div>`
+      : '<div class="feedback-breakdown-inner muted">No uninstall feedback yet</div>';
+  }
+
+  renderTable('feedback-table', [
+    {
+      label: 'Reason',
+      render: (r) => `<span class="badge badge-feedback">${escapeHtml(r.reason_label || r.reason)}</span>`
+    },
+    {
+      label: 'Note',
+      render: (r) => r.notes
+        ? `<span class="feedback-note">${escapeHtml(r.notes)}</span>`
+        : '<span class="muted">—</span>'
+    },
+    {
+      label: 'Source',
+      render: (r) => escapeHtml((r.source || 'extension_uninstall').replace(/_/g, ' '))
+    },
+    {
+      label: 'When',
+      render: (r) => new Date(r.created_at).toLocaleString()
+    },
+    {
+      label: 'Actions',
+      render: (r) => `<button type="button" class="btn btn-sm btn-danger" data-feedback-delete="${r.id}">Delete</button>`
+    }
+  ], data.feedback, 'No uninstall feedback yet');
+
+  document.querySelectorAll('[data-feedback-delete]').forEach((btn) => {
+    btn.onclick = () => deleteFeedback(btn.dataset.feedbackDelete);
+  });
+
+  renderPagination('feedback-pagination', data.pagination, loadFeedback);
+}
+
+async function deleteFeedback(id) {
+  const ok = await confirmDialog({
+    title: 'Delete feedback?',
+    message: 'This uninstall response will be permanently removed.',
+    confirmText: 'Delete',
+    cancelText: 'Keep',
+    variant: 'danger'
+  });
+  if (!ok) return;
+  await api(`/feedback/uninstall/${id}`, { method: 'DELETE' });
+  showToast('Feedback deleted');
+  await loadFeedback(feedbackPage);
+}
+
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 let customModels = [];
@@ -802,7 +898,10 @@ async function loadSettings() {
   populateModelSelects(allModels, models.primary, models.fallback);
   document.getElementById('setting-gpt-enabled').checked = models.gpt_enabled;
   document.getElementById('setting-gemini-enabled').checked = models.gemini_enabled;
-  document.getElementById('setting-free-limit').value = limits.free_monthly_actions;
+  document.getElementById('setting-free-limit').value = limits.free_monthly_actions ?? 300;
+  document.getElementById('setting-free-daily').value = limits.free_daily_actions ?? 10;
+  document.getElementById('setting-pro-limit').value = limits.pro_monthly_actions ?? 3000;
+  document.getElementById('setting-pro-daily').value = limits.pro_daily_actions ?? 150;
 
   document.getElementById('openai-key-hint').textContent = keys.openai.configured
     ? `(saved ${keys.openai.hint})` : '';
@@ -837,11 +936,30 @@ async function saveModels(e) {
 
 async function saveLimits(e) {
   e.preventDefault();
+  const freeMonthly = parseInt(document.getElementById('setting-free-limit').value, 10);
+  const freeDaily = parseInt(document.getElementById('setting-free-daily').value, 10);
+  const proMonthly = parseInt(document.getElementById('setting-pro-limit').value, 10);
+  const proDaily = parseInt(document.getElementById('setting-pro-daily').value, 10);
+  const fields = [
+    ['Free monthly', freeMonthly],
+    ['Free daily', freeDaily],
+    ['Pro monthly', proMonthly],
+    ['Pro daily', proDaily]
+  ];
+  for (const [label, n] of fields) {
+    if (!Number.isFinite(n) || n < -1) {
+      showToast(`${label} must be -1 (unlimited) or 0+`, true);
+      return;
+    }
+  }
   await api('/settings', {
     method: 'PATCH',
     body: JSON.stringify({
       limits: {
-        free_monthly_actions: parseInt(document.getElementById('setting-free-limit').value, 10)
+        free_monthly_actions: freeMonthly,
+        free_daily_actions: freeDaily,
+        pro_monthly_actions: proMonthly,
+        pro_daily_actions: proDaily
       }
     })
   });
@@ -945,6 +1063,7 @@ async function loadTab(tab) {
   if (tab === 'users') await loadUsers();
   if (tab === 'subscriptions') await loadSubscriptions();
   if (tab === 'usage') await loadUsage();
+  if (tab === 'feedback') await loadFeedback();
   if (tab === 'models') await loadSettings();
   if (tab === 'system') await loadSystem();
   if (tab === 'account') await loadAccountSettings();
@@ -1205,6 +1324,11 @@ async function init() {
   document.getElementById('overview-days')?.addEventListener('change', () => loadOverview());
   document.getElementById('analytics-days')?.addEventListener('change', () => loadAnalytics());
   document.getElementById('usage-filter-btn')?.addEventListener('click', () => loadUsage(1));
+  document.getElementById('feedback-filter-btn')?.addEventListener('click', () => loadFeedback(1));
+  document.getElementById('feedback-search')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') loadFeedback(1);
+  });
+  document.getElementById('feedback-reason')?.addEventListener('change', () => loadFeedback(1));
   document.getElementById('audit-refresh')?.addEventListener('click', () => loadActivity());
   document.getElementById('announcement-form')?.addEventListener('submit', saveAnnouncement);
   document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
@@ -1244,6 +1368,18 @@ document.querySelectorAll('.nav-item').forEach((btn) => {
 });
 
 document.getElementById('login-form').addEventListener('submit', handleLogin);
+
+document.getElementById('login-pw-toggle')?.addEventListener('click', () => {
+  const input = document.getElementById('login-password');
+  const btn = document.getElementById('login-pw-toggle');
+  if (!input || !btn) return;
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  btn.querySelector('.pw-eye')?.classList.toggle('hidden', show);
+  btn.querySelector('.pw-eye-off')?.classList.toggle('hidden', !show);
+  btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  btn.title = show ? 'Hide password' : 'Show password';
+});
 
 document.getElementById('logout-btn').addEventListener('click', async () => {
   const ok = await confirmDialog({

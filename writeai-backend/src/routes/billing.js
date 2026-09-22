@@ -80,7 +80,7 @@ router.post('/portal', authMiddleware, async (req, res) => {
   if (!stripeConfigured()) {
     return res.status(503).json({
       error: 'billing_not_configured',
-      message: 'Billing portal is not available. Your plan was assigned by an admin.'
+      message: 'Billing portal is not available. Ask your admin to enable Stripe.'
     });
   }
 
@@ -93,15 +93,57 @@ router.post('/portal', authMiddleware, async (req, res) => {
     }
 
     const stripe = getStripe();
-    const session = await stripe.billingPortal.sessions.create({
+
+    // Stripe requires an active Customer Portal configuration (Dashboard or API).
+    // Create a default one if missing so Manage billing works out of the box.
+    let configurationId;
+    try {
+      const existing = await stripe.billingPortal.configurations.list({ limit: 1 });
+      configurationId = existing.data.find((c) => c.active !== false)?.id || existing.data[0]?.id;
+      if (!configurationId) {
+        const created = await stripe.billingPortal.configurations.create({
+          business_profile: {
+            headline: 'Manage your Writect Pro subscription'
+          },
+          features: {
+            customer_update: {
+              enabled: true,
+              allowed_updates: ['email', 'address', 'name']
+            },
+            invoice_history: { enabled: true },
+            payment_method_update: { enabled: true },
+            subscription_cancel: {
+              enabled: true,
+              mode: 'at_period_end',
+              proration_behavior: 'none'
+            },
+            subscription_update: { enabled: false }
+          }
+        });
+        configurationId = created.id;
+      }
+    } catch (cfgErr) {
+      console.error('Portal configuration error:', cfgErr.message);
+    }
+
+    const sessionParams = {
       customer: req.user.stripe_customer_id,
       return_url: `${appUrl('/app')}?view=settings`
-    });
+    };
+    if (configurationId) sessionParams.configuration = configurationId;
+
+    const session = await stripe.billingPortal.sessions.create(sessionParams);
 
     res.json({ url: session.url });
   } catch (err) {
     console.error('Portal error:', err);
-    res.status(500).json({ error: 'portal_failed', message: 'Could not open billing portal.' });
+    const hint = /configuration|portal/i.test(err.message || '')
+      ? ' Enable Customer Portal in Stripe Dashboard → Settings → Billing → Customer portal.'
+      : '';
+    res.status(500).json({
+      error: 'portal_failed',
+      message: (err.message || 'Could not open billing portal.') + hint
+    });
   }
 });
 

@@ -9,7 +9,12 @@ const DEFAULTS = {
     custom_models: []
   },
   limits: {
-    free_monthly_actions: 20
+    free_monthly_actions: 300,
+    free_daily_actions: 10,
+    pro_monthly_actions: 3000,
+    pro_daily_actions: 150,
+    /** Internal soft reference for admin cost monitoring — not shown/enforced for customers */
+    free_monthly_tokens: 50000
   },
   api_keys: {
     openai: '',

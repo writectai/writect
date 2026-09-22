@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Writect — Extension removed</title>
+  <meta name="description" content="Tell us why you removed Writect so we can improve.">
+  <link rel="icon" type="image/png" href="/img/Writect-logo-icon.png">
+  <base href="/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0B1F44;
+      --muted: #526581;
+      --faint: #526581;
+      --line: #E9E7EF;
+      --brand: #F21862;
+      --brand-2: #D20A72;
+      --wash: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; }
+
+    body.uninstall-page {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--wash);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .un-atmosphere {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: #FFFFFF;
+    }
+
+    .un-nav, .un-shell { position: relative; z-index: 1; }
+
+    .un-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 22px 28px;
+    }
+
+    .un-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+    }
+
+    .un-logo-img {
+      display: block;
+      height: 34px;
+      width: auto;
+      max-width: min(170px, 55vw);
+      object-fit: contain;
+    }
+
+    .un-logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent url('/img/Writect-logo-icon.png') center/contain no-repeat;
+      color: transparent;
+      font-size: 0;
+      font-weight: 800;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    .un-links { display: flex; align-items: center; gap: 8px; }
+
+    .un-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 999px;
+    }
+
+    .un-links a:hover { color: var(--ink); background: rgba(11, 31, 68, 0.04); }
+
+    .un-nav-cta {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.65);
+      color: var(--ink) !important;
+    }
+
+    .un-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 28px 80px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.75fr);
+      gap: 48px 56px;
+      align-items: start;
+    }
+
+    .un-intro {
+      max-width: 640px;
+      animation: un-rise 0.55s ease both;
+    }
+
+    @keyframes un-rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .un-kicker {
+      display: inline-block;
+      margin: 0 0 18px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand);
+    }
+
+    .un-intro h1 {
+      margin: 0 0 16px;
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: clamp(34px, 5vw, 52px);
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+    }
+
+    .un-intro h1 em {
+      font-style: italic;
+      color: var(--brand);
+      font-weight: 500;
+    }
+
+    .un-sub {
+      margin: 0 0 36px;
+      max-width: 46ch;
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .un-form-label {
+      display: block;
+      margin: 0 0 12px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .un-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .un-chip { position: relative; cursor: pointer; }
+
+    .un-chip input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .un-chip span {
+      display: inline-flex;
+      align-items: center;
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.55);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .un-chip:hover span {
+      border-color: rgba(242, 24, 98, 0.35);
+      color: var(--ink);
+    }
+
+    .un-chip input:checked + span {
+      background: linear-gradient(135deg, rgba(242, 24, 98, 0.16), rgba(242, 24, 98, 0.1));
+      border-color: rgba(242, 24, 98, 0.45);
+      color: var(--brand);
+      font-weight: 600;
+    }
+
+    #un-notes {
+      width: 100%;
+      max-width: 520px;
+      display: block;
+      margin-bottom: 28px;
+      padding: 14px 16px;
+      border: none;
+      border-bottom: 1.5px solid var(--line);
+      background: transparent;
+      font: 500 15px/1.5 'Outfit', system-ui, sans-serif;
+      color: var(--ink);
+      resize: vertical;
+      min-height: 88px;
+    }
+
+    #un-notes::placeholder { color: var(--faint); }
+    #un-notes:focus { outline: none; border-bottom-color: var(--brand); }
+
+    .un-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .un-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 22px;
+      border-radius: 12px;
+      font: 600 14px 'Outfit', system-ui, sans-serif;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .un-btn-primary {
+      background: linear-gradient(135deg, #F21862, #D20A72, #6B0FB3);
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(242, 24, 98, 0.28);
+    }
+
+    .un-btn-primary:hover {
+      background: linear-gradient(135deg, #D20A72, #5A0A99);
+    }
+
+    .un-btn-ghost {
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .un-btn-ghost:hover {
+      color: var(--ink);
+      background: rgba(11, 31, 68, 0.04);
+    }
+
+    .un-aside { padding-top: 72px; }
+
+    .un-aside-panel {
+      position: sticky;
+      top: 40px;
+      padding: 28px 0 28px 28px;
+      border-left: 1px solid var(--line);
+    }
+
+    .un-aside-row {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .un-aside-row.muted {
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .un-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-2), var(--brand));
+      box-shadow: 0 0 0 4px rgba(242, 24, 98, 0.18);
+    }
+
+    @media (max-width: 860px) {
+      .un-shell {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 12px 20px 64px;
+      }
+      .un-aside { padding-top: 0; order: -1; }
+      .un-aside-panel {
+        position: static;
+        border-left: none;
+        padding: 0 0 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 18px;
+      }
+      .un-aside-row { margin: 0; }
+    }
+
+    @media (max-width: 520px) {
+      .un-nav { padding: 16px 18px; }
+      .un-intro h1 { font-size: 30px; }
+      .un-sub { font-size: 15px; }
+      .un-btn { width: 100%; }
+      .un-cta-row { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body class="uninstall-page">
+  <div class="un-atmosphere" aria-hidden="true"></div>
+
+  <header class="un-nav">
+    <a href="/" class="un-logo" aria-label="Writect AI">
+      <img class="un-logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="150" height="34">
+    </a>
+    <nav class="un-links">
+      <a href="/">Home</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/login" class="un-nav-cta">Sign in</a>
+    </nav>
+  </header>
+
+  <main class="un-shell">
+    <section class="un-intro" id="un-form-view">
+      <p class="un-kicker">Extension removed</p>
+      <h1>Writect will miss you<br><em>in the toolbar.</em></h1>
+      <p class="un-sub">
+        No pressure — if something felt off, tell us in one tap.
+        It helps us ship a better product for the next writer who installs.
+      </p>
+
+      <form id="un-form" class="un-form">
+        <p class="un-form-label">What got in the way?</p>
+        <div class="un-chips" role="radiogroup" aria-label="Reason">
+          <label class="un-chip">
+            <input type="radio" name="reason" value="bug" required>
+            <span>It broke or felt unreliable</span>
+          </label>
+          <label class="un-chip">
+            <input type="radio" name="reason" value="missing_feature">
+            <span>Missing a feature I needed</span>
+          </label>
+          <label class="un-chip">
+            <input type="radio" name="reason" value="limits">
+            <span>Limits or price weren’t right</span>
+          </label>
+          <label class="un-chip">
+            <input type="radio" name="reason" value="privacy">
+            <span>Privacy / permissions</span>
+          </label>
+          <label class="un-chip">
+            <input type="radio" name="reason" value="other">
+            <span>Something else</span>
+          </label>
+        </div>
+
+        <label class="un-form-label" for="un-notes">Optional note</label>
+        <textarea id="un-notes" name="notes" rows="3" maxlength="800" placeholder="What should we fix or add first?"></textarea>
+
+        <div class="un-cta-row">
+          <button type="submit" class="un-btn un-btn-primary" id="un-submit">Send feedback</button>
+          <a href="/" class="un-btn un-btn-ghost">Skip — go home</a>
+        </div>
+      </form>
+    </section>
+
+    <section class="un-intro" id="un-done-view" hidden>
+      <p class="un-kicker">Got it</p>
+      <h1>Thanks — that helps<br><em>a lot.</em></h1>
+      <p class="un-sub">
+        You’re always welcome back. The web app still works without the extension
+        if you only need chat drafts.
+      </p>
+      <div class="un-cta-row">
+        <a href="/" class="un-btn un-btn-primary">Back to Writect</a>
+        <a href="/login" class="un-btn un-btn-ghost">Open web app</a>
+      </div>
+    </section>
+
+    <aside class="un-aside" aria-hidden="true">
+      <div class="un-aside-panel">
+        <div class="un-aside-row"><span class="un-dot"></span> Fix · Rephrase · Translate</div>
+        <div class="un-aside-row muted">Works on the page you’re already in</div>
+        <div class="un-aside-row muted">Same account for extension + chat</div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    (function () {
+      var form = document.getElementById('un-form');
+      var formView = document.getElementById('un-form-view');
+      var doneView = document.getElementById('un-done-view');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var reason = (form.querySelector('input[name="reason"]:checked') || {}).value || 'other';
+        var notes = (document.getElementById('un-notes').value || '').trim();
+        try {
+          fetch('/api/feedback/uninstall', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              reason: reason,
+              notes: notes,
+              source: 'extension_uninstall'
+            }),
+            keepalive: true
+          }).catch(function () {});
+        } catch (err) { /* ignore */ }
+        formView.hidden = true;
+        doneView.hidden = false;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+  </script>
+</body>
+</html>

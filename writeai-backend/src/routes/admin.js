@@ -9,6 +9,7 @@ const { logAudit, getAuditLog } = require('../services/audit');
 const { parseDays, getOverviewCharts, getAnalytics, getActivityFeed } = require('../services/analytics');
 const { getSystemHealth } = require('../services/health');
 const { FREE_LIMIT } = require('../services/usage');
+const { listUninstallFeedback, deleteUninstallFeedback, REASON_LABELS } = require('../services/uninstallFeedback');
 
 function maskApiKey(key) {
   if (!key) return { configured: false, hint: '' };
@@ -120,7 +121,7 @@ router.get('/stats', async (req, res) => {
   const days = parseDays(req.query.days);
   const monthYear = currentMonthYear();
 
-  const [users, subscriptions, usageMonth, usageByModel, usageByAction, recentUsers, charts] = await Promise.all([
+  const [users, subscriptions, usageMonth, usageTokens, usageByModel, usageByAction, recentUsers, charts] = await Promise.all([
     db.query(`
       SELECT
         COUNT(*)::int AS total,
@@ -136,8 +137,19 @@ router.get('/stats', async (req, res) => {
       GROUP BY subscription_status
     `),
     db.query(`
-      SELECT COALESCE(SUM(action_count), 0)::int AS total_actions
+      SELECT
+        COALESCE(SUM(action_count), 0)::int AS total_actions
       FROM monthly_counts
+      WHERE month_year = $1
+    `, [monthYear]),
+    db.query(`
+      SELECT
+        COALESCE(SUM(input_tokens), 0)::int AS input_tokens,
+        COALESCE(SUM(output_tokens), 0)::int AS output_tokens,
+        COALESCE(SUM(input_tokens + output_tokens), 0)::int AS total_tokens,
+        COALESCE(SUM(COALESCE(action_cost, 1)), 0)::int AS billed_actions,
+        COUNT(*)::int AS request_count
+      FROM usage
       WHERE month_year = $1
     `, [monthYear]),
     db.query(`
@@ -150,7 +162,9 @@ router.get('/stats', async (req, res) => {
       ORDER BY count DESC
     `, [monthYear]),
     db.query(`
-      SELECT action, COUNT(*)::int AS count
+      SELECT action, COUNT(*)::int AS count,
+        COALESCE(SUM(input_tokens + output_tokens), 0)::int AS tokens,
+        COALESCE(SUM(COALESCE(action_cost, 1)), 0)::int AS action_cost
       FROM usage
       WHERE month_year = $1
       GROUP BY action
@@ -163,6 +177,7 @@ router.get('/stats', async (req, res) => {
     getOverviewCharts(days)
   ]);
 
+  const tokenRow = usageTokens.rows[0] || {};
   res.json({
     users: users.rows[0],
     new_users_7d: recentUsers.rows[0].count,
@@ -170,6 +185,11 @@ router.get('/stats', async (req, res) => {
     usage: {
       month: monthYear,
       total_actions: usageMonth.rows[0].total_actions,
+      billed_actions: tokenRow.billed_actions || 0,
+      request_count: tokenRow.request_count || 0,
+      input_tokens: tokenRow.input_tokens || 0,
+      output_tokens: tokenRow.output_tokens || 0,
+      total_tokens: tokenRow.total_tokens || 0,
       by_model: usageByModel.rows,
       by_action: usageByAction.rows
     },
@@ -214,14 +234,15 @@ router.get('/export/users', async (req, res) => {
 router.get('/export/usage', async (req, res) => {
   const month = req.query.month || currentMonthYear();
   const result = await db.query(
-    `SELECT usr.email, us.action, us.model, us.input_tokens, us.output_tokens, us.created_at
+    `SELECT usr.email, us.action, us.model, COALESCE(us.action_cost, 1)::int AS action_cost,
+            us.input_tokens, us.output_tokens, us.created_at
      FROM usage us JOIN users usr ON usr.id = us.user_id
      WHERE us.month_year = $1 ORDER BY us.created_at DESC`,
     [month]
   );
-  const header = 'email,action,model,input_tokens,output_tokens,created_at\n';
+  const header = 'email,action,action_cost,model,input_tokens,output_tokens,created_at\n';
   const rows = result.rows.map((r) =>
-    [r.email, r.action, r.model, r.input_tokens, r.output_tokens, r.created_at]
+    [r.email, r.action, r.action_cost, r.model, r.input_tokens, r.output_tokens, r.created_at]
       .map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')
   ).join('\n');
   res.setHeader('Content-Type', 'text/csv');
@@ -261,9 +282,16 @@ router.get('/users', async (req, res) => {
     db.query(
       `SELECT u.id, u.email, u.name, u.avatar_url, u.plan, u.role, u.is_active,
               u.subscription_status, u.stripe_customer_id, u.created_at,
-              COALESCE(mc.action_count, 0)::int AS actions_this_month
+              COALESCE(mc.action_count, 0)::int AS actions_this_month,
+              COALESCE(tok.tokens_this_month, 0)::int AS tokens_this_month
        FROM users u
        LEFT JOIN monthly_counts mc ON mc.user_id = u.id AND mc.month_year = $${monthIdx}
+       LEFT JOIN (
+         SELECT user_id, SUM(input_tokens + output_tokens)::int AS tokens_this_month
+         FROM usage
+         WHERE month_year = $${monthIdx}
+         GROUP BY user_id
+       ) tok ON tok.user_id = u.id
        WHERE ${where}
        ORDER BY u.created_at DESC
        LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
@@ -376,7 +404,8 @@ router.get('/usage', async (req, res) => {
 
   const [rows, countResult] = await Promise.all([
     db.query(
-      `SELECT us.id, us.user_id, usr.email, us.action, us.model, us.input_tokens, us.output_tokens, us.created_at
+      `SELECT us.id, us.user_id, usr.email, us.action, us.model, us.input_tokens, us.output_tokens,
+              COALESCE(us.action_cost, 1)::int AS action_cost, us.created_at
        FROM usage us
        JOIN users usr ON usr.id = us.user_id
        WHERE ${where}
@@ -402,6 +431,52 @@ router.get('/usage', async (req, res) => {
     }
   });
 });
+
+router.get('/feedback/uninstall', async (req, res) => {
+  try {
+    const data = await listUninstallFeedback({
+      page: req.query.page,
+      limit: req.query.limit,
+      reason: req.query.reason || '',
+      search: req.query.search || ''
+    });
+    res.json({
+      ...data,
+      reason_labels: REASON_LABELS
+    });
+  } catch (err) {
+    console.error('List uninstall feedback failed:', err);
+    res.status(500).json({
+      error: 'feedback_list_failed',
+      message: 'Could not load uninstall feedback.'
+    });
+  }
+});
+
+router.delete('/feedback/uninstall/:id',
+  param('id').isUUID(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    try {
+      const row = await deleteUninstallFeedback(req.params.id);
+      if (!row) {
+        return res.status(404).json({ error: 'not_found', message: 'Feedback not found.' });
+      }
+      await logAudit(req, 'feedback.uninstall.delete', 'uninstall_feedback', row.id, {
+        reason: row.reason
+      });
+      res.json({ ok: true, id: row.id });
+    } catch (err) {
+      console.error('Delete uninstall feedback failed:', err);
+      res.status(500).json({
+        error: 'feedback_delete_failed',
+        message: 'Could not delete feedback.'
+      });
+    }
+  }
+);
 
 router.get('/settings', async (req, res) => {
   const settings = await loadAll();

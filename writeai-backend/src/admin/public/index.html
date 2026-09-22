@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WriteAI Master Panel</title>
+  <title>Writect Master Panel</title>
+  <link rel="icon" type="image/png" href="/img/Writect-logo-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,17 +15,20 @@
     <div class="login-bg"></div>
     <div class="login-card">
       <div class="login-brand">
-        <div class="brand-icon">W</div>
-        <div>
-          <h1>WriteAI</h1>
-          <p>Master Control Panel</p>
-        </div>
+        <img class="brand-logo" src="/img/Writect-AI-logo-white.png" alt="Writect AI" width="180" height="40">
+        <p>Master Control Panel</p>
       </div>
       <form id="login-form">
-        <label>Username</label>
+        <label for="login-username">Username</label>
         <input id="login-username" type="text" autocomplete="username" placeholder="admin" required>
-        <label>Password</label>
-        <input id="login-password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+        <label for="login-password">Password</label>
+        <div class="login-pw-field">
+          <input id="login-password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+          <button type="button" class="login-pw-toggle" id="login-pw-toggle" aria-label="Show password" title="Show password">
+            <svg class="pw-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="pw-eye-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
         <button type="submit" class="btn btn-primary btn-block" id="login-submit">
           <span>Sign in</span>
         </button>
@@ -36,11 +40,8 @@
   <div id="app" class="app hidden">
     <aside class="sidebar">
       <div class="sidebar-brand">
-        <div class="brand-icon sm">W</div>
-        <div>
-          <strong>WriteAI</strong>
-          <span>Master Panel</span>
-        </div>
+        <img class="brand-logo brand-logo--sm" src="/img/Writect-AI-logo-white.png" alt="Writect AI" width="140" height="32">
+        <span class="sidebar-brand-sub">Master Panel</span>
       </div>
       <nav class="sidebar-nav">
         <button class="nav-item active" data-tab="overview" title="Overview (1)">
@@ -66,6 +67,10 @@
         <button class="nav-item" data-tab="usage">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           Usage Logs
+        </button>
+        <button class="nav-item" data-tab="feedback">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Feedback
         </button>
         <button class="nav-item" data-tab="models">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
@@ -145,6 +150,7 @@
           </div>
           <div class="panel" style="margin-top:20px">
             <div class="panel-header"><h3>Actions by Model</h3></div>
+            <p class="panel-hint">Bar = action count. Numbers = actions + total tokens (in+out) for that model.</p>
             <div id="model-chart" class="chart-area"></div>
           </div>
         </section>
@@ -236,6 +242,29 @@
           </div>
         </section>
 
+        <section id="tab-feedback" class="tab">
+          <div class="panel">
+            <div class="panel-header row">
+              <h3>Uninstall feedback</h3>
+              <div class="filters">
+                <input id="feedback-search" type="search" placeholder="Search notes…">
+                <select id="feedback-reason">
+                  <option value="">All reasons</option>
+                  <option value="bug">Broke / unreliable</option>
+                  <option value="missing_feature">Missing feature</option>
+                  <option value="limits">Limits / price</option>
+                  <option value="privacy">Privacy / permissions</option>
+                  <option value="other">Something else</option>
+                </select>
+                <button type="button" id="feedback-filter-btn" class="btn btn-secondary btn-sm">Apply</button>
+              </div>
+            </div>
+            <div id="feedback-breakdown" class="feedback-breakdown"></div>
+            <div id="feedback-table" class="table-area"></div>
+            <div id="feedback-pagination" class="pagination"></div>
+          </div>
+        </section>
+
         <section id="tab-models" class="tab">
           <div class="grid-2">
             <div class="panel">
@@ -270,11 +299,29 @@
             </div>
             <div class="panel panel-fit">
               <div class="panel-header"><h3>Plan Limits</h3></div>
-              <form id="limits-form" class="settings-form settings-form-compact">
-                <div class="form-field">
-                  <label>Free monthly actions</label>
-                  <input id="setting-free-limit" type="number" min="1" max="1000">
-                  <small>Applies to all free-tier extension users</small>
+              <form id="limits-form" class="settings-form settings-form-limits">
+                <p class="limits-intro">Customer AI action caps (Simple Plan Setup). Token caps stay backend-only.</p>
+                <div class="limits-grid">
+                  <div class="form-field">
+                    <label>Free monthly</label>
+                    <input id="setting-free-limit" type="number" min="-1" max="100000" step="1">
+                    <small>Default 300 · <code>-1</code> unlimited</small>
+                  </div>
+                  <div class="form-field">
+                    <label>Free daily</label>
+                    <input id="setting-free-daily" type="number" min="-1" max="100000" step="1">
+                    <small>Default 10 / UTC day</small>
+                  </div>
+                  <div class="form-field">
+                    <label>Pro monthly</label>
+                    <input id="setting-pro-limit" type="number" min="-1" max="1000000" step="1">
+                    <small>Default 3,000 · <code>-1</code> unlimited</small>
+                  </div>
+                  <div class="form-field">
+                    <label>Pro daily</label>
+                    <input id="setting-pro-daily" type="number" min="-1" max="100000" step="1">
+                    <small>Default 150 / UTC day</small>
+                  </div>
                 </div>
                 <div class="form-actions">
                   <button type="submit" class="btn btn-primary">Save limits</button>

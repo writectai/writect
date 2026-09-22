@@ -1,7 +1,7 @@
 {
   "name": "writeai-backend",
   "version": "1.0.0",
-  "description": "WriteAI API — AI writing assistant backend",
+  "description": "Writect API — AI writing assistant backend",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",

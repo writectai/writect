@@ -22,21 +22,136 @@ const LABELS = {
   explain: 'Explain'
 };
 
-const LANGUAGES = ['Spanish', 'French', 'German', 'Urdu', 'Arabic', 'Hindi', 'Chinese', 'Japanese'];
+const ACTION_TITLES = {
+  fix_grammar: 'Fix grammar & spelling',
+  rephrase: 'Rephrase — improve writing without changing what you mean',
+  translate: 'Translate',
+  summarize: 'Summarize',
+  explain: 'Explain'
+};
+
+/** Regional / dialect targets for Translate (label shown; extra sent to API). */
+const TRANSLATE_GROUPS = [
+  {
+    title: 'Arabic',
+    options: [
+      {
+        label: 'Formal Arabic',
+        extra: 'Formal Modern Standard Arabic (MSA / الفصحى). Professional, clear formal register.'
+      },
+      {
+        label: 'UAE Arabic',
+        extra: 'United Arab Emirates / Gulf Arabic as commonly written in the UAE (إماراتي). Natural contemporary Gulf phrasing.'
+      },
+      {
+        label: 'Saudi Arabic',
+        extra: 'Saudi Arabic (سعودي). Natural contemporary Saudi phrasing while staying clear and readable.'
+      },
+      {
+        label: 'Egyptian Arabic',
+        extra: 'Egyptian Arabic (مصري). Natural colloquial Egyptian phrasing suitable for everyday writing.'
+      }
+    ]
+  },
+  {
+    title: 'English',
+    options: [
+      {
+        label: 'US English',
+        extra: 'American English (US). Use US spelling and vocabulary (e.g. color, organize, apartment).'
+      },
+      {
+        label: 'UK English',
+        extra: 'British English (UK). Use UK spelling and vocabulary (e.g. colour, organise, flat).'
+      },
+      {
+        label: 'AU English',
+        extra: 'Australian English (AU). Use Australian spelling and natural AU phrasing.'
+      }
+    ]
+  },
+  {
+    title: 'Other',
+    options: [
+      { label: 'Spanish', extra: 'Spanish' },
+      { label: 'French', extra: 'French' },
+      { label: 'German', extra: 'German' },
+      { label: 'Urdu', extra: 'Urdu' },
+      { label: 'Hindi', extra: 'Hindi' },
+      { label: 'Chinese', extra: 'Chinese (Simplified)' },
+      { label: 'Japanese', extra: 'Japanese' }
+    ]
+  }
+];
+
+function resolveTranslateExtra(chip) {
+  const gi = Number(chip?.dataset?.group);
+  const oi = Number(chip?.dataset?.opt);
+  const opt = TRANSLATE_GROUPS[gi]?.options?.[oi];
+  return opt?.extra || chip?.dataset?.lang || '';
+}
 
 /** User-facing messages only — never show Admin / model / billing details */
 const USER_ERROR_MESSAGES = {
-  free_limit_reached: 'You\'ve used all your free actions this month. Upgrade to Pro for unlimited access.',
-  not_authenticated: 'Please sign in via the WriteAI popup to continue.',
+  free_limit_reached: 'You\'ve used all your free AI actions this month. Upgrade to Pro for higher limits.',
+  free_token_limit_reached: 'You\'ve reached your plan limit. Upgrade to Pro for higher limits.',
+  monthly_limit_reached: 'You\'ve used all AI actions for this month. Upgrade to Pro for higher limits, or wait until usage resets.',
+  daily_limit_reached: 'You\'ve reached today\'s AI action limit. Try again tomorrow, or upgrade for higher limits.',
+  pro_feature: 'This feature is available on Pro. Upgrade to unlock selection tools.',
+  rate_limit_exceeded: 'Too many requests. Please wait a moment and try again.',
+  concurrency_limit_reached: 'An AI request is already running. Wait for it to finish.',
+  model_not_allowed: 'That model is available on Pro. Choose a free-tier model or upgrade.',
+  not_authenticated: 'Please sign in via the Writect popup to continue.',
   account_disabled: 'Your account has been disabled. Please contact support.',
   user_not_found: 'Please sign in again.',
   invalid_token: 'Your session expired. Please sign in again.',
-  no_token: 'Please sign in via the WriteAI popup to continue.',
+  no_token: 'Please sign in via the Writect popup to continue.',
   ai_quota_exceeded: 'AI is temporarily busy. Please try again in a few seconds.',
   ai_unavailable: 'AI is temporarily unavailable. Please try again later.',
   ai_error: 'AI is temporarily busy. Please try again in a few seconds.',
-  network_error: 'Could not reach WriteAI. Please check your connection and try again.'
+  network_error: 'Could not reach Writect. Please check your connection and try again.',
+  extension_reloaded: 'Writect was updated. Refresh this page to continue.'
 };
+
+function isExtensionAlive() {
+  try {
+    return !!(chrome.runtime && chrome.runtime.id);
+  } catch {
+    return false;
+  }
+}
+
+async function sendRuntimeMessage(payload) {
+  if (!isExtensionAlive()) {
+    return {
+      error: 'extension_reloaded',
+      message: USER_ERROR_MESSAGES.extension_reloaded
+    };
+  }
+  try {
+    const response = await chrome.runtime.sendMessage(payload);
+    if (chrome.runtime.lastError) {
+      const errMsg = chrome.runtime.lastError.message || '';
+      if (/context invalidated|message port closed/i.test(errMsg)) {
+        return {
+          error: 'extension_reloaded',
+          message: USER_ERROR_MESSAGES.extension_reloaded
+        };
+      }
+      return { error: 'network_error', message: USER_ERROR_MESSAGES.network_error };
+    }
+    return response;
+  } catch (err) {
+    const msg = err?.message || String(err);
+    if (/Extension context invalidated|message port closed/i.test(msg)) {
+      return {
+        error: 'extension_reloaded',
+        message: USER_ERROR_MESSAGES.extension_reloaded
+      };
+    }
+    return { error: 'network_error', message: USER_ERROR_MESSAGES.network_error };
+  }
+}
 
 function friendlyError(response) {
   if (!response) return USER_ERROR_MESSAGES.ai_error;
@@ -65,32 +180,99 @@ function toPlainText(text) {
     .replace(/`([^`]+)`/g, '$1')
     .replace(/^\s*[-*+]\s+/gm, '• ')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n[ \t]+/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
 
+/** Tighter plain text for inserting into chat/email composers */
+function toInsertText(text) {
+  const host = location.hostname || '';
+  let t = toPlainText(text);
+  // Messaging apps treat each newline as a large gap — keep soft breaks only
+  if (/whatsapp|linkedin|facebook|messenger/i.test(host)) {
+    t = t.replace(/\n{2,}/g, '\n');
+  } else {
+    t = t.replace(/\n{3,}/g, '\n\n');
+  }
+  return t.trim();
+}
+
+let mouseDownPos = null;
+let selectionAtMouseDown = '';
+
+document.addEventListener('mousedown', (e) => {
+  if (e.button !== 0) return;
+  mouseDownPos = { x: e.clientX, y: e.clientY };
+  try {
+    selectionAtMouseDown = window.getSelection()?.toString().trim() || '';
+  } catch {
+    selectionAtMouseDown = '';
+  }
+}, true);
+
 document.addEventListener('mouseup', (e) => {
+  if (e.button !== 0) return;
   if (toolbar?.contains(e.target)) return;
   if (dragState) return;
+  // Never open selection toolbar from Writect compose chrome
+  if (e.target?.closest?.('[data-writeai-compose-btn], [data-writeai-compose-slot], #writeai-compose-panel')) {
+    return;
+  }
+
+  const down = mouseDownPos;
+  const priorSelection = selectionAtMouseDown;
+  mouseDownPos = null;
 
   setTimeout(() => {
     const selection = window.getSelection();
-    const text = selection?.toString().trim();
-    if (text && text.length > 1) {
-      captureSelection(selection);
-      selectedText = text;
-      showToolbar();
-    } else if (toolbar && !toolbar.contains(e.target)) {
-      hideToolbar();
+    if (!hasRealTextSelection(selection)) {
+      if (toolbar && !toolbar.contains(e.target)) hideToolbar();
+      return;
     }
-  }, 10);
+
+    const text = selection.toString().trim();
+    const dragged =
+      down &&
+      (Math.abs(e.clientX - down.x) > 5 || Math.abs(e.clientY - down.y) > 5);
+    // New selection created this gesture (drag, double-click word, triple-click line)
+    const createdSelection = text !== priorSelection && text.length >= 2;
+
+    // Plain click with no new selection must not open the toolbar
+    if (!dragged && !createdSelection) {
+      return;
+    }
+
+    captureSelection(selection);
+    selectedText = text;
+    showToolbar();
+  }, 40);
 });
+
+function hasRealTextSelection(selection) {
+  if (!selection || selection.isCollapsed || selection.rangeCount === 0) return false;
+  const text = selection.toString().trim();
+  if (!text || text.length < 2) return false;
+  try {
+    const range = selection.getRangeAt(0);
+    const rects = [...range.getClientRects()];
+    if (!rects.length) {
+      const r = range.getBoundingClientRect();
+      return r.width >= 2 || r.height >= 8;
+    }
+    return rects.some((r) => r.width >= 2 || r.height >= 8);
+  } catch {
+    return text.length >= 2;
+  }
+}
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') hideToolbar();
 });
 
 chrome.runtime.onMessage.addListener((msg) => {
+  if (!isExtensionAlive()) return;
   if (msg?.type !== 'CONTEXT_ACTION') return;
   const selection = window.getSelection();
   const text = (msg.text || selection?.toString() || '').trim();
@@ -154,33 +336,41 @@ function showToolbar() {
   toolbar.className = 'wa-tb';
   toolbar.innerHTML = `
     <div class="wa-head" id="wa-drag">
-      <div class="wa-brand"><span class="wa-logo">W</span><span>WriteAI</span></div>
+      <div class="wa-brand"><img class="wa-brand-logo" src="${chrome.runtime.getURL('icons/Writect-AI-logo-white.png')}" alt="Writect AI" height="18" /></div>
       <button class="wa-x" id="wa-close" title="Close (Esc)" aria-label="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="wa-actions">
       ${Object.keys(LABELS).map((a) => `
-        <button class="wa-act" data-action="${a}" title="${LABELS[a]}">
+        <button class="wa-act" data-action="${a}" title="${ACTION_TITLES[a] || LABELS[a]}">
           <span class="wa-ico">${ICONS[a]}</span>
-          <span>${LABELS[a]}</span>
+          <span class="wa-act-label">${LABELS[a]}</span>
         </button>`).join('')}
     </div>
     <div class="wa-body" id="wa-body" hidden>
       <div class="wa-loading" id="wa-loading" hidden>
-        <span class="wa-spin"></span><span>Thinking…</span>
+        <span class="wa-spin"></span><span id="wa-loading-text">Thinking…</span>
       </div>
       <div class="wa-lang" id="wa-lang" hidden>
         <div class="wa-lang-title">Translate to</div>
-        <div class="wa-lang-chips">
-          ${LANGUAGES.map((l) => `<button class="wa-chip" data-lang="${l}">${l}</button>`).join('')}
-        </div>
+        ${TRANSLATE_GROUPS.map((group, gi) => `
+          <div class="wa-lang-group">
+            <div class="wa-lang-group-title">${group.title}</div>
+            <div class="wa-lang-chips">
+              ${group.options.map((o, oi) =>
+                `<button class="wa-chip" type="button" data-group="${gi}" data-opt="${oi}">${o.label}</button>`
+              ).join('')}
+            </div>
+          </div>
+        `).join('')}
         <div class="wa-lang-custom">
-          <input type="text" id="wa-lang-input" placeholder="Other language…" />
+          <input type="text" id="wa-lang-input" placeholder="Other language or dialect…" />
           <button class="wa-btn wa-primary" id="wa-lang-go">Go</button>
         </div>
       </div>
       <div class="wa-result" id="wa-result" hidden>
+        <div class="wa-meaning" id="wa-meaning" hidden></div>
         <div class="wa-result-text" id="wa-result-text"></div>
         <div class="wa-foot">
           <button class="wa-btn wa-primary" id="wa-copy">
@@ -193,6 +383,12 @@ function showToolbar() {
           </button>
           <button class="wa-btn wa-ghost" id="wa-regen" title="Regenerate">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
+        </div>
+        <div class="wa-chat" id="wa-chat">
+          <input type="text" id="wa-chat-input" maxlength="400" placeholder="Add an instruction…" autocomplete="off" />
+          <button type="button" class="wa-chat-send" id="wa-chat-send" title="Send" aria-label="Send instruction">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </div>
       </div>
@@ -219,8 +415,11 @@ function showToolbar() {
     });
   });
 
-  toolbar.querySelectorAll('[data-lang]').forEach((chip) => {
-    chip.addEventListener('click', () => runAction('translate', chip.dataset.lang));
+  toolbar.querySelectorAll('.wa-chip[data-group]').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const extra = resolveTranslateExtra(chip);
+      if (extra) runAction('translate', extra);
+    });
   });
 
   toolbar.querySelector('#wa-lang-go')?.addEventListener('click', () => {
@@ -241,9 +440,30 @@ function showToolbar() {
     hideToolbar();
   });
   toolbar.querySelector('#wa-regen')?.addEventListener('click', () => {
-    if (lastAction) runAction(lastAction.action, lastAction.extra, true);
+    if (lastAction) {
+      runAction(lastAction.action, lastAction.baseExtra || '', true, lastAction.instruction || '');
+    }
+  });
+  toolbar.querySelector('#wa-chat-send')?.addEventListener('click', submitChatInstruction);
+  toolbar.querySelector('#wa-chat-input')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitChatInstruction();
+    }
   });
   toolbar.querySelector('#wa-close')?.addEventListener('click', hideToolbar);
+}
+
+function submitChatInstruction() {
+  if (!toolbar || !lastAction) return;
+  const input = toolbar.querySelector('#wa-chat-input');
+  const instruction = input?.value.trim() || '';
+  if (!instruction) {
+    input?.focus();
+    return;
+  }
+  input.value = '';
+  runAction(lastAction.action, lastAction.baseExtra || '', true, instruction);
 }
 
 function enableDrag(handle) {
@@ -339,28 +559,50 @@ function openLanguagePicker() {
   toolbar.querySelector('#wa-lang-input')?.focus();
 }
 
-async function runAction(action, extra = '', forceRefresh = false) {
-  lastAction = { action, extra };
+function buildActionExtra(baseExtra = '', instruction = '') {
+  const custom = String(instruction || '').trim();
+  const base = String(baseExtra || '').trim();
+  if (!custom) return base;
+  if (!base) return custom.slice(0, 400);
+  return `${base}. Additional instruction: ${custom}`.slice(0, 500);
+}
+
+async function runAction(action, baseExtra = '', forceRefresh = false, instruction = '') {
+  const extra = buildActionExtra(baseExtra, instruction);
+  lastAction = { action, baseExtra, extra, instruction };
   setActiveAction(action);
   showBody();
 
   const loading = toolbar.querySelector('#wa-loading');
+  const loadingText = toolbar.querySelector('#wa-loading-text');
   const result = toolbar.querySelector('#wa-result');
   const error = toolbar.querySelector('#wa-error');
   const lang = toolbar.querySelector('#wa-lang');
+  const meaningEl = toolbar.querySelector('#wa-meaning');
 
   lang.hidden = true;
   result.hidden = true;
   error.hidden = true;
+  if (meaningEl) {
+    meaningEl.hidden = true;
+    meaningEl.innerHTML = '';
+    meaningEl.className = 'wa-meaning';
+  }
   loading.hidden = false;
+  if (loadingText) {
+    loadingText.textContent = action === 'rephrase'
+      ? 'Rephrasing…'
+      : 'Thinking…';
+  }
   positionToolbar();
 
-  const response = await chrome.runtime.sendMessage({
+  const response = await sendRuntimeMessage({
     type: 'RUN_ACTION',
     action,
     text: selectedText,
     extra,
-    forceRefresh
+    forceRefresh,
+    source: 'selection'
   });
 
   loading.hidden = true;
@@ -371,11 +613,34 @@ async function runAction(action, extra = '', forceRefresh = false) {
     error.textContent = friendlyError(response);
     error.hidden = false;
   } else {
-    const plain = toPlainText(response.result);
+    const plain = toInsertText(response.result);
     toolbar.querySelector('#wa-result-text').innerText = plain;
+    renderMeaningBadge(response.meaning);
     result.hidden = false;
+    const chatInput = toolbar.querySelector('#wa-chat-input');
+    if (chatInput && !instruction) chatInput.value = '';
+    requestAnimationFrame(() => chatInput?.focus());
   }
   positionToolbar();
+}
+
+/** Passive status only — no clicks required */
+function renderMeaningBadge(meaning) {
+  const el = toolbar?.querySelector('#wa-meaning');
+  if (!el) return;
+  if (!meaning || !Array.isArray(meaning.checks) || !meaning.checks.length) {
+    el.hidden = true;
+    el.innerHTML = '';
+    return;
+  }
+  const ok = !!meaning.preserved;
+  const count = meaning.checks.length;
+  const kept = meaning.checks.filter((c) => c.status === 'ok').length;
+  el.className = `wa-meaning ${ok ? 'is-ok' : 'is-warn'}`;
+  el.innerHTML = ok
+    ? `<span class="wa-meaning-dot"></span><span>Meaning preserved · ${kept}/${count} checks</span>`
+    : `<span class="wa-meaning-dot"></span><span>Meaning guarded · ${kept}/${count} locked</span>`;
+  el.hidden = false;
 }
 
 function copyResult() {
@@ -394,7 +659,7 @@ function copyResult() {
 }
 
 function replaceSelectedText(replacement) {
-  const text = toPlainText(replacement);
+  const text = toInsertText(replacement);
 
   if (savedField && savedField.el) {
     const { el, start, end } = savedField;
@@ -413,10 +678,39 @@ function replaceSelectedText(replacement) {
     sel.addRange(savedRange);
   }
   if (!sel.rangeCount) return;
+
+  const active = document.activeElement;
+  if (active && active.isContentEditable) {
+    active.focus();
+  }
+
+  // Prefer insertText so Lexical/Gmail/WhatsApp handle line breaks correctly
+  try {
+    if (document.queryCommandSupported?.('insertText') !== false) {
+      const ok = document.execCommand('insertText', false, text);
+      if (ok) return;
+    }
+  } catch {
+    /* fall through */
+  }
+
   const range = sel.getRangeAt(0);
   range.deleteContents();
-  range.insertNode(document.createTextNode(text));
+
+  // Insert with <br> instead of raw \n (avoids huge gaps in contenteditable)
+  const frag = document.createDocumentFragment();
+  const parts = text.split('\n');
+  parts.forEach((part, i) => {
+    if (i > 0) frag.appendChild(document.createElement('br'));
+    if (part) frag.appendChild(document.createTextNode(part));
+  });
+  range.insertNode(frag);
   sel.collapseToEnd();
+
+  const editable = active?.isContentEditable ? active : range.commonAncestorContainer?.parentElement?.closest?.('[contenteditable="true"]');
+  if (editable) {
+    editable.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
+  }
 }
 
 function hideToolbar() {

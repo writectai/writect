@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign in — WriteAI</title>
+  <title>Sign in — Writect</title>
+  <link rel="icon" type="image/png" href="/img/Writect-logo-icon.png">
   <script>
     (function () {
-      var t = localStorage.getItem('writeai_web_theme') || 'dark';
+      var t = localStorage.getItem('writeai_web_theme') || 'light';
       document.documentElement.dataset.theme = t;
     })();
   </script>
@@ -17,14 +18,14 @@
 </head>
 <body class="login-page">
   <div class="login-card">
-    <a href="/" class="logo">
-      <span class="logo-mark">W</span>
-      WriteAI
+    <a href="/" class="logo" aria-label="Writect AI">
+      <img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="180" height="40">
     </a>
-    <h1>Welcome back</h1>
-    <p class="sub">Sign in to access your web workspace, usage stats, and subscription.</p>
+    <h1 id="auth-title">Welcome back</h1>
+    <p class="sub" id="auth-sub">Sign in with Google or your email and password.</p>
 
     <div id="login-error" class="login-error"></div>
+    <div id="login-success" class="login-success"></div>
 
     <button id="google-btn" class="btn-google" type="button">
       <svg viewBox="0 0 24 24" width="20" height="20">
@@ -36,45 +37,53 @@
       Continue with Google
     </button>
 
-    <div class="login-divider">What you get</div>
+    <div class="login-or"><span>or</span></div>
 
-    <div class="login-features">
-      <div class="login-feat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-        AI chat workspace in your browser
-      </div>
-      <div class="login-feat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-        Synced with the Chrome extension
-      </div>
-      <div class="login-feat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-        Usage tracking & plan management
-      </div>
-    </div>
+    <!-- Sign in -->
+    <form id="signin-form" class="auth-form" autocomplete="on">
+      <label class="auth-label" for="signin-email">Email</label>
+      <input id="signin-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
+      <label class="auth-label" for="signin-password">Password</label>
+      <input id="signin-password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••" minlength="8">
+      <button type="submit" class="btn-auth-primary" id="signin-submit">Sign in</button>
+      <p class="auth-switch">
+        <button type="button" class="linkish" id="show-forgot">Forgot password?</button>
+        ·
+        <button type="button" class="linkish" id="show-signup">Create account</button>
+      </p>
+    </form>
+
+    <!-- Sign up -->
+    <form id="signup-form" class="auth-form hidden" autocomplete="on">
+      <label class="auth-label" for="signup-name">Name</label>
+      <input id="signup-name" name="name" type="text" autocomplete="name" placeholder="Your name" maxlength="120">
+      <label class="auth-label" for="signup-email">Email</label>
+      <input id="signup-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
+      <label class="auth-label" for="signup-password">Password</label>
+      <input id="signup-password" name="password" type="password" required autocomplete="new-password" placeholder="At least 8 characters" minlength="8">
+      <button type="submit" class="btn-auth-primary" id="signup-submit">Create account</button>
+      <p class="auth-switch">
+        Already have an account?
+        <button type="button" class="linkish" id="show-signin">Sign in</button>
+      </p>
+    </form>
+
+    <!-- Forgot -->
+    <form id="forgot-form" class="auth-form hidden" autocomplete="on">
+      <p class="auth-hint">Enter your email and we’ll prepare a password reset link.</p>
+      <label class="auth-label" for="forgot-email">Email</label>
+      <input id="forgot-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
+      <button type="submit" class="btn-auth-primary" id="forgot-submit">Send reset link</button>
+      <p class="auth-switch">
+        <button type="button" class="linkish" id="forgot-back">← Back to sign in</button>
+      </p>
+    </form>
 
     <a href="/" class="login-back">← Back to home</a>
   </div>
 
   <script src="/js/config.js"></script>
   <script src="/js/api.js"></script>
-  <script>
-    const apiBase = window.WRITEAI_API_BASE || '';
-    const params = new URLSearchParams(location.search);
-    const err = params.get('error');
-    if (err) {
-      const el = document.getElementById('login-error');
-      el.textContent = err === 'auth_failed' ? 'Sign in failed. Please try again.' : 'Something went wrong.';
-      el.classList.add('show');
-    }
-
-    if (WriteAIApi.getToken()) {
-      location.href = '/app';
-    }
-
-    document.getElementById('google-btn').addEventListener('click', () => {
-      location.href = `${apiBase}/auth/google?redirect=app`;
-    });
-  </script>
+  <script src="/js/login.js"></script>
 </body>
 </html>

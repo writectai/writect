@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Writect — Microphone</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #0f0f12;
+      color: #f4f4f5;
+      padding: 24px;
+    }
+    .card {
+      max-width: 360px;
+      text-align: center;
+      background: #1a1a20;
+      border: 1px solid #2e2e38;
+      border-radius: 16px;
+      padding: 28px 24px;
+    }
+    h1 { font-size: 18px; margin: 0 0 8px; }
+    p { font-size: 14px; color: #a1a1aa; line-height: 1.45; margin: 0 0 16px; }
+    .ok { color: #4ade80; }
+    .err { color: #fb7185; }
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #f21862, #6b0fb3);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Enable microphone</h1>
+    <p id="msg">Writect needs mic access for Voice → Writing. Click Allow when Chrome asks.</p>
+    <button id="btn" type="button">Allow microphone</button>
+  </div>
+  <script src="mic-permission.js"></script>
+</body>
+</html>

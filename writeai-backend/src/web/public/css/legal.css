@@ -1,0 +1,81 @@
+/* Legal / contact pages — reuse landing tokens */
+.legal-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(242, 24, 98, 0.08), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 100% 0%, rgba(107, 15, 179, 0.07), transparent 50%),
+    var(--bg);
+  color: var(--ink);
+}
+
+.legal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 0;
+}
+
+.legal-top a.back {
+  font-size: 14px;
+  font-weight: 550;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.legal-top a.back:hover { color: var(--brand); }
+
+.legal-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 0 64px;
+}
+
+.legal-wrap h1 {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  margin: 0 0 8px;
+}
+
+.legal-wrap .legal-updated {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 28px;
+}
+
+.legal-wrap h2 {
+  font-size: 1.05rem;
+  font-weight: 650;
+  margin: 28px 0 10px;
+}
+
+.legal-wrap p,
+.legal-wrap li {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-2, var(--ink));
+  margin: 0 0 12px;
+}
+
+.legal-wrap ul {
+  padding-left: 1.2em;
+  margin: 0 0 16px;
+}
+
+.legal-wrap a {
+  color: var(--brand);
+}
+
+.legal-contact-card {
+  margin-top: 8px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.legal-contact-card strong {
+  display: block;
+  margin-bottom: 6px;
+}
