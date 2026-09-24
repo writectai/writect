@@ -630,9 +630,13 @@
       history.replaceState(null, '', basePath);
     }
     if (params.get('upgrade') === '1') {
-      showSettings();
-      history.replaceState(null, '', settingsPath());
-      showToast('Upgrade to Pro for higher limits and all models.');
+      history.replaceState(null, '', basePath);
+      if (user?.plan === 'pro') {
+        showToast('You already have Pro.');
+      } else {
+        showToast('Opening Pro checkout…');
+        startCheckout();
+      }
     }
     if (params.get('view') === 'settings') {
       showSettings();
@@ -1552,6 +1556,7 @@
     });
 
     $('theme-toggle')?.addEventListener('click', toggleTheme);
+    $('topbar-logout-btn')?.addEventListener('click', signOut);
 
     const input = $('chat-input');
     input.addEventListener('input', () => {

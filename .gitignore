@@ -10,3 +10,4 @@ deploy/zip-check/
 deploy/*.zip
 writeai-extension.zip
 *.zip
+/WriteAI_Website_Color_Guide.md

@@ -796,14 +796,46 @@
     });
   }
 
-  // Boot
+  // Boot — stay on marketing site even if signed in (show Account in nav instead)
   applyTheme('light');
-  /* Theme toggle removed from landing header */
 
-  if (window.WriteAIApi?.getToken()) {
-    location.href = '/app';
+  function syncLandingAuthNav() {
+    const token = window.WriteAIApi?.getToken?.();
+    const signedIn = !!token;
+    document.querySelectorAll('[data-auth-guest]').forEach((el) => {
+      el.classList.toggle('hidden', signedIn);
+    });
+    document.querySelectorAll('[data-auth-user]').forEach((el) => {
+      el.classList.toggle('hidden', !signedIn);
+    });
   }
 
+  async function initLandingAuth() {
+    if (!window.WriteAIApi?.getToken?.()) {
+      try { await WriteAIApi.syncFromExtension?.(); } catch { /* ignore */ }
+    }
+    syncLandingAuthNav();
+
+    document.querySelectorAll('[data-landing-logout]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        WriteAIApi.setToken('');
+        WriteAIApi.signOutExtension?.();
+        syncLandingAuthNav();
+      });
+    });
+
+    // Logged-in users clicking Pro CTA go straight to checkout in the app
+    document.querySelectorAll('[data-upgrade-cta]').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        if (!WriteAIApi.getToken?.()) return;
+        e.preventDefault();
+        location.href = '/app?upgrade=1';
+      });
+    });
+  }
+
+  initLandingAuth();
   initHeroTyping();
   initReveal();
   initMobileNav();

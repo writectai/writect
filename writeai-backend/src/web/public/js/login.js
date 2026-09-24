@@ -7,6 +7,15 @@
   const forgotForm = $('forgot-form');
   const errEl = $('login-error');
   const okEl = $('login-success');
+  const params = new URLSearchParams(location.search);
+  const wantsUpgrade = params.get('upgrade') === '1';
+
+  function postLoginPath() {
+    if (wantsUpgrade) return '/app?upgrade=1';
+    const next = params.get('next');
+    if (next && next.startsWith('/') && !next.startsWith('//')) return next;
+    return '/app';
+  }
 
   function showError(msg) {
     okEl.classList.remove('show');
@@ -35,20 +44,24 @@
     forgotForm.classList.toggle('hidden', mode !== 'forgot');
     if (mode === 'signup') {
       $('auth-title').textContent = 'Create your account';
-      $('auth-sub').textContent = 'Sign up with email and password, or continue with Google.';
+      $('auth-sub').textContent = wantsUpgrade
+        ? 'Create an account to continue to Pro checkout.'
+        : 'Sign up with email and password, or continue with Google.';
     } else if (mode === 'forgot') {
       $('auth-title').textContent = 'Reset password';
       $('auth-sub').textContent = 'We’ll help you get back into your account.';
     } else {
-      $('auth-title').textContent = 'Welcome back';
-      $('auth-sub').textContent = 'Sign in with Google or your email and password.';
+      $('auth-title').textContent = wantsUpgrade ? 'Sign in to upgrade' : 'Welcome back';
+      $('auth-sub').textContent = wantsUpgrade
+        ? 'Sign in to continue to Pro checkout.'
+        : 'Sign in with Google or your email and password.';
     }
   }
 
   async function finishAuth(token) {
     WriteAIApi.setToken(token);
     WriteAIApi.pushTokenToExtension(token);
-    location.href = '/app';
+    location.href = postLoginPath();
   }
 
   async function postAuth(path, body) {
@@ -62,7 +75,8 @@
   }
 
   $('google-btn').addEventListener('click', () => {
-    location.href = `${apiBase}/auth/google?redirect=app`;
+    const redirect = wantsUpgrade ? 'app_upgrade' : 'app';
+    location.href = `${apiBase}/auth/google?redirect=${encodeURIComponent(redirect)}`;
   });
 
   $('show-signup').addEventListener('click', () => setMode('signup'));
@@ -141,19 +155,22 @@
     }
   });
 
-  const params = new URLSearchParams(location.search);
   const err = params.get('error');
   if (err) {
     showError(err === 'auth_failed' ? 'Google sign in failed. Please try again.' : 'Something went wrong.');
   }
-  if (params.get('mode') === 'signup') setMode('signup');
+  if (params.get('mode') === 'signup' || wantsUpgrade) {
+    // Default signup for upgrade CTAs feels friendlier for new users
+    if (params.get('mode') === 'signup') setMode('signup');
+    else setMode(wantsUpgrade ? 'signin' : 'signin');
+  }
 
   (async function () {
     if (!WriteAIApi.getToken()) {
       await WriteAIApi.syncFromExtension();
     }
     if (WriteAIApi.getToken()) {
-      location.href = '/app';
+      location.href = postLoginPath();
     }
   })();
 })();

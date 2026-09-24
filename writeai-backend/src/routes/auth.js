@@ -113,10 +113,11 @@ function finishLoginRedirect(res, user, { extensionId, redirect }) {
     return res.redirect(`/admin/#token=${encodeURIComponent(token)}`);
   }
 
-  if (redirect === 'app' || redirect === 'web') {
+  if (redirect === 'app' || redirect === 'web' || redirect === 'app_upgrade') {
     const base = (config.frontendUrl || '').replace(/\/$/, '');
     const target = base ? `${base}/app` : '/app';
-    return res.redirect(`${target}#token=${encodeURIComponent(token)}`);
+    const qs = redirect === 'app_upgrade' ? '?upgrade=1' : '';
+    return res.redirect(`${target}${qs}#token=${encodeURIComponent(token)}`);
   }
 
   const tokenJson = JSON.stringify(token);
@@ -291,8 +292,8 @@ router.get('/google/callback', async (req, res) => {
   } catch (err) {
     console.error('Google OAuth error:', err);
     const base = (config.frontendUrl || '').replace(/\/$/, '');
-    if (redirect === 'app' || redirect === 'web') {
-      return res.redirect(`${base || ''}/login?error=auth_failed`);
+    if (redirect === 'app' || redirect === 'web' || redirect === 'app_upgrade') {
+      return res.redirect(`${base || ''}/login?error=auth_failed${redirect === 'app_upgrade' ? '&upgrade=1' : ''}`);
     }
     return res.redirect('/login?error=auth_failed');
   }
