@@ -168,7 +168,8 @@ function sendWebPage(res, file) {
   try {
     let html = fs.readFileSync(filePath, 'utf8');
     // Bust CDN/browser cache after deploys
-    const v = process.env.ASSET_VERSION || '20260813n';
+    // Bump default when shipping HTML/JS/CSS so browsers drop stale assets
+    const v = process.env.ASSET_VERSION || '20260924a';
     html = html
       .replace(/(href|src)="(\/(?:css|js)\/[^"]+)"/g, `$1="$2?v=${v}"`)
       .replace('<head>', '<head>\n  <base href="/">');
@@ -226,8 +227,10 @@ app.get('/', (req, res) => {
   sendWebPage(res, 'index.html');
 });
 
-app.use('/css', express.static(path.join(webRoot, 'css'), { maxAge: '1h', fallthrough: false }));
-app.use('/js', express.static(path.join(webRoot, 'js'), { maxAge: '1h', fallthrough: false }));
+// Short cache + revalidate — long max-age caused stale landing.js redirects after deploy
+const staticOpts = { maxAge: '5m', etag: true, lastModified: true, fallthrough: false };
+app.use('/css', express.static(path.join(webRoot, 'css'), staticOpts));
+app.use('/js', express.static(path.join(webRoot, 'js'), staticOpts));
 app.use(express.static(webRoot, { fallthrough: true }));
 
 app.get('/health', (req, res) => res.json({ status: 'ok', webRoot }));
