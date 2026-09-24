@@ -796,17 +796,16 @@
     });
   }
 
-  // Boot — stay on marketing site even if signed in (show Account in nav instead)
+  // Boot — stay on marketing site even if signed in (show Account instead of Sign in)
   applyTheme('light');
 
   function syncLandingAuthNav() {
-    const token = window.WriteAIApi?.getToken?.();
-    const signedIn = !!token;
+    const signedIn = !!window.WriteAIApi?.getToken?.();
     document.querySelectorAll('[data-auth-guest]').forEach((el) => {
-      el.classList.toggle('hidden', signedIn);
+      el.hidden = signedIn;
     });
     document.querySelectorAll('[data-auth-user]').forEach((el) => {
-      el.classList.toggle('hidden', !signedIn);
+      el.hidden = !signedIn;
     });
   }
 
@@ -815,15 +814,6 @@
       try { await WriteAIApi.syncFromExtension?.(); } catch { /* ignore */ }
     }
     syncLandingAuthNav();
-
-    document.querySelectorAll('[data-landing-logout]').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        WriteAIApi.setToken('');
-        WriteAIApi.signOutExtension?.();
-        syncLandingAuthNav();
-      });
-    });
 
     // Logged-in users clicking Pro CTA go straight to checkout in the app
     document.querySelectorAll('[data-upgrade-cta]').forEach((el) => {

@@ -65,13 +65,9 @@ html[data-theme="light"] .landing-nav {
   gap: 8px;
 }
 
-.landing-account {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.landing-account.hidden,
+/* Auth nav: only one of Sign in / Account is visible */
+[data-auth-guest][hidden],
+[data-auth-user][hidden],
 [data-auth-guest].hidden,
 [data-auth-user].hidden {
   display: none !important;

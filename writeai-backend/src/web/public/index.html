@@ -35,11 +35,7 @@
 
       <div class="landing-nav-right">
         <a href="/login" class="btn btn-ghost" data-auth-guest>Sign in</a>
-        <div class="landing-account hidden" data-auth-user>
-          <a href="/app" class="btn btn-ghost">Open app</a>
-          <a href="/app/settings" class="btn btn-ghost landing-account-link">Account</a>
-          <button type="button" class="btn btn-ghost" data-landing-logout>Log out</button>
-        </div>
+        <a href="/app" class="btn btn-ghost" data-auth-user hidden>Account</a>
         <button class="btn btn-chrome" data-install-ext type="button">
           <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
           Install Free Extension
@@ -66,10 +62,7 @@
       <a href="#testimonials">Feedback</a>
       <a href="#pricing">Pricing</a>
       <a href="/login" data-auth-guest>Sign in</a>
-      <a href="/app" data-auth-user class="hidden">Open app</a>
-      <a href="/app/settings" data-auth-user class="hidden">Account</a>
-      <button type="button" data-auth-user data-landing-logout class="hidden">Log out</button>
-      <a href="/app" data-auth-guest>Web app</a>
+      <a href="/app" data-auth-user hidden>Account</a>
       <button class="btn btn-chrome" data-install-ext type="button" style="margin-top:12px">
         <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
         Install Free Chrome Extension
@@ -827,8 +820,7 @@
           <h4>Account</h4>
           <a href="/login" data-auth-guest>Sign in</a>
           <a href="/login?mode=signup" data-auth-guest>Create account</a>
-          <a href="/app" data-auth-user class="hidden">Open app</a>
-          <a href="/app/settings" data-auth-user class="hidden">Account</a>
+          <a href="/app" data-auth-user hidden>Account</a>
           <a href="/contact">Contact / Support</a>
         </div>
         <div class="footer-col">
