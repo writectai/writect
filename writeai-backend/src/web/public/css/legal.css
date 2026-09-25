@@ -1,6 +1,8 @@
-/* Legal / contact pages */
+/* Legal / contact pages (use landing nav + footer) */
 .legal-page {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background:
     radial-gradient(ellipse 80% 50% at 10% -10%, rgba(242, 24, 98, 0.08), transparent 55%),
     radial-gradient(ellipse 70% 45% at 100% 0%, rgba(107, 15, 179, 0.07), transparent 50%),
@@ -8,27 +10,15 @@
   color: var(--ink);
 }
 
-.legal-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 20px 0;
+.legal-main {
+  flex: 1;
+  padding: 40px 0 56px;
 }
-
-.legal-top a.back {
-  font-size: 14px;
-  font-weight: 550;
-  color: var(--muted);
-  text-decoration: none;
-}
-
-.legal-top a.back:hover { color: var(--brand); }
 
 .legal-wrap {
   max-width: 760px;
   margin: 0 auto;
-  padding: 8px 0 72px;
+  padding: 0;
 }
 
 .legal-wrap h1 {
@@ -46,9 +36,16 @@
 }
 
 .legal-wrap h2 {
-  font-size: 1.05rem;
+  font-size: 1.08rem;
+  font-weight: 700;
+  margin: 32px 0 12px;
+  color: var(--heading, var(--ink));
+}
+
+.legal-wrap h3 {
+  font-size: 0.98rem;
   font-weight: 650;
-  margin: 28px 0 10px;
+  margin: 18px 0 8px;
   color: var(--heading, var(--ink));
 }
 
@@ -60,9 +57,30 @@
   margin: 0 0 12px;
 }
 
-.legal-wrap ul {
-  padding-left: 1.2em;
+.legal-wrap ul,
+.legal-wrap ol {
+  padding-left: 1.25em;
   margin: 0 0 16px;
+}
+
+.legal-wrap li + li {
+  margin-top: 6px;
+}
+
+.legal-contact-block {
+  margin-top: 8px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border, var(--line));
+  background: linear-gradient(180deg, #fff 0%, #FFF8FB 100%);
+}
+
+.legal-contact-block p {
+  margin: 0 0 6px;
+}
+
+.legal-contact-block p:last-child {
+  margin-bottom: 0;
 }
 
 .legal-wrap a {
@@ -158,6 +176,6 @@
 }
 
 @media (max-width: 640px) {
+  .legal-main { padding: 24px 0 40px; }
   .legal-panel { padding: 22px 18px 26px; }
-  .legal-wrap { padding-bottom: 48px; }
 }

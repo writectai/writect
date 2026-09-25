@@ -4,49 +4,254 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terms of Service — Writect</title>
+  <meta name="description" content="Terms of Service for Writect AI — website, web app, and Chrome extension. Operated by Websrow FZE.">
   <link rel="icon" type="image/png" href="/img/Writect-logo-icon.png">
   <script>
     (function () {
-      var t = localStorage.getItem('writeai_web_theme') || 'light';
-      document.documentElement.dataset.theme = t;
+      document.documentElement.dataset.theme = 'light';
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/shared.css">
+  <link rel="stylesheet" href="/css/landing.css">
   <link rel="stylesheet" href="/css/legal.css">
 </head>
-<body class="legal-page">
-  <div class="container">
-    <div class="legal-top">
+<body class="landing legal-page">
+
+  <nav class="landing-nav">
+    <div class="container landing-nav-inner">
       <a href="/" class="logo" aria-label="Writect AI">
-        <img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="140" height="32">
+        <img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="168" height="32">
       </a>
-      <a class="back" href="/">← Back to home</a>
+      <div class="landing-nav-center">
+        <a href="/#demos">Examples</a>
+        <a href="/#page-assistant">Page Assistant</a>
+        <a href="/#integrations">Where it works</a>
+        <a href="/#features">Tools</a>
+        <a href="/#testimonials">Feedback</a>
+        <a href="/#pricing">Pricing</a>
+      </div>
+      <div class="landing-nav-right">
+        <a href="/login" class="btn btn-ghost" data-auth-guest>Sign in</a>
+        <a href="/app" class="btn btn-ghost" data-auth-user hidden>Account</a>
+        <button class="btn btn-chrome" data-install-ext type="button">
+          <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+          Install Free Extension
+        </button>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" type="button" aria-label="Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
     </div>
-    <article class="legal-wrap legal-panel">
-      <h1>Terms of Service</h1>
-      <p class="legal-updated">Last updated: September 25, 2026</p>
-      <p>By using Writect (website, web app, or Chrome extension), you agree to these terms.</p>
+  </nav>
 
-      <h2>The service</h2>
-      <p>Writect offers AI writing tools with Free and Pro plans. Free includes limited AI Actions. Pro is a paid subscription with higher limits and additional features.</p>
-
-      <h2>Accounts</h2>
-      <p>You may sign in with Google or create an account with email and password. You are responsible for activity under your account. Do not misuse the service or attempt to bypass usage limits.</p>
-
-      <h2>AI output</h2>
-      <p>AI results may be inaccurate or incomplete. You are responsible for reviewing content before you use or publish it.</p>
-
-      <h2>Billing</h2>
-      <p>Pro is billed monthly through Stripe. You can cancel anytime from Manage billing; access continues until the end of the paid period.</p>
-
-      <h2>Acceptable use</h2>
-      <p>Do not use Writect for unlawful, harmful, or abusive purposes, or to attack our systems or other users.</p>
-
-      <h2>Contact</h2>
-      <p>Questions: <a href="/contact">Contact &amp; Support</a>.</p>
-    </article>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="mobile-nav-panel">
+      <div class="mobile-nav-head">
+        <a href="/" class="logo" aria-label="Writect AI"><img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="150" height="34"></a>
+        <button class="mobile-nav-x" id="mobile-nav-close" type="button" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <a href="/#demos">Examples</a>
+      <a href="/#page-assistant">Page Assistant</a>
+      <a href="/#integrations">Where it works</a>
+      <a href="/#features">Tools</a>
+      <a href="/#testimonials">Feedback</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/login" data-auth-guest>Sign in</a>
+      <a href="/app" data-auth-user hidden>Account</a>
+      <button class="btn btn-chrome" data-install-ext type="button" style="margin-top:12px">
+        <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+        Install Free Chrome Extension
+      </button>
+    </div>
   </div>
+
+  <main class="legal-main">
+    <div class="container">
+      <article class="legal-wrap legal-panel">
+        <h1>Terms of Service</h1>
+        <p class="legal-updated">Last updated: September 25, 2026</p>
+        <p>Welcome to Writect AI.</p>
+        <p>These Terms of Service (“Terms”) explain the rules for using Writect AI, including our website, web application, Chrome extension, AI writing features, and related services.</p>
+        <p>Writect AI (“Writect”, “we”, “us”, or “our”) is operated by Websrow FZE.</p>
+        <p>By creating an account, accessing Writect, purchasing a subscription, or otherwise using our services, you agree to these Terms. If you do not agree with these Terms, please do not use Writect.</p>
+
+        <h2>1. About Writect</h2>
+        <p>Writect is an AI-powered writing assistant designed to help users write, rewrite, improve, translate, summarize, explain, and work with text.</p>
+        <p>Writect may be available through our website and web application, Writect Chrome Extension, Page Assistant, text selection tools, AI chat and writing tools, and other features we may introduce in the future.</p>
+        <p>Some features are available for free, while others require a paid subscription.</p>
+
+        <h2>2. Your Writect Account</h2>
+        <p>You may need to create an account to use some Writect features. You can create an account using Google Sign-In or by signing up with your email address and password.</p>
+        <p>You agree to provide accurate information when creating your account and to keep your login details secure. You are responsible for activity that takes place through your account.</p>
+        <p>You should not share your account credentials with anyone who is not authorized to use your account. If you believe someone has gained unauthorized access to your account, please contact us at <a href="mailto:support@writect.ai">support@writect.ai</a>.</p>
+
+        <h2>3. Free and Pro Plans</h2>
+        <p>Writect may offer both Free and Pro plans. Free accounts may have limits on features, AI actions, AI models, response lengths, Page Assistant usage, or other functionality. Pro accounts provide higher usage limits and access to additional features.</p>
+        <p>The exact features, limits, and prices available under each plan are shown on Writect at the time of purchase or use.</p>
+        <p>We may change plan features, usage limits, pricing, or availability from time to time. Where required, we will provide appropriate notice of material changes affecting an existing paid subscription.</p>
+
+        <h2>4. AI Actions and Usage Limits</h2>
+        <p>Writect uses AI Actions and other technical limits to manage use of the service. Different actions may require different amounts of processing depending on factors such as the AI model selected, length of content, Page Assistant usage, or complexity of the request.</p>
+        <p>Writect may apply daily or monthly usage limits, rate limits, request-size limits, model-specific limits, and fair-use restrictions.</p>
+        <p>You must not attempt to bypass, manipulate, disable, or interfere with these limits. Unused usage allowances do not have monetary value and do not automatically carry forward unless Writect specifically states otherwise.</p>
+
+        <h2>5. AI-Generated Content</h2>
+        <p>AI-generated results can sometimes be inaccurate, incomplete, misleading, outdated, inappropriate, or unsuitable for your intended purpose. You are responsible for reviewing AI-generated content before relying on, publishing, sending, submitting, or otherwise using it.</p>
+        <p>Writect does not guarantee that AI-generated content will always be accurate, complete, unique, error-free, suitable for a particular purpose, or free from similarities to content generated for other users.</p>
+        <p>For important professional, legal, financial, medical, or other high-impact matters, you should verify relevant information independently and obtain qualified professional advice where appropriate.</p>
+
+        <h2>6. Your Content</h2>
+        <p>You keep your rights to the text and other content you provide to Writect, subject to any rights belonging to third parties.</p>
+        <p>You give Writect permission to process the content you submit only as reasonably necessary to provide, secure, maintain, and operate the service.</p>
+        <p>You are responsible for making sure you have the necessary rights or permission to submit content to Writect. You should not submit content that violates another person’s intellectual property, privacy, confidentiality, or other legal rights.</p>
+
+        <h2>7. How Your Writing Content Is Processed</h2>
+        <p>Writect does not permanently store your prompts, selected text, webpage content, or AI-generated responses in our database.</p>
+        <p>When you use an AI feature, your content is processed to complete your request and may be held briefly in server memory while the request is being processed. The content needed to generate your result may be sent to an AI provider such as OpenAI or Google Gemini.</p>
+        <p>Writect does not train its own AI models using your writing. Our handling of personal information is explained in our <a href="/privacy">Privacy Policy</a>.</p>
+
+        <h2>8. Web App Chat History</h2>
+        <p>Your Writect web app chat history is stored locally in your browser rather than in Writect’s database.</p>
+        <p>Your chat history may be lost if you clear your browser or website data, remove relevant local browser storage, change browsers, or change devices. Writect does not guarantee that locally stored chat history can be recovered.</p>
+
+        <h2>9. Chrome Extension</h2>
+        <p>The Writect Chrome Extension allows you to use Writect features while visiting supported websites. Depending on the feature you choose to use, Writect may need to process selected text or relevant webpage content.</p>
+        <p>This may be required to fix grammar, rephrase or translate text, change tone, summarize or explain content, or use Page Assistant.</p>
+        <p>You are responsible for using the extension in accordance with these Terms, applicable laws, and the terms of websites or services you use. We cannot guarantee that Writect will work perfectly on every website or remain compatible with every third-party website after that website changes.</p>
+
+        <h2>10. Third-Party AI Providers</h2>
+        <p>Writect relies on third-party AI providers, including services such as OpenAI and Google Gemini, to provide certain AI functionality.</p>
+        <p>These services are operated independently from Writect. Their availability, performance, models, response quality, limits, and functionality may change without our control.</p>
+        <p>Writect may add, remove, replace, or change AI providers or models when reasonably necessary to operate or improve the service.</p>
+
+        <h2>11. Subscription and Billing</h2>
+        <p>Paid Writect subscriptions are processed through Stripe. When you purchase a Pro subscription, you agree to pay the price shown at the time of purchase.</p>
+        <p>Subscriptions may automatically renew at the applicable billing interval until cancelled, if this is disclosed during checkout. You authorize the applicable payment provider to charge your selected payment method for subscription fees and applicable taxes or charges.</p>
+        <p>Writect does not directly store your full payment card details when payment information is handled by Stripe.</p>
+
+        <h2>12. Cancellation</h2>
+        <p>You may cancel your paid Writect subscription through the available billing management option.</p>
+        <p>Unless otherwise stated during purchase, cancellation stops future renewals and your paid access will normally continue until the end of your current paid billing period. After the paid period ends, your account may be moved to the Free plan and Free plan limits may apply.</p>
+        <p>Deleting the Chrome extension does not automatically cancel a paid subscription.</p>
+
+        <h2>13. Refunds</h2>
+        <p>Except where required by applicable law, all payments made to Writect are non-refundable. We do not provide refunds or credits for unused subscription periods, partial subscription periods, or unused AI Actions.</p>
+        <p>If you believe you were charged incorrectly or have a billing problem, please contact us at <a href="mailto:support@writect.ai">support@writect.ai</a>. Any refund or other remedy that is required by applicable law will remain available.</p>
+
+        <h2>14. Acceptable Use</h2>
+        <p>You may use Writect for lawful personal and business purposes.</p>
+        <p>You must not use Writect to break applicable laws or regulations; violate another person’s rights; process content you have no right to use; distribute malware or harmful code; hack, disrupt, damage, or overload Writect; circumvent account, subscription, security, or usage restrictions; abuse Free plan limits; scrape or extract Writect’s systems without authorization; reverse engineer Writect except where applicable law expressly permits it; facilitate fraud, impersonation, abuse, or other unlawful activity; obtain unauthorized access to another person’s account or data; or resell or redistribute access to Writect without our permission.</p>
+        <p>We may restrict or suspend access where reasonably necessary to protect Writect, our users, third parties, or the security of our services.</p>
+
+        <h2>15. Intellectual Property</h2>
+        <p>Writect, including its software, website, extension, branding, logos, interface, design, and other materials provided by us, belongs to Websrow FZE or its applicable licensors and is protected by applicable intellectual-property laws.</p>
+        <p>These Terms give you permission to use Writect. They do not transfer ownership of Writect or its intellectual property to you.</p>
+        <p>You may not copy, reproduce, sell, license, distribute, modify, or create unauthorized derivative works from Writect except where expressly permitted by us or applicable law.</p>
+
+        <h2>16. Ownership of Your AI Output</h2>
+        <p>As between you and Writect, and to the extent permitted by applicable law, Writect does not claim ownership of AI-generated output created for you merely because you used our service.</p>
+        <p>AI-generated content may not always qualify for intellectual-property protection, and similar or identical content may sometimes be generated for other users. You are responsible for determining whether and how AI-generated content can legally be used for your intended purpose.</p>
+
+        <h2>17. Third-Party Websites and Services</h2>
+        <p>Writect may interact with or rely on third-party services such as websites, browsers, AI providers, payment providers, hosting providers, and authentication providers. Those services may have their own terms and privacy policies.</p>
+        <p>Writect is not responsible for third-party services that we do not control, including their availability, content, policies, security, or changes to their services.</p>
+
+        <h2>18. Service Availability and Changes</h2>
+        <p>We work to keep Writect available and functioning properly, but we cannot guarantee uninterrupted service.</p>
+        <p>Writect may occasionally be unavailable because of maintenance, updates, technical problems, internet or infrastructure failures, third-party provider outages, security issues, or events outside our reasonable control.</p>
+        <p>We may modify, add, remove, or discontinue features when necessary to maintain, secure, improve, or develop Writect. Where a material change significantly affects a paid service, we will provide notice where reasonably appropriate or legally required.</p>
+
+        <h2>19. Suspension and Termination</h2>
+        <p>We may suspend, restrict, or terminate an account where reasonably necessary if we believe the user seriously or repeatedly violates these Terms, uses Writect unlawfully, attempts to abuse usage limits, creates security risks, engages in fraudulent activity, or fails to pay applicable subscription charges.</p>
+        <p>Where appropriate, we may provide notice or an opportunity to resolve the issue. You may stop using Writect at any time.</p>
+
+        <h2>20. Disclaimer of Warranties</h2>
+        <p>To the extent permitted by applicable law, Writect is provided on an “as is” and “as available” basis.</p>
+        <p>We do not guarantee that Writect will always be uninterrupted, error-free, completely secure, or suitable for every particular purpose. AI technology can make mistakes, and you are responsible for reviewing and deciding whether to use Writect’s output.</p>
+        <p>Nothing in these Terms excludes warranties or consumer rights that cannot legally be excluded.</p>
+
+        <h2>21. Limitation of Liability</h2>
+        <p>To the maximum extent permitted by applicable law, Websrow FZE and Writect will not be liable for indirect, incidental, special, consequential, or similar losses arising from your use of, or inability to use, Writect.</p>
+        <p>This may include loss of profits, business opportunities, data, goodwill, or other intangible losses where such exclusions are legally permitted.</p>
+        <p>Nothing in these Terms limits or excludes liability that cannot legally be limited or excluded.</p>
+
+        <h2>22. Privacy</h2>
+        <p>Your privacy is important to us. Our <a href="/privacy">Privacy Policy</a> explains what information Writect collects, how information is processed, which third-party services may receive information, and your privacy rights.</p>
+        <p>By using Writect, you should also review our <a href="/privacy">Privacy Policy</a>.</p>
+
+        <h2>23. Changes to These Terms</h2>
+        <p>We may update these Terms when Writect changes, when we introduce new features, or when legal or operational requirements change.</p>
+        <p>When we update these Terms, we will change the Last Updated date at the top of this page. If we make a material change, we may provide additional notice where appropriate or required by law.</p>
+        <p>Your continued use of Writect after updated Terms become effective means the updated Terms will apply to your continued use, subject to applicable law.</p>
+
+        <h2>24. Governing Law and Jurisdiction</h2>
+        <p>These Terms are governed by and interpreted in accordance with the applicable laws of the United Arab Emirates and the Emirate of Sharjah. Websrow FZE is registered in Sharjah Publishing City Free Zone (SPC Free Zone), Sharjah, United Arab Emirates.</p>
+        <p>Subject to any mandatory rights you may have under applicable consumer protection laws, any dispute arising from or relating to these Terms or your use of Writect will be subject to the jurisdiction of the competent courts of Sharjah, United Arab Emirates. Nothing in these Terms limits any rights that cannot legally be excluded or restricted under applicable law.</p>
+
+        <h2>25. Contact Us</h2>
+        <p>If you have questions about these Terms, your subscription, or Writect, please contact us:</p>
+        <div class="legal-contact-block">
+          <p><strong>Writect AI</strong></p>
+          <p>Operated by Websrow FZE</p>
+          <p>Website: <a href="https://writect.ai">writect.ai</a></p>
+          <p>Email: <a href="mailto:support@writect.ai">support@writect.ai</a></p>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="landing-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo logo--footer" aria-label="Writect AI">
+            <img class="logo-img" src="/img/Writect-AI-logo-white.png" alt="Writect AI" width="160" height="36">
+          </a>
+          <p>In-page writing tools plus a web chat workspace — fix, translate, rephrase, summarize, and draft.</p>
+          <button class="btn btn-chrome" data-install-ext type="button" style="margin-top:16px">
+            <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+            Install Free Chrome Extension
+          </button>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="/#features">Tools</a>
+          <a href="/#pricing">Pricing</a>
+          <a href="/#demos">Examples</a>
+          <a href="/app">Web app</a>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <a href="/login" data-auth-guest>Sign in</a>
+          <a href="/login?mode=signup" data-auth-guest>Create account</a>
+          <a href="/app" data-auth-user hidden>Account</a>
+          <a href="/contact">Contact / Support</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/cookies">Cookie Policy</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Writect. All rights reserved.</span>
+        <div class="footer-badges">
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Encrypted in transit</span>
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>We don’t train our own models on your writing</span>
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Secure Google sign-in</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script src="/js/config.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/landing.js"></script>
 </body>
 </html>

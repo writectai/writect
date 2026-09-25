@@ -4,48 +4,146 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cookie Policy — Writect</title>
+  <meta name="description" content="How Writect uses cookies and browser storage.">
   <link rel="icon" type="image/png" href="/img/Writect-logo-icon.png">
   <script>
     (function () {
-      var t = localStorage.getItem('writeai_web_theme') || 'light';
-      document.documentElement.dataset.theme = t;
+      document.documentElement.dataset.theme = 'light';
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/shared.css">
+  <link rel="stylesheet" href="/css/landing.css">
   <link rel="stylesheet" href="/css/legal.css">
 </head>
-<body class="legal-page">
-  <div class="container">
-    <div class="legal-top">
+<body class="landing legal-page">
+
+  <nav class="landing-nav">
+    <div class="container landing-nav-inner">
       <a href="/" class="logo" aria-label="Writect AI">
-        <img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="140" height="32">
+        <img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="168" height="32">
       </a>
-      <a class="back" href="/">← Back to home</a>
+      <div class="landing-nav-center">
+        <a href="/#demos">Examples</a>
+        <a href="/#page-assistant">Page Assistant</a>
+        <a href="/#integrations">Where it works</a>
+        <a href="/#features">Tools</a>
+        <a href="/#testimonials">Feedback</a>
+        <a href="/#pricing">Pricing</a>
+      </div>
+      <div class="landing-nav-right">
+        <a href="/login" class="btn btn-ghost" data-auth-guest>Sign in</a>
+        <a href="/app" class="btn btn-ghost" data-auth-user hidden>Account</a>
+        <button class="btn btn-chrome" data-install-ext type="button">
+          <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+          Install Free Extension
+        </button>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" type="button" aria-label="Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
     </div>
-    <article class="legal-wrap legal-panel">
-      <h1>Cookie Policy</h1>
-      <p class="legal-updated">Last updated: September 25, 2026</p>
-      <p>Writect uses a small amount of browser storage to make the product work.</p>
+  </nav>
 
-      <h2>What we use</h2>
-      <ul>
-        <li><strong>Essential session data</strong> — to keep you signed in on the web app.</li>
-        <li><strong>Preferences</strong> — such as theme (light/dark) stored in localStorage.</li>
-        <li><strong>Web chat history</strong> — recent chats are stored in localStorage on your device only (not in our database).</li>
-        <li><strong>Extension storage</strong> — the Chrome extension stores your session and settings locally on your device.</li>
-      </ul>
-
-      <h2>Analytics cookies</h2>
-      <p>We do not currently use third-party advertising or analytics cookies on the marketing site.</p>
-
-      <h2>Your choices</h2>
-      <p>You can clear site data in your browser settings, or sign out to remove the web session. Extension data can be cleared by removing the extension or clearing its storage.</p>
-
-      <h2>Contact</h2>
-      <p>Questions: <a href="/contact">Contact &amp; Support</a>.</p>
-    </article>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="mobile-nav-panel">
+      <div class="mobile-nav-head">
+        <a href="/" class="logo" aria-label="Writect AI"><img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="150" height="34"></a>
+        <button class="mobile-nav-x" id="mobile-nav-close" type="button" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <a href="/#demos">Examples</a>
+      <a href="/#page-assistant">Page Assistant</a>
+      <a href="/#integrations">Where it works</a>
+      <a href="/#features">Tools</a>
+      <a href="/#testimonials">Feedback</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/login" data-auth-guest>Sign in</a>
+      <a href="/app" data-auth-user hidden>Account</a>
+      <button class="btn btn-chrome" data-install-ext type="button" style="margin-top:12px">
+        <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+        Install Free Chrome Extension
+      </button>
+    </div>
   </div>
+
+  <main class="legal-main">
+    <div class="container">
+      <article class="legal-wrap legal-panel">
+        <h1>Cookie Policy</h1>
+        <p class="legal-updated">Last updated: September 25, 2026</p>
+        <p>Writect AI (operated by Websrow FZE) may use cookies, local storage, and similar browser technologies to make the service work properly. This page summarizes those practices; full details are in our <a href="/privacy">Privacy Policy</a> (Cookies and Local Browser Storage).</p>
+
+        <h2>What we use</h2>
+        <ul>
+          <li><strong>Essential session data</strong> — to keep you signed in and maintain sessions on the web app.</li>
+          <li><strong>Preferences</strong> — such as theme (light/dark) stored in localStorage.</li>
+          <li><strong>Web chat history</strong> — Writect web app chat history is stored locally in your browser and is not stored in Writect’s database.</li>
+          <li><strong>Extension storage</strong> — the Chrome extension stores your session and settings locally on your device.</li>
+        </ul>
+
+        <h2>Analytics cookies</h2>
+        <p>We do not currently use third-party advertising or analytics cookies on the marketing site.</p>
+
+        <h2>Your choices</h2>
+        <p>You can control browser storage through your browser settings. Clearing cookies, local storage, or site data may remove locally stored information, including Writect web app chat history. Extension data can be cleared by removing the extension or clearing its storage.</p>
+
+        <h2>Contact</h2>
+        <p>Questions: <a href="mailto:support@writect.ai">support@writect.ai</a> or <a href="/contact">Contact &amp; Support</a>.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="landing-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo logo--footer" aria-label="Writect AI">
+            <img class="logo-img" src="/img/Writect-AI-logo-white.png" alt="Writect AI" width="160" height="36">
+          </a>
+          <p>In-page writing tools plus a web chat workspace — fix, translate, rephrase, summarize, and draft.</p>
+          <button class="btn btn-chrome" data-install-ext type="button" style="margin-top:16px">
+            <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+            Install Free Chrome Extension
+          </button>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="/#features">Tools</a>
+          <a href="/#pricing">Pricing</a>
+          <a href="/#demos">Examples</a>
+          <a href="/app">Web app</a>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <a href="/login" data-auth-guest>Sign in</a>
+          <a href="/login?mode=signup" data-auth-guest>Create account</a>
+          <a href="/app" data-auth-user hidden>Account</a>
+          <a href="/contact">Contact / Support</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/cookies">Cookie Policy</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Writect. All rights reserved.</span>
+        <div class="footer-badges">
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Encrypted in transit</span>
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>We don’t train our own models on your writing</span>
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Secure Google sign-in</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script src="/js/config.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/landing.js"></script>
 </body>
 </html>

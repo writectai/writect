@@ -4,54 +4,303 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy Policy — Writect</title>
+  <meta name="description" content="How Writect AI collects, uses, and protects your information. Operated by Websrow FZE.">
   <link rel="icon" type="image/png" href="/img/Writect-logo-icon.png">
   <script>
     (function () {
-      var t = localStorage.getItem('writeai_web_theme') || 'light';
-      document.documentElement.dataset.theme = t;
+      document.documentElement.dataset.theme = 'light';
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/shared.css">
+  <link rel="stylesheet" href="/css/landing.css">
   <link rel="stylesheet" href="/css/legal.css">
 </head>
-<body class="legal-page">
-  <div class="container">
-    <div class="legal-top">
+<body class="landing legal-page">
+
+  <nav class="landing-nav">
+    <div class="container landing-nav-inner">
       <a href="/" class="logo" aria-label="Writect AI">
-        <img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="140" height="32">
+        <img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="168" height="32">
       </a>
-      <a class="back" href="/">← Back to home</a>
+      <div class="landing-nav-center">
+        <a href="/#demos">Examples</a>
+        <a href="/#page-assistant">Page Assistant</a>
+        <a href="/#integrations">Where it works</a>
+        <a href="/#features">Tools</a>
+        <a href="/#testimonials">Feedback</a>
+        <a href="/#pricing">Pricing</a>
+      </div>
+      <div class="landing-nav-right">
+        <a href="/login" class="btn btn-ghost" data-auth-guest>Sign in</a>
+        <a href="/app" class="btn btn-ghost" data-auth-user hidden>Account</a>
+        <button class="btn btn-chrome" data-install-ext type="button">
+          <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+          Install Free Extension
+        </button>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" type="button" aria-label="Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
     </div>
-    <article class="legal-wrap legal-panel">
-      <h1>Privacy Policy</h1>
-      <p class="legal-updated">Last updated: September 25, 2026</p>
-      <p>Writect (“we”) provides an AI writing Chrome extension and web app. This policy explains what we collect and how we use it.</p>
+  </nav>
 
-      <h2>What we collect</h2>
-      <ul>
-        <li>Account info from Google Sign-In or email signup (name, email, avatar when provided).</li>
-        <li>Usage data needed to run the product (AI Actions counts, plan, billing status).</li>
-        <li>Text you submit for AI features, processed to return a result (not permanently stored in our database).</li>
-        <li>Technical logs (errors, request metadata) to keep the service reliable.</li>
-      </ul>
-
-      <h2>Where writing and chats live</h2>
-      <p>We do not permanently store your prompts, selected text, webpage content, or AI-generated responses in Writect’s database. Web app chat history is saved locally in your browser so you can reopen recent chats on that device. Clearing site data or using another browser removes that history.</p>
-
-      <h2>How we use data</h2>
-      <p>We use your data to provide Writect features, enforce Free/Pro limits, process payments via Stripe, and improve reliability. We do not sell your personal data.</p>
-
-      <h2>AI providers</h2>
-      <p>To generate replies, we send the text you submit to third-party AI providers (such as OpenAI and Google Gemini) under our API accounts. We do not use your writing to train Writect’s own models. Provider handling of data is also governed by their terms and settings.</p>
-
-      <h2>Security</h2>
-      <p>Traffic is encrypted in transit (HTTPS). Accounts use Google Sign-In and/or email and password.</p>
-
-      <h2>Contact</h2>
-      <p>Questions about privacy: <a href="/contact">Contact &amp; Support</a>.</p>
-    </article>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="mobile-nav-panel">
+      <div class="mobile-nav-head">
+        <a href="/" class="logo" aria-label="Writect AI"><img class="logo-img" src="/img/Writect-AI-logo.png" alt="Writect AI" width="150" height="34"></a>
+        <button class="mobile-nav-x" id="mobile-nav-close" type="button" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <a href="/#demos">Examples</a>
+      <a href="/#page-assistant">Page Assistant</a>
+      <a href="/#integrations">Where it works</a>
+      <a href="/#features">Tools</a>
+      <a href="/#testimonials">Feedback</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/login" data-auth-guest>Sign in</a>
+      <a href="/app" data-auth-user hidden>Account</a>
+      <button class="btn btn-chrome" data-install-ext type="button" style="margin-top:12px">
+        <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+        Install Free Chrome Extension
+      </button>
+    </div>
   </div>
+
+  <main class="legal-main">
+    <div class="container">
+      <article class="legal-wrap legal-panel">
+        <h1>Privacy Policy</h1>
+        <p class="legal-updated">Last updated: September 25, 2026</p>
+        <p>At Writect AI, your privacy matters to us. This Privacy Policy explains what information we collect, why we need it, and how it is handled when you use Writect.</p>
+        <p>This policy applies to Writect AI, including our website at <a href="https://writect.ai">writect.ai</a>, the Writect Chrome Extension, and related services. Writect AI is operated by Websrow FZE.</p>
+        <p>By using Writect, you acknowledge the practices described in this Privacy Policy.</p>
+
+        <h2>1. Information We Collect</h2>
+        <p>We collect only the information reasonably needed to provide, secure, maintain, and improve Writect.</p>
+
+        <h3>Account Information</h3>
+        <p>When you create a Writect account, we may collect:</p>
+        <ul>
+          <li>Your name</li>
+          <li>Email address</li>
+          <li>Account ID</li>
+          <li>Profile picture, if you sign in with Google</li>
+          <li>Account preferences</li>
+          <li>Subscription and plan information</li>
+        </ul>
+        <p>You can create an account using Google Sign-In or by signing up directly with your email and password.</p>
+
+        <h3>Text You Use With Writect</h3>
+        <p>When you use Writect’s AI features, you may provide text for Writect to process. This can include text you ask Writect to fix, rephrase, translate, summarize, explain, shorten, expand, change in tone, or otherwise improve.</p>
+        <p>Writect does not permanently store your prompts, selected text, webpage content, or AI-generated responses in our Database. Your content is processed for the request and may be held briefly in server memory while the request is being completed.</p>
+        <p>The content needed to complete your request is sent to the selected AI provider, such as OpenAI or Google Gemini.</p>
+
+        <h2>2. Web App Chat History</h2>
+        <p>Writect web app chat history is stored locally in your browser and is not stored in Writect’s database.</p>
+        <p>Because this history is stored on your device, it may be lost if you clear your browser or site data, use a different browser, or switch to another device. Writect currently does not provide multi-device synchronization of this locally stored chat history.</p>
+
+        <h2>3. Writect Chrome Extension</h2>
+        <p>The Writect Chrome Extension lets you use Writect’s AI writing tools while browsing the web.</p>
+        <p>When you choose to use a Writect feature, the extension may process selected text, text you enter into Writect, and content needed to perform the action you requested. For features such as Page Assistant, relevant webpage content may also need to be processed.</p>
+        <p>Installing the extension does not mean Writect permanently stores everything you browse or type online. Writing content used for an AI request is processed to provide the requested feature and is not permanently saved in our database.</p>
+
+        <h2>4. Page Assistant</h2>
+        <p>Page Assistant helps you understand and work with content on the webpage you are viewing. When you use Page Assistant, Writect may process relevant webpage content to provide functions such as summarizing, explaining, answering questions, or working with page content.</p>
+        <p>Content processed through Page Assistant is not permanently stored in Writect’s Database. It may be temporarily processed by our API and the selected AI provider to complete your request.</p>
+
+        <h2>5. Account and Usage Information</h2>
+        <p>Writect stores account and usage information needed to operate the service. This may include:</p>
+        <ul>
+          <li>Name and email address</li>
+          <li>Account and authentication information</li>
+          <li>Plan and subscription status</li>
+          <li>Stripe customer or subscription identifiers</li>
+          <li>AI action counts and usage information</li>
+          <li>AI model used</li>
+          <li>Token counts and related technical usage information</li>
+          <li>Technical or diagnostic information needed to operate and secure the service</li>
+        </ul>
+        <p>We use this information to manage accounts and plan limits, process subscriptions, monitor service performance, prevent abuse, troubleshoot problems, maintain security, and improve Writect.</p>
+
+        <h2>6. How We Use Your Information</h2>
+        <p>We use information collected through Writect to:</p>
+        <ul>
+          <li>Create and manage your account</li>
+          <li>Authenticate and sign you in</li>
+          <li>Provide Writect’s AI features</li>
+          <li>Process the AI actions you request</li>
+          <li>Manage Free and Pro plans and usage limits</li>
+          <li>Process subscriptions and payments</li>
+          <li>Provide customer support</li>
+          <li>Maintain and improve Writect</li>
+          <li>Detect fraud, misuse, and abuse</li>
+          <li>Protect Writect and our users</li>
+          <li>Fix bugs and technical issues</li>
+          <li>Send important account, security, payment, or service messages</li>
+          <li>Meet applicable legal requirements</li>
+        </ul>
+
+        <h2>7. AI Service Providers</h2>
+        <p>Writect uses third-party artificial intelligence providers to generate AI responses. Our current AI providers include OpenAI and Google Gemini.</p>
+        <p>When you use an AI feature, the content necessary to complete your request is sent to the relevant AI provider. For example, if you ask Writect to rephrase a paragraph, that paragraph must be processed by the AI provider so the requested result can be generated.</p>
+        <p>Writect does not train its own AI models on your writing.</p>
+        <p>Although Writect does not permanently store your writing content in its own database, third-party AI providers process information under their own applicable terms, privacy policies, contractual arrangements, and data-retention practices.</p>
+
+        <h2>8. Google Sign-In</h2>
+        <p>Writect offers Sign in with Google as one way to create or access your account. If you choose Google Sign-In, Google may provide us with basic account information such as your name, email address, profile picture, and Google account identifier.</p>
+        <p>We use this information to authenticate you and manage your Writect account. Writect currently uses Google for account authentication only. Signing in with Google does not give Writect access to your Gmail messages, Google Drive files, Google Calendar, or other private Google Workspace content.</p>
+        <p>If Writect introduces features in the future that require additional Google permissions, we will explain the requested access and update this Privacy Policy where necessary.</p>
+
+        <h2>9. Email and Password Sign-Up</h2>
+        <p>You may also create a Writect account using your email address and password. We use this information to create and authenticate your account and provide account-related services.</p>
+        <p>We use appropriate security practices for authentication credentials. You are responsible for keeping your login details confidential and should contact us if you believe your account has been accessed without permission.</p>
+
+        <h2>10. Payments and Stripe</h2>
+        <p>Payments for paid Writect plans are processed through Stripe. Stripe may collect information needed to process your payment, such as your name, billing information, payment card details, and transaction information.</p>
+        <p>Writect may receive limited payment-related information from Stripe, including subscription status, plan purchased, payment status, transaction or customer identifiers, and subscription dates.</p>
+        <p>Writect does not need to store your full payment card details when those details are handled directly by Stripe. Stripe processes payment information according to its own terms and privacy practices.</p>
+
+        <h2>12. Cookies and Local Browser Storage</h2>
+        <p>Writect may use cookies, local storage, and similar browser technologies to make the service work properly.</p>
+        <p>These technologies may be used to keep you signed in, maintain sessions, remember preferences, improve security, store web app chat history locally on your device, and improve the operation of Writect.</p>
+        <p>You can control browser storage through your browser settings. Clearing cookies, local storage, or site data may remove locally stored information, including Writect web app chat history.</p>
+
+        <h2>13. When We Share Information</h2>
+        <p>We do not sell your personal information.</p>
+        <p>We only share information when it is necessary to provide and operate Writect, comply with the law, protect our services and users, or fulfill our business obligations.</p>
+        <p>We may share limited information with trusted service providers that help us operate Writect, including:</p>
+        <ul>
+          <li>AI providers, such as OpenAI and Google Gemini, to process AI requests;</li>
+          <li>Hosting and infrastructure providers, such as Render;</li>
+          <li>Payment providers, such as Stripe;</li>
+          <li>Authentication, email, security, monitoring, and other technical service providers we may use to operate Writect.</li>
+        </ul>
+        <p>These providers receive only the information reasonably necessary to provide their services to us, subject to their applicable terms, privacy practices, and our contractual arrangements where applicable.</p>
+        <p>We may also disclose information when required by applicable law, court order, governmental request, or other valid legal process, or when reasonably necessary to protect Writect, Websrow FZE, our users, or others from fraud, abuse, security threats, or illegal activity.</p>
+        <p>If Writect or Websrow FZE is involved in a merger, acquisition, restructuring, financing, or sale of all or part of the business, information may be transferred as part of that transaction as permitted by applicable law.</p>
+
+        <h2>14. We Do Not Sell Personal Information</h2>
+        <p>Writect does not sell your personal information for money. We also do not sell the writing content you submit to Writect to advertisers or data brokers.</p>
+        <p>If our practices change in a way that affects your privacy rights, we will update this Privacy Policy and provide any notices or choices required by applicable law.</p>
+
+        <h2>15. Data Security</h2>
+        <p>We take reasonable technical and organizational measures designed to protect your information from unauthorized access, misuse, loss, or disclosure.</p>
+        <p>No website, browser extension, database, or internet transmission can be guaranteed to be completely secure. If you believe your Writect account or personal information has been compromised, contact us at <a href="mailto:support@writect.ai">support@writect.ai</a>.</p>
+
+        <h2>16. How Long We Keep Information</h2>
+        <p>We keep account and usage information only for as long as reasonably necessary for the purposes for which it was collected and to operate Writect.</p>
+        <p>Some information may need to be retained longer for security, fraud prevention, payment and accounting records, legal obligations, resolving disputes, or enforcing agreements.</p>
+        <p>Writect does not permanently store AI prompts, selected text, webpage content, or generated AI responses in its database. Web app chat history is stored locally on the user’s device.</p>
+
+        <h2>17. Account and Data Deletion</h2>
+        <p>You can request deletion of your Writect account and associated personal information by contacting us at <a href="mailto:support@writect.ai">support@writect.ai</a>.</p>
+        <p>When we receive a valid deletion request, we will delete or anonymize applicable personal information unless we are required or permitted to retain certain information for legal, security, fraud prevention, payment, accounting, or dispute-resolution purposes.</p>
+
+        <h2>18. Your Privacy Rights</h2>
+        <p>Depending on where you live, you may have rights regarding your personal information. These may include the right to:</p>
+        <ul>
+          <li>Request access to your personal information</li>
+          <li>Correct inaccurate information</li>
+          <li>Request deletion of your information</li>
+          <li>Request a copy of certain information</li>
+          <li>Object to or restrict certain processing where applicable</li>
+          <li>Withdraw consent where consent is the legal basis</li>
+          <li>Request data portability where applicable</li>
+          <li>Opt out of certain marketing communications</li>
+        </ul>
+        <p>Privacy rights vary by location and applicable law. To make a privacy request, email <a href="mailto:support@writect.ai">support@writect.ai</a>. We may need to verify your identity before completing certain requests.</p>
+
+        <h2>19. Users in the UK and Europe</h2>
+        <p>If you are located in the United Kingdom, European Economic Area, Switzerland, or another jurisdiction with similar data protection laws, we process personal information using an appropriate legal basis.</p>
+        <p>Depending on the circumstances, this may include processing needed to provide Writect to you, our legitimate interests in operating and securing Writect, your consent where appropriate, or compliance with a legal obligation.</p>
+        <p>You may also have the right to make a complaint to the relevant data protection authority in your country.</p>
+
+        <h2>20. United States Privacy Rights</h2>
+        <p>Residents of certain U.S. states may have additional privacy rights under applicable state privacy laws. Depending on your location, these rights may include access, correction, deletion, data portability, and rights relating to certain sales or sharing of personal information.</p>
+        <p>Writect does not sell your personal information for money. We will not discriminate against you for exercising privacy rights provided by applicable law.</p>
+
+        <h2>21. International Data Processing</h2>
+        <p>Writect is available to users in different countries. Websrow FZE and the third-party providers we use may process information in countries other than the country where you live.</p>
+        <p>Where required by applicable law, appropriate measures are used to protect personal information when it is transferred internationally.</p>
+
+        <h2>22. Children’s Privacy</h2>
+        <p>Writect is not intended for children below the minimum age required to independently use online services under applicable law.</p>
+        <p>We do not knowingly collect children’s personal information in violation of applicable law. If you believe a child has provided personal information to Writect improperly, contact us at <a href="mailto:support@writect.ai">support@writect.ai</a>.</p>
+
+        <h2>23. Emails From Writect</h2>
+        <p>We may send emails relating to your account, login or security, subscription, payments, important service updates, or other information needed to operate your account.</p>
+        <p>If Writect sends optional marketing communications, users may unsubscribe from those messages. Important non-marketing messages relating to an account, security, payments, or the service may still be sent.</p>
+
+        <h2>24. Third-Party Services and Links</h2>
+        <p>Writect may contain links to websites or services operated by third parties. We do not control their privacy practices. When you use a third-party service, its own privacy policy and terms may apply.</p>
+
+        <h2>25. Changes to This Privacy Policy</h2>
+        <p>We may update this Privacy Policy as Writect develops, including when we add features, change service providers, change how information is handled, or need to meet new legal requirements.</p>
+        <p>When we update this policy, we will update the Last Updated date at the top of the page. If a change materially affects how we handle personal information, we may provide additional notice where appropriate or required by law.</p>
+
+        <h2>26. Contact Us</h2>
+        <p>If you have questions about this Privacy Policy, want to make a privacy request, or have concerns about how Writect handles your information, please contact us:</p>
+        <div class="legal-contact-block">
+          <p><strong>Writect AI</strong></p>
+          <p>Operated by: Websrow FZE</p>
+          <p>Website: <a href="https://writect.ai">writect.ai</a></p>
+          <p>Privacy &amp; Support Email: <a href="mailto:support@writect.ai">support@writect.ai</a></p>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="landing-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo logo--footer" aria-label="Writect AI">
+            <img class="logo-img" src="/img/Writect-AI-logo-white.png" alt="Writect AI" width="160" height="36">
+          </a>
+          <p>In-page writing tools plus a web chat workspace — fix, translate, rephrase, summarize, and draft.</p>
+          <button class="btn btn-chrome" data-install-ext type="button" style="margin-top:16px">
+            <img class="chrome-logo" src="/img/chrome.svg" width="20" height="20" alt="">
+            Install Free Chrome Extension
+          </button>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="/#features">Tools</a>
+          <a href="/#pricing">Pricing</a>
+          <a href="/#demos">Examples</a>
+          <a href="/app">Web app</a>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <a href="/login" data-auth-guest>Sign in</a>
+          <a href="/login?mode=signup" data-auth-guest>Create account</a>
+          <a href="/app" data-auth-user hidden>Account</a>
+          <a href="/contact">Contact / Support</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/cookies">Cookie Policy</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Writect. All rights reserved.</span>
+        <div class="footer-badges">
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Encrypted in transit</span>
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>We don’t train our own models on your writing</span>
+          <span class="footer-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Secure Google sign-in</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script src="/js/config.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/landing.js"></script>
 </body>
 </html>
