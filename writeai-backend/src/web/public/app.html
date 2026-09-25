@@ -68,6 +68,7 @@
 <body>
   <script>document.documentElement.dataset.appBoot = '1';</script>
   <div class="app-shell">
+    <button type="button" class="sidebar-backdrop" id="sidebar-backdrop" aria-label="Close menu"></button>
     <aside class="app-sidebar" id="sidebar">
       <div class="sidebar-top">
         <a href="/app" class="logo sidebar-brand" aria-label="Writect AI">
@@ -117,9 +118,14 @@
 
     <main class="app-main">
       <header class="app-topbar">
-        <div class="topbar-title">
-          <span id="view-title">Chat</span>
-          <span id="plan-badge" class="badge badge-free">&nbsp;</span>
+        <div class="topbar-left">
+          <button class="topbar-menu-btn" id="sidebar-open-btn" type="button" title="Open menu" aria-label="Open menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="topbar-title">
+            <span id="view-title">Chat</span>
+            <span id="plan-badge" class="badge badge-free">&nbsp;</span>
+          </div>
         </div>
         <div class="topbar-actions">
           <a class="topbar-icon-btn" href="/" target="_blank" rel="noopener" title="Open website" aria-label="Open website">
@@ -138,7 +144,7 @@
 
       <div class="extension-banner" id="extension-banner">
         <span>💡 <strong>Use Writect on any site</strong> — install the Chrome extension for in-page editing.</span>
-        <button class="btn btn-secondary" type="button" onclick="alert('Load the unpacked extension from the Writect-extension folder in chrome://extensions')">Install extension</button>
+        <button class="btn btn-secondary" id="install-extension-btn" type="button">Install extension</button>
       </div>
 
       <!-- Chat view -->
@@ -161,23 +167,25 @@
             <textarea class="chat-textarea" id="chat-input" placeholder="Ask anything…" rows="1"></textarea>
             <div class="chat-input-tools">
               <div class="tool-group">
-                <button class="tool-icon-btn" id="attach-btn" type="button" title="Attach file">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-                </button>
-                <button class="tool-icon-btn" id="voice-btn" type="button" title="Voice → Writing" aria-pressed="false">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-                </button>
-                <input type="file" id="file-input" class="hidden" accept="image/*,.txt,.md,.csv,.json,.pdf" multiple>
-                <div class="model-picker" id="model-picker">
-                  <select class="model-select-native" id="model-select" title="AI model" tabindex="-1" aria-hidden="true">
-                    <option value="">Loading models…</option>
-                  </select>
-                  <button class="model-picker-trigger" id="model-picker-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
-                    <span class="model-picker-mark" aria-hidden="true">AI</span>
-                    <span class="model-picker-label" id="model-picker-label">Loading models…</span>
-                    <svg class="model-picker-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                <div class="tools-primary">
+                  <button class="tool-icon-btn" id="attach-btn" type="button" title="Attach file">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
                   </button>
-                  <div class="model-picker-menu" id="model-picker-menu" role="listbox" hidden></div>
+                  <button class="tool-icon-btn" id="voice-btn" type="button" title="Voice → Writing" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                  </button>
+                  <input type="file" id="file-input" class="hidden" accept="image/*,.txt,.md,.csv,.json,.pdf" multiple>
+                  <div class="model-picker" id="model-picker">
+                    <select class="model-select-native" id="model-select" title="AI model" tabindex="-1" aria-hidden="true">
+                      <option value="">Loading models…</option>
+                    </select>
+                    <button class="model-picker-trigger" id="model-picker-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                      <span class="model-picker-mark" aria-hidden="true">AI</span>
+                      <span class="model-picker-label" id="model-picker-label">Loading models…</span>
+                      <svg class="model-picker-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div class="model-picker-menu" id="model-picker-menu" role="listbox" hidden></div>
+                  </div>
                 </div>
                 <div class="length-group" id="length-group">
                   <button class="tool-chip" data-length="short" type="button">Short</button>

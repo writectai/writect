@@ -169,7 +169,7 @@ function sendWebPage(res, file) {
     let html = fs.readFileSync(filePath, 'utf8');
     // Bust CDN/browser cache after deploys
     // Bump default when shipping HTML/JS/CSS so browsers drop stale assets
-    const v = process.env.ASSET_VERSION || '20260925a';
+    const v = process.env.ASSET_VERSION || '20260925c';
     html = html
       .replace(/(href|src)="(\/(?:css|js)\/[^"]+)"/g, `$1="$2?v=${v}"`)
       .replace('<head>', '<head>\n  <base href="/">');

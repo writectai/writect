@@ -66,6 +66,14 @@
   gap: 8px;
 }
 
+.app-sidebar.collapsed .sidebar-top {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 12px 8px;
+}
+
 .sidebar-toggle {
   width: 32px;
   height: 32px;
@@ -76,9 +84,26 @@
   cursor: pointer;
   display: grid;
   place-items: center;
+  flex-shrink: 0;
 }
 
 .sidebar-toggle:hover { background: var(--surface-3); }
+
+.app-sidebar.collapsed .sidebar-toggle svg {
+  transform: rotate(180deg);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.app-sidebar.collapsed .sidebar-brand {
+  justify-content: center;
+  width: 100%;
+}
 
 .sidebar-nav {
   padding: 0 10px;
@@ -120,16 +145,21 @@
 
 .sidebar-brand .logo-img--icon {
   display: none;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 html[data-theme="light"] .sidebar-brand .logo-img--white { display: none; }
 html[data-theme="dark"] .sidebar-brand .logo-img--color { display: none; }
 
 .app-sidebar.collapsed .sidebar-brand .logo-img--color,
-.app-sidebar.collapsed .sidebar-brand .logo-img--white { display: none; }
-.app-sidebar.collapsed .sidebar-brand .logo-img--icon { display: block; }
+.app-sidebar.collapsed .sidebar-brand .logo-img--white {
+  display: none !important;
+}
+.app-sidebar.collapsed .sidebar-brand .logo-img--icon {
+  display: block !important;
+}
 
 .sidebar-history {
   flex: 1;
@@ -308,10 +338,36 @@ html[data-theme="dark"] .sidebar-brand .logo-img--color { display: none; }
   background: var(--nav-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-soft);
+  gap: 12px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.topbar-menu-btn {
+  display: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.topbar-menu-btn svg {
+  width: 18px;
+  height: 18px;
 }
 
 .topbar-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-.topbar-actions { display: flex; align-items: center; gap: 10px; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 
 .topbar-icon-btn {
   display: inline-flex;
@@ -749,7 +805,19 @@ html[data-theme="dark"] .sidebar-brand .logo-img--color { display: none; }
   flex-wrap: wrap;
 }
 
-.tool-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tool-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex: 1; min-width: 0; }
+
+.tools-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.tools-primary .model-picker {
+  min-width: 0;
+}
 
 .model-picker {
   position: relative;
@@ -1315,8 +1383,117 @@ html[data-theme="light"] .btn-danger:hover { background: #fee2e2; }
 
 .hidden { display: none !important; }
 
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 31, 68, 0.35);
+  z-index: 45;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.sidebar-backdrop.is-open {
+  display: block;
+}
+
 @media (max-width: 768px) {
-  .app-sidebar { position: fixed; z-index: 50; height: 100%; left: 0; transform: translateX(-100%); }
-  .app-sidebar.open { transform: translateX(0); }
+  .app-sidebar {
+    position: fixed;
+    z-index: 50;
+    height: 100%;
+    left: 0;
+    width: min(280px, 86vw);
+    transform: translateX(-105%);
+    transition: transform 0.2s ease;
+    box-shadow: none;
+  }
+  .app-sidebar.open {
+    transform: translateX(0);
+    box-shadow: 8px 0 32px rgba(11, 31, 68, 0.18);
+  }
+  /* Mobile drawer always uses expanded branding, not collapsed strip */
+  .app-sidebar.collapsed {
+    width: min(280px, 86vw);
+  }
+  .app-sidebar.collapsed .sidebar-top {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px 14px 12px;
+  }
+  .app-sidebar.collapsed .sidebar-brand .logo-img--icon {
+    display: none !important;
+  }
+  html[data-theme="light"] .app-sidebar.collapsed .sidebar-brand .logo-img--color {
+    display: block !important;
+  }
+  html[data-theme="dark"] .app-sidebar.collapsed .sidebar-brand .logo-img--white {
+    display: block !important;
+  }
+  .app-sidebar.collapsed .nav-item span,
+  .app-sidebar.collapsed .history-label,
+  .app-sidebar.collapsed .account-info,
+  .app-sidebar.collapsed .account-chevron {
+    display: revert;
+  }
+  .app-sidebar.collapsed .account-info {
+    display: block;
+  }
+  .app-sidebar.collapsed .account-menu {
+    display: block;
+  }
+  .app-sidebar.collapsed .account-menu[hidden] {
+    display: none !important;
+  }
+  .topbar-menu-btn { display: grid; }
+  .app-topbar { padding: 12px 14px; }
   .prompt-grid { grid-template-columns: 1fr; }
+
+  .chat-input-wrap { padding: 12px 12px 16px; }
+  .chat-input-tools {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+  .tool-group {
+    flex: 1;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+  .tools-primary {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .tools-primary .model-picker {
+    flex: 1;
+    min-width: 0;
+  }
+  .tools-primary .model-picker-trigger {
+    max-width: 100%;
+    width: 100%;
+  }
+  .length-group {
+    order: 2;
+    width: 100%;
+  }
+  .btn-send {
+    order: 0;
+    margin-left: auto;
+  }
+  /* Keep send on the primary row: restructure via grid */
+  .chat-input-tools {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "primary send"
+      "length length";
+    align-items: center;
+    gap: 8px;
+  }
+  .tool-group {
+    display: contents;
+  }
+  .tools-primary { grid-area: primary; }
+  .length-group { grid-area: length; width: auto; }
+  .btn-send { grid-area: send; margin-left: 0; }
 }

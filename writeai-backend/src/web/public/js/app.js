@@ -100,6 +100,18 @@
     setTimeout(() => t.classList.remove('show'), 3200);
   }
 
+  function openMobileSidebar() {
+    $('sidebar')?.classList.add('open');
+    $('sidebar-backdrop')?.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileSidebar() {
+    $('sidebar')?.classList.remove('open');
+    $('sidebar-backdrop')?.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
   function initials(name, email) {
     const src = name || email || 'U';
     return src.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase();
@@ -658,6 +670,7 @@
     $('view-title').textContent = 'Settings';
     $('nav-chat').classList.remove('active');
     document.documentElement.dataset.appRoute = 'settings';
+    closeMobileSidebar();
     if (syncRoute) setAppRoute(settingsPath(), { replace: location.pathname === settingsPath() });
   }
 
@@ -665,6 +678,7 @@
     currentChatId = null;
     localStorage.removeItem(ACTIVE_CHAT_KEY);
     setAppRoute('/app');
+    closeMobileSidebar();
     $('chat-messages').innerHTML = `
       <div class="chat-empty" id="chat-empty">
         <h2>How can we help you today?</h2>
@@ -708,6 +722,7 @@
     currentChatId = id;
     localStorage.setItem(ACTIVE_CHAT_KEY, id);
     setAppRoute(chatPath(id), { replace });
+    closeMobileSidebar();
     $('chat-empty')?.remove();
     $('chat-messages').innerHTML = '';
     chat.messages.forEach((m) => appendMessage(m.role, m.content, false, m.attachments || []));
@@ -1551,8 +1566,21 @@
     });
 
     $('sidebar-toggle').addEventListener('click', () => {
-      $('sidebar').classList.toggle('collapsed');
+      const sidebar = $('sidebar');
+      // On mobile, the chevron closes the drawer; on desktop it collapses width
+      if (window.matchMedia('(max-width: 768px)').matches) {
+        closeMobileSidebar();
+      } else {
+        sidebar.classList.toggle('collapsed');
+      }
       closeAccountMenu();
+    });
+
+    $('sidebar-open-btn')?.addEventListener('click', openMobileSidebar);
+    $('sidebar-backdrop')?.addEventListener('click', closeMobileSidebar);
+
+    $('install-extension-btn')?.addEventListener('click', () => {
+      showToast('Open chrome://extensions → Enable Developer mode → Load unpacked → select the Writect-extension folder.');
     });
 
     $('theme-toggle')?.addEventListener('click', toggleTheme);

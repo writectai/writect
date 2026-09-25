@@ -150,8 +150,17 @@
       scene.classList.remove('is-app-gmail', 'is-app-whatsapp', 'is-app-linkedin');
       scene.classList.add('is-app-' + app);
       document.querySelectorAll('.hero-app-tab').forEach((tab) => {
-        tab.classList.toggle('on', tab.dataset.appTab === app);
+        const on = tab.dataset.appTab === app;
+        tab.classList.toggle('on', on);
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
       });
+    }
+
+    function jumpToApp(app) {
+      const next = demos.findIndex((d) => d.app === app);
+      if (next < 0) return;
+      idx = next;
+      runDemo();
     }
 
     function setActiveTool(tool) {
@@ -359,6 +368,14 @@
       if (demo.mode === 'compose') runComposeDemo(demo);
       else runSelectDemo(demo);
     }
+
+    document.querySelectorAll('.hero-app-tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const app = tab.dataset.appTab;
+        if (!app) return;
+        jumpToApp(app);
+      });
+    });
 
     runDemo();
   }
