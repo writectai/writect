@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Build static files for Hostinger upload.
- * Usage: node scripts/build-hostinger.js https://writeai-api.onrender.com
+ * Usage: node scripts/build-hostinger.js https://writect.ai
  */
 const fs = require('fs');
 const path = require('path');
@@ -9,7 +9,7 @@ const path = require('path');
 const apiBase = (process.argv[2] || process.env.WRITEAI_API_BASE || '').replace(/\/$/, '');
 
 if (!apiBase) {
-  console.error('Usage: node scripts/build-hostinger.js https://YOUR-API.onrender.com');
+  console.error('Usage: node scripts/build-hostinger.js https://writect.ai');
   process.exit(1);
 }
 

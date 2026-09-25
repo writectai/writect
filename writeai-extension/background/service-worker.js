@@ -1,4 +1,4 @@
-const API_BASE = 'https://writeai.wr-demo.com';
+const API_BASE = 'https://writect.ai';
 const WEB_APP = `${API_BASE}/app`;
 
 const CONTEXT_ACTIONS = [

@@ -69,9 +69,9 @@ Your Business plan supports **Express.js** directly — no Render needed. One de
    - Start command: `npm start`
    - Node.js version: **20.x** or **22.x**
 4. Environment variables: copy from `deploy/hostinger.env.example` (paste Neon `DATABASE_URL` in hPanel only)
-5. Connect domain: `websrowitservices.com` or create subdomain `demo.websrowitservices.com`
+5. Connect domain: `writect.ai`
 
-**Google OAuth:** set callback to `https://websrowitservices.com/auth/google/callback` and origin to same domain.
+**Google OAuth:** set callback to `https://writect.ai/auth/google/callback` and origin to `https://writect.ai`.
 
 **Note:** If the domain already has a static/WordPress site, Hostinger requires removing it first, then adding as Node.js app (backup first).
 
@@ -85,6 +85,6 @@ Use if you prefer static files only on Hostinger. See `deploy/render.env.example
 - [ ] `FRONTEND_URL` matches your live domain exactly
 - [ ] Google OAuth callback on same domain
 - [ ] `npm run migrate` ran on deploy (in build command)
-- [ ] Extension `API_BASE` → `https://websrowitservices.com` if using extension
+- [ ] Extension `API_BASE` → `https://writect.ai` if using extension
 
 See `writeai-engineering-plan.md` for full architecture and API reference.

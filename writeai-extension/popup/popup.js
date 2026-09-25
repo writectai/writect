@@ -1,5 +1,5 @@
 const $ = (id) => document.getElementById(id);
-const WEB_APP = 'https://writeai.wr-demo.com/app';
+const WEB_APP = 'https://writect.ai/app';
 
 const signedOut = $('signed-out');
 const signedIn = $('signed-in');

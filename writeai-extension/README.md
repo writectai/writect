@@ -10,7 +10,7 @@ MV3 extension — highlight text on any page and run AI writing actions.
 4. **Load unpacked** → select this `writeai-extension` folder
 5. Copy your extension ID and set `EXTENSION_ORIGIN=chrome-extension://YOUR_ID` in backend `.env`
 
-Update `API_BASE` in `background/service-worker.js` for production (`https://api.writeai.com`).
+Update `API_BASE` in `background/service-worker.js` for production (`https://writect.ai`).
 
 ## Features
 

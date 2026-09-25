@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Writect — AI Writing Assistant",
-  "version": "1.6.9",
+  "version": "1.7.0",
   "description": "Writect — meaning-safe rephrase, fix, translate, summarize, and draft on Gmail, WhatsApp, and more.",
   "permissions": ["storage", "activeTab", "scripting", "contextMenus", "sidePanel"],
   "host_permissions": ["<all_urls>"],
@@ -15,7 +15,7 @@
     {
       "matches": [
         "http://localhost:3000/*",
-        "https://writeai.wr-demo.com/*"
+        "https://writect.ai/*"
       ],
       "js": ["content/web-auth-bridge.js"],
       "run_at": "document_start"
@@ -75,7 +75,7 @@
   "externally_connectable": {
     "matches": [
       "http://localhost:3000/*",
-      "https://writeai.wr-demo.com/*"
+      "https://writect.ai/*"
     ]
   }
 }

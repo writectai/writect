@@ -29,7 +29,7 @@ Writect also auto-creates a portal configuration via API if none exists. If Mana
 Developers → Webhooks → Add endpoint:
 
 ```
-https://writeai.wr-demo.com/billing/webhook
+https://writect.ai/billing/webhook
 ```
 
 Events to send:
@@ -49,7 +49,7 @@ Add in hPanel → Node.js → Environment:
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 STRIPE_PRO_PRICE_ID=price_...
-FRONTEND_URL=https://writeai.wr-demo.com
+FRONTEND_URL=https://writect.ai
 ```
 
 Then **Restart / Redeploy** the app.
