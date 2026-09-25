@@ -8,6 +8,53 @@ function stripeConfigured() {
   return !!(config.stripe.secretKey && config.stripe.proPriceId);
 }
 
+function isStaleStripeCustomerError(err) {
+  const msg = err?.message || '';
+  const code = err?.code || err?.raw?.code;
+  return (
+    code === 'resource_missing'
+    || /no such customer/i.test(msg)
+    || /similar object exists in (test|live) mode/i.test(msg)
+  );
+}
+
+async function clearStripeCustomer(userId) {
+  await db.query(
+    `UPDATE users SET
+      stripe_customer_id = NULL,
+      stripe_subscription_id = NULL,
+      updated_at = NOW()
+    WHERE id = $1`,
+    [userId]
+  );
+}
+
+/** Resolve a Stripe customer for this user; recreates if DB has a test/live mismatch ID. */
+async function ensureStripeCustomer(stripe, user) {
+  const { email, userId } = user;
+  let customerId = user.stripe_customer_id;
+
+  if (customerId) {
+    try {
+      await stripe.customers.retrieve(customerId);
+      return customerId;
+    } catch (err) {
+      if (!isStaleStripeCustomerError(err)) throw err;
+      console.warn(`Clearing stale Stripe customer ${customerId} for user ${userId}: ${err.message}`);
+      await clearStripeCustomer(userId);
+      customerId = null;
+    }
+  }
+
+  const customer = await stripe.customers.create({
+    email,
+    metadata: { userId: String(userId) }
+  });
+  customerId = customer.id;
+  await db.query('UPDATE users SET stripe_customer_id = $1, updated_at = NOW() WHERE id = $2', [customerId, userId]);
+  return customerId;
+}
+
 function appUrl(path = '/app') {
   const base = (config.frontendUrl || `http://localhost:${config.port}`).replace(/\/$/, '');
   return `${base}${path.startsWith('/') ? path : `/${path}`}`;
@@ -39,30 +86,20 @@ router.post('/checkout', authMiddleware, async (req, res) => {
 
   try {
     const stripe = getStripe();
-    const { email, userId } = req.user;
-
-    let customerId = req.user.stripe_customer_id;
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email,
-        metadata: { userId: String(userId) }
-      });
-      customerId = customer.id;
-      await db.query('UPDATE users SET stripe_customer_id = $1 WHERE id = $2', [customerId, userId]);
-    }
+    const customerId = await ensureStripeCustomer(stripe, req.user);
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      client_reference_id: String(userId),
+      client_reference_id: String(req.user.userId),
       payment_method_types: ['card'],
       line_items: [{ price: config.stripe.proPriceId, quantity: 1 }],
       mode: 'subscription',
       allow_promotion_codes: true,
       success_url: `${appUrl('/app')}?upgraded=1`,
       cancel_url: `${appUrl('/app')}?billing=cancel`,
-      metadata: { userId: String(userId) },
+      metadata: { userId: String(req.user.userId) },
       subscription_data: {
-        metadata: { userId: String(userId) }
+        metadata: { userId: String(req.user.userId) }
       }
     });
 
@@ -85,14 +122,28 @@ router.post('/portal', authMiddleware, async (req, res) => {
   }
 
   try {
-    if (!req.user.stripe_customer_id) {
+    const stripe = getStripe();
+    let customerId = req.user.stripe_customer_id;
+
+    if (!customerId) {
       return res.status(400).json({
         error: 'no_subscription',
-        message: 'No billing account found. Your Pro plan was assigned by an admin.'
+        message: 'No billing account found. Upgrade to Pro first, or contact support if an admin assigned your plan.'
       });
     }
 
-    const stripe = getStripe();
+    try {
+      await stripe.customers.retrieve(customerId);
+    } catch (err) {
+      if (isStaleStripeCustomerError(err)) {
+        await clearStripeCustomer(req.user.userId);
+        return res.status(400).json({
+          error: 'billing_reset',
+          message: 'Your billing account was from Stripe test mode. Click Upgrade to Pro to set up live billing.'
+        });
+      }
+      throw err;
+    }
 
     // Stripe requires an active Customer Portal configuration (Dashboard or API).
     // Create a default one if missing so Manage billing works out of the box.
@@ -127,7 +178,7 @@ router.post('/portal', authMiddleware, async (req, res) => {
     }
 
     const sessionParams = {
-      customer: req.user.stripe_customer_id,
+      customer: customerId,
       return_url: `${appUrl('/app')}?view=settings`
     };
     if (configurationId) sessionParams.configuration = configurationId;
