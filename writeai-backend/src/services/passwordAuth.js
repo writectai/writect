@@ -248,8 +248,22 @@ async function createPasswordResetToken(email) {
   const base = (config.frontendUrl || '').replace(/\/$/, '') || '';
   const resetUrl = `${base}/reset-password?token=${encodeURIComponent(raw)}`;
 
-  // No mailer configured yet — log for ops; UI still shows generic success
-  console.log(`[password-reset] ${user.email} → ${resetUrl}`);
+  try {
+    const { sendMail, mailConfigured } = require('./mail');
+    const { passwordResetUser } = require('./emailTemplates');
+    if (mailConfigured()) {
+      const mail = passwordResetUser({
+        name: user.name,
+        email: user.email,
+        resetUrl
+      });
+      await sendMail({ to: user.email, ...mail });
+    } else {
+      console.log(`[password-reset] mail not configured — ${user.email} → ${resetUrl}`);
+    }
+  } catch (err) {
+    console.error('[password-reset] mail error:', err.message);
+  }
 
   return {
     ok: true,

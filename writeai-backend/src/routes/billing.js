@@ -3,9 +3,21 @@ const authMiddleware = require('../middleware/auth');
 const db = require('../db/postgres');
 const config = require('../config');
 const { getStripe } = require('../services/stripe');
+const {
+  notifySubscriptionActivated,
+  notifySubscriptionCanceled,
+  notifyPaymentFailed
+} = require('../services/notifications');
 
 function stripeConfigured() {
   return !!(config.stripe.secretKey && config.stripe.proPriceId);
+}
+
+function resolveProPriceId(interval) {
+  if (interval === 'year') {
+    return config.stripe.proYearlyPriceId || null;
+  }
+  return config.stripe.proPriceId || null;
 }
 
 function isStaleStripeCustomerError(err) {
@@ -63,6 +75,7 @@ function appUrl(path = '/app') {
 router.get('/status', authMiddleware, async (req, res) => {
   res.json({
     configured: stripeConfigured(),
+    yearly_configured: !!(config.stripe.secretKey && config.stripe.proYearlyPriceId),
     plan: req.user.plan,
     subscription_status: req.user.subscription_status || null,
     has_billing: !!req.user.stripe_customer_id
@@ -84,6 +97,17 @@ router.post('/checkout', authMiddleware, async (req, res) => {
     });
   }
 
+  const interval = req.body?.interval === 'year' ? 'year' : 'month';
+  const priceId = resolveProPriceId(interval);
+  if (!priceId) {
+    return res.status(503).json({
+      error: 'billing_not_configured',
+      message: interval === 'year'
+        ? 'Yearly billing is not set up yet. Choose monthly, or ask your admin to add STRIPE_PRO_YEARLY_PRICE_ID.'
+        : 'Online billing is not set up yet. Ask your admin to enable Stripe, or contact support.'
+    });
+  }
+
   try {
     const stripe = getStripe();
     const customerId = await ensureStripeCustomer(stripe, req.user);
@@ -92,18 +116,18 @@ router.post('/checkout', authMiddleware, async (req, res) => {
       customer: customerId,
       client_reference_id: String(req.user.userId),
       payment_method_types: ['card'],
-      line_items: [{ price: config.stripe.proPriceId, quantity: 1 }],
+      line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription',
       allow_promotion_codes: true,
       success_url: `${appUrl('/app')}?upgraded=1`,
       cancel_url: `${appUrl('/app')}?billing=cancel`,
-      metadata: { userId: String(req.user.userId) },
+      metadata: { userId: String(req.user.userId), interval },
       subscription_data: {
-        metadata: { userId: String(req.user.userId) }
+        metadata: { userId: String(req.user.userId), interval }
       }
     });
 
-    res.json({ url: session.url });
+    res.json({ url: session.url, interval });
   } catch (err) {
     console.error('Checkout error:', err);
     res.status(500).json({
@@ -251,12 +275,21 @@ router.post('/webhook', async (req, res) => {
         const subscriptionId = typeof session.subscription === 'string'
           ? session.subscription
           : session.subscription?.id;
+        const interval = session.metadata?.interval === 'year' ? 'year' : 'month';
 
         if (userId) {
           await setProFromUserId(userId, customerId, subscriptionId, 'active');
         } else if (customerId) {
           await setProFromCustomer(customerId, subscriptionId, 'active');
         }
+
+        notifySubscriptionActivated({
+          userId,
+          customerId,
+          subscriptionId,
+          interval,
+          status: 'active'
+        });
         break;
       }
 
@@ -280,6 +313,7 @@ router.post('/webhook', async (req, res) => {
         const customerId = typeof subscription.customer === 'string'
           ? subscription.customer
           : subscription.customer?.id;
+        const userId = subscription.metadata?.userId;
         if (customerId) {
           await db.query(
             `UPDATE users SET plan = 'free', subscription_status = 'canceled', updated_at = NOW()
@@ -287,6 +321,11 @@ router.post('/webhook', async (req, res) => {
             [customerId]
           );
         }
+        notifySubscriptionCanceled({
+          userId,
+          customerId,
+          subscriptionId: subscription.id
+        });
         break;
       }
 
@@ -300,6 +339,7 @@ router.post('/webhook', async (req, res) => {
             [customerId]
           );
         }
+        notifyPaymentFailed({ customerId });
         break;
       }
 

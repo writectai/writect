@@ -837,12 +837,78 @@
       el.addEventListener('click', (e) => {
         if (!WriteAIApi.getToken?.()) return;
         e.preventDefault();
-        location.href = '/app?upgrade=1';
+        const interval = el.getAttribute('data-interval') || 'month';
+        try { sessionStorage.setItem('writect_billing_interval', interval); } catch { /* ignore */ }
+        location.href = `/app?upgrade=1&interval=${encodeURIComponent(interval)}`;
       });
     });
   }
 
+  function initPricingToggle() {
+    const toggle = document.querySelector('.pricing-toggle');
+    const card = document.getElementById('pro-price-card');
+    if (!toggle || !card) return;
+
+    const amountEl = card.querySelector('[data-pro-amount]');
+    const periodEl = card.querySelector('[data-pro-period]');
+    const noteEl = card.querySelector('[data-pro-note]');
+    const yearlyExtras = card.querySelector('[data-pro-yearly]');
+    const compareEl = card.querySelector('[data-pro-compare]');
+    const equivEl = card.querySelector('[data-pro-equiv]');
+    const ctaEl = card.querySelector('[data-pro-cta]');
+    const buttons = [...toggle.querySelectorAll('[data-billing]')];
+
+    function setBilling(interval) {
+      const isYear = interval === 'year';
+      if (amountEl) {
+        amountEl.textContent = isYear ? card.dataset.yearAmount : card.dataset.monthAmount;
+      }
+      if (periodEl) {
+        periodEl.textContent = isYear ? card.dataset.yearPeriod : card.dataset.monthPeriod;
+      }
+      if (noteEl) {
+        noteEl.textContent = card.dataset.monthNote;
+        noteEl.hidden = isYear;
+      }
+      if (yearlyExtras) yearlyExtras.hidden = !isYear;
+      if (compareEl) compareEl.textContent = card.dataset.yearCompare;
+      if (equivEl) equivEl.textContent = card.dataset.yearEquiv;
+      card.classList.toggle('is-yearly', isYear);
+
+      if (ctaEl) {
+        ctaEl.setAttribute('data-interval', interval);
+        const href = ctaEl.getAttribute('href') || '/login?upgrade=1';
+        try {
+          const url = new URL(href, location.origin);
+          url.searchParams.set('upgrade', '1');
+          url.searchParams.set('interval', interval);
+          ctaEl.setAttribute('href', `${url.pathname}${url.search}`);
+        } catch {
+          ctaEl.setAttribute('href', `/login?upgrade=1&interval=${interval}`);
+        }
+      }
+      buttons.forEach((btn) => {
+        const active = btn.dataset.billing === interval;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      try { sessionStorage.setItem('writect_billing_interval', interval); } catch { /* ignore */ }
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => setBilling(btn.dataset.billing === 'year' ? 'year' : 'month'));
+    });
+
+    let initial = 'month';
+    try {
+      const stored = sessionStorage.getItem('writect_billing_interval');
+      if (stored === 'year' || stored === 'month') initial = stored;
+    } catch { /* ignore */ }
+    setBilling(initial);
+  }
+
   initLandingAuth();
+  initPricingToggle();
   initHeroTyping();
   initReveal();
   initMobileNav();

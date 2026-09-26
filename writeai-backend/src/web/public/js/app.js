@@ -292,7 +292,7 @@
       $('settings-subscription').textContent = subscriptionLabel(subStatus, isPro);
     }
     if ($('settings-price')) {
-      $('settings-price').textContent = isPro ? '$9.99 / month' : '$0 / month';
+      $('settings-price').textContent = isPro ? 'Pro pricing' : '$0 / month';
     }
 
     const note = $('subscription-note');
@@ -564,6 +564,22 @@
     });
   }
 
+  const BILLING_INTERVAL_KEY = 'writect_billing_interval';
+
+  function getBillingInterval() {
+    try {
+      const v = sessionStorage.getItem(BILLING_INTERVAL_KEY);
+      if (v === 'year' || v === 'month') return v;
+    } catch { /* ignore */ }
+    return 'month';
+  }
+
+  function setBillingInterval(interval) {
+    const v = interval === 'year' ? 'year' : 'month';
+    try { sessionStorage.setItem(BILLING_INTERVAL_KEY, v); } catch { /* ignore */ }
+    return v;
+  }
+
   function renderBilling() {
     const wrap = $('billing-actions');
     if (!wrap || !user) return;
@@ -573,10 +589,41 @@
     const billingConfigured = user.billing_configured !== false;
 
     if (!isPro) {
+      const interval = getBillingInterval();
+      const toggle = document.createElement('div');
+      toggle.className = 'billing-interval-toggle';
+      toggle.setAttribute('role', 'tablist');
+      toggle.setAttribute('aria-label', 'Billing period');
+      toggle.innerHTML = `
+        <button type="button" class="billing-interval-btn${interval === 'month' ? ' is-active' : ''}" data-interval="month" role="tab" aria-selected="${interval === 'month'}">Monthly · $9.99</button>
+        <button type="button" class="billing-interval-btn${interval === 'year' ? ' is-active' : ''}" data-interval="year" role="tab" aria-selected="${interval === 'year'}">Yearly · $99.99<span class="billing-save">Save 17%</span></button>`;
+      toggle.querySelectorAll('[data-interval]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          setBillingInterval(btn.dataset.interval);
+          renderBilling();
+        });
+      });
+      wrap.appendChild(toggle);
+
+      const priceLine = document.createElement('p');
+      priceLine.className = 'billing-price-line';
+      priceLine.textContent = interval === 'year'
+        ? '$99.99/year · $8.33/month billed yearly'
+        : '$9.99/month · Cancel anytime';
+      wrap.appendChild(priceLine);
+
       const btn = document.createElement('button');
       btn.className = 'btn btn-primary';
-      btn.textContent = billingConfigured ? 'Upgrade to Pro — $9.99/mo' : 'Upgrade to Pro — $9.99/mo';
-      btn.addEventListener('click', startCheckout);
+      if (!billingConfigured) {
+        btn.textContent = 'Billing not configured';
+        btn.disabled = true;
+      } else if (interval === 'year' && user.yearly_billing_configured === false) {
+        btn.textContent = 'Yearly not configured yet';
+        btn.disabled = true;
+      } else {
+        btn.textContent = interval === 'year' ? 'Upgrade to Pro — Yearly' : 'Upgrade to Pro — Monthly';
+        btn.addEventListener('click', () => startCheckout(interval));
+      }
       wrap.appendChild(btn);
 
       const features = document.createElement('ul');
@@ -605,8 +652,12 @@
     }
   }
 
-  async function startCheckout() {
-    const { ok, data } = await WriteAIApi.apiFetch('/billing/checkout', { method: 'POST' });
+  async function startCheckout(interval) {
+    const billingInterval = setBillingInterval(interval || getBillingInterval());
+    const { ok, data } = await WriteAIApi.apiFetch('/billing/checkout', {
+      method: 'POST',
+      body: JSON.stringify({ interval: billingInterval })
+    });
     if (!ok) {
       showToast(data.message || 'Could not start checkout.');
       if (data.error === 'billing_not_configured') {
@@ -642,12 +693,16 @@
       history.replaceState(null, '', basePath);
     }
     if (params.get('upgrade') === '1') {
+      const intervalParam = params.get('interval');
+      if (intervalParam === 'year' || intervalParam === 'month') {
+        setBillingInterval(intervalParam);
+      }
       history.replaceState(null, '', basePath);
       if (user?.plan === 'pro') {
         showToast('You already have Pro.');
       } else {
         showToast('Opening Pro checkout…');
-        startCheckout();
+        startCheckout(getBillingInterval());
       }
     }
     if (params.get('view') === 'settings') {
@@ -755,12 +810,12 @@
       <div class="msg-body">
         <div class="upgrade-card">
           <p>⚠️ ${escapeHtml(message)}</p>
-          <p class="upgrade-card-sub">Pro unlocks higher limits, all models, and long answers for $9.99/month. Cancel anytime.</p>
-          <button type="button" class="btn btn-primary" id="chat-upgrade-btn">Upgrade to Pro — $9.99/mo</button>
+          <p class="upgrade-card-sub">Pro unlocks higher limits, all models, and long answers — from $9.99/month or $99.99/year. Cancel anytime.</p>
+          <button type="button" class="btn btn-primary" id="chat-upgrade-btn">Choose a Pro plan</button>
         </div>
       </div>`;
     $('chat-messages').appendChild(wrap);
-    $('chat-upgrade-btn')?.addEventListener('click', startCheckout);
+    $('chat-upgrade-btn')?.addEventListener('click', () => showSettings());
     $('chat-messages').scrollTop = $('chat-messages').scrollHeight;
   }
 

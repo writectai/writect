@@ -1233,6 +1233,55 @@ html[data-theme="dark"] .model-picker-badge {
   line-height: 1.6;
 }
 
+.billing-interval-toggle {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--brand) 5%, var(--surface, #fff));
+}
+
+.billing-interval-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 650;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.billing-interval-btn.is-active {
+  background: var(--gradient-brand, linear-gradient(135deg, #F21862, #6B0FB3));
+  color: #fff;
+}
+
+.billing-save {
+  font-size: 10px;
+  font-weight: 750;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.billing-interval-btn:not(.is-active) .billing-save {
+  background: color-mix(in srgb, #6B0FB3 16%, #fff);
+  color: #6B0FB3;
+}
+
+.billing-price-line {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
 .top-upgrade-btn {
   padding: 8px 14px !important;
   font-size: 13px !important;

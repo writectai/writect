@@ -702,6 +702,13 @@
         <h2 class="section-title">Write better with a plan that&nbsp;fits</h2>
         <p class="section-sub">Start free. Upgrade when you need every model and higher limits.</p>
       </div>
+      <div class="pricing-toggle" role="tablist" aria-label="Billing period">
+        <button type="button" class="pricing-toggle-btn is-active" role="tab" aria-selected="true" data-billing="month">Monthly</button>
+        <button type="button" class="pricing-toggle-btn" role="tab" aria-selected="false" data-billing="year">
+          Yearly
+          <span class="pricing-save-pill">Save 17%</span>
+        </button>
+      </div>
       <div class="pricing-grid">
         <article class="price-card price-card--free">
           <div class="price-card-top">
@@ -728,7 +735,14 @@
             <li>Limited Page Assistant</li>
           </ul>
         </article>
-        <article class="price-card price-card--pro">
+        <article class="price-card price-card--pro" id="pro-price-card"
+          data-month-amount="9.99"
+          data-month-period="/ month"
+          data-month-note="Cancel anytime · billed monthly"
+          data-year-amount="99.99"
+          data-year-period="/ year"
+          data-year-compare="$119.88/year"
+          data-year-equiv="$8.33/month (billed yearly)">
           <span class="price-badge">Most popular</span>
           <div class="price-card-top">
             <h3>Pro</h3>
@@ -736,21 +750,28 @@
           </div>
           <div class="price-amount-row">
             <span class="price-currency">$</span>
-            <span class="price-amount">9.99</span>
+            <span class="price-amount" data-pro-amount>9.99</span>
             <span class="price-meta">
               <span class="price-unit">USD</span>
-              <span class="price-period">/ month</span>
+              <span class="price-period" data-pro-period>/ month</span>
             </span>
           </div>
-          <p class="price-note">Cancel anytime · billed monthly</p>
-          <a href="/login?upgrade=1" class="btn btn-primary price-cta" data-upgrade-cta>Get started</a>
+          <div class="price-yearly-extras" data-pro-yearly hidden>
+            <p class="price-compare">
+              <span class="price-was" data-pro-compare>$119.88/year</span>
+              <span class="price-save-badge">Save 17%</span>
+            </p>
+            <p class="price-equiv" data-pro-equiv>$8.33/month (billed yearly)</p>
+          </div>
+          <p class="price-note" data-pro-note>Cancel anytime · billed monthly</p>
+          <a href="/login?upgrade=1&amp;interval=month" class="btn btn-primary price-cta" data-upgrade-cta data-pro-cta>Get started</a>
           <ul class="price-features">
             <li>3,000 AI actions/month · 150/day</li>
             <li>All AI models</li>
             <li>Advanced writing &amp; rewriting</li>
             <li>Longer AI responses</li>
             <li>Chrome Extension + Web App</li>
-            <li>Selection tools</li>
+            <li>Selection tools on any page</li>
             <li>Full Page Assistant</li>
           </ul>
         </article>
@@ -762,11 +783,11 @@
     <div class="container reveal">
       <span class="section-label">FAQs</span>
       <h2 class="section-title">Questions, answered</h2>
-      <p class="section-sub">Everything you need to know before you install.</p>
+      <p class="section-sub">Everything you need to know about Writect.</p>
       <div class="pricing-faqs">
         <details class="pricing-faq">
           <summary>Is Writect free to use?</summary>
-          <p>Yes. Free includes the Chrome Extension, web app, selection tools, 10 AI actions per day (300 per month max), and Limited Page Assistant. Pro is $9.99/month with 3,000 AI actions/month (150/day) and Full Page Assistant.</p>
+          <p>Yes. The Free plan includes the Chrome Extension, web app, selection tools, 10 AI actions per day (up to 300 per month), and limited Page Assistant access. Pro is $9.99/month or $99.99/year ($8.33/month equivalent) and includes up to 3,000 AI actions per month (150/day), plus full Page Assistant access.</p>
         </details>
         <details class="pricing-faq">
           <summary>What counts as an AI action?</summary>
@@ -779,6 +800,10 @@
         <details class="pricing-faq">
           <summary>Where can I use Writect?</summary>
           <p>On Chromium browsers (Chrome, Edge, and similar) — highlight text on Gmail, Docs, LinkedIn, WhatsApp Web, and more, or use Page Assistant from the side panel.</p>
+        </details>
+        <details class="pricing-faq">
+          <summary>Does Writect store what I write?</summary>
+          <p>Writect does not permanently store your prompts, selected text, webpage content, or AI-generated responses in our database. Your web app chat history is stored locally in your browser. See our Privacy Policy for more details.</p>
         </details>
       </div>
     </div>

@@ -44,6 +44,7 @@ router.get('/me', authMiddleware, async (req, res) => {
   const isPro = plan === 'pro';
   const usage = await getCustomerUsage(userId, isPro ? 'pro' : 'free');
   const billingConfigured = !!(config.stripe.secretKey && config.stripe.proPriceId);
+  const yearlyBillingConfigured = !!(config.stripe.secretKey && config.stripe.proYearlyPriceId);
 
   const signInMethod = has_password && has_google
     ? 'Email & password (Google linked)'
@@ -59,6 +60,7 @@ router.get('/me', authMiddleware, async (req, res) => {
     subscription_status: subscription_status || (isPro ? 'active' : 'none'),
     has_billing: !!stripe_customer_id,
     billing_configured: billingConfigured,
+    yearly_billing_configured: yearlyBillingConfigured,
     has_password: !!has_password,
     has_google: !!has_google,
     auth_provider: auth_provider || (has_google && !has_password ? 'google' : 'password'),

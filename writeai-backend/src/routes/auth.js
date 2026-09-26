@@ -15,6 +15,7 @@ const {
   findUserById,
   normalizeEmail
 } = require('../services/passwordAuth');
+const { notifySignup } = require('../services/notifications');
 
 const client = new OAuth2Client(
   config.google.clientId,
@@ -71,7 +72,7 @@ async function upsertGoogleUser({ googleId, email, name, picture }) {
        RETURNING *`,
       [name || null, picture || null, isAdminEmail(emailNorm), byGoogle.rows[0].id]
     );
-    return updated.rows[0];
+    return { user: updated.rows[0], isNew: false };
   }
 
   const byEmail = await db.query(
@@ -91,7 +92,7 @@ async function upsertGoogleUser({ googleId, email, name, picture }) {
        RETURNING *`,
       [googleId, name || null, picture || null, isAdminEmail(emailNorm), byEmail.rows[0].id]
     );
-    return updated.rows[0];
+    return { user: updated.rows[0], isNew: false };
   }
 
   const inserted = await db.query(
@@ -100,7 +101,7 @@ async function upsertGoogleUser({ googleId, email, name, picture }) {
      RETURNING *`,
     [emailNorm, name || emailNorm.split('@')[0], picture || null, googleId, role]
   );
-  return inserted.rows[0];
+  return { user: inserted.rows[0], isNew: true };
 }
 
 function finishLoginRedirect(res, user, { extensionId, redirect }) {
@@ -113,10 +114,12 @@ function finishLoginRedirect(res, user, { extensionId, redirect }) {
     return res.redirect(`/admin/#token=${encodeURIComponent(token)}`);
   }
 
-  if (redirect === 'app' || redirect === 'web' || redirect === 'app_upgrade') {
+  if (redirect === 'app' || redirect === 'web' || redirect === 'app_upgrade' || redirect === 'app_upgrade_year') {
     const base = (config.frontendUrl || '').replace(/\/$/, '');
     const target = base ? `${base}/app` : '/app';
-    const qs = redirect === 'app_upgrade' ? '?upgrade=1' : '';
+    let qs = '';
+    if (redirect === 'app_upgrade_year') qs = '?upgrade=1&interval=year';
+    else if (redirect === 'app_upgrade') qs = '?upgrade=1&interval=month';
     return res.redirect(`${target}${qs}#token=${encodeURIComponent(token)}`);
   }
 
@@ -287,13 +290,19 @@ router.get('/google/callback', async (req, res) => {
     });
 
     const { sub: googleId, email, name, picture } = ticket.getPayload();
-    const user = await upsertGoogleUser({ googleId, email, name, picture });
+    const { user, isNew } = await upsertGoogleUser({ googleId, email, name, picture });
+    if (isNew) notifySignup(user, { method: 'google' });
     return finishLoginRedirect(res, user, { extensionId, redirect });
   } catch (err) {
     console.error('Google OAuth error:', err);
     const base = (config.frontendUrl || '').replace(/\/$/, '');
-    if (redirect === 'app' || redirect === 'web' || redirect === 'app_upgrade') {
-      return res.redirect(`${base || ''}/login?error=auth_failed${redirect === 'app_upgrade' ? '&upgrade=1' : ''}`);
+    if (redirect === 'app' || redirect === 'web' || redirect === 'app_upgrade' || redirect === 'app_upgrade_year') {
+      const upgradeQs = redirect === 'app_upgrade_year'
+        ? '&upgrade=1&interval=year'
+        : redirect === 'app_upgrade'
+          ? '&upgrade=1&interval=month'
+          : '';
+      return res.redirect(`${base || ''}/login?error=auth_failed${upgradeQs}`);
     }
     return res.redirect('/login?error=auth_failed');
   }
@@ -315,6 +324,7 @@ router.post(
         password: req.body.password,
         name: req.body.name
       });
+      notifySignup(user, { method: 'password' });
       const token = signUserToken(user);
       res.status(201).json({
         token,

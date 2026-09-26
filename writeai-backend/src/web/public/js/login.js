@@ -9,9 +9,14 @@
   const okEl = $('login-success');
   const params = new URLSearchParams(location.search);
   const wantsUpgrade = params.get('upgrade') === '1';
+  const billingInterval = params.get('interval') === 'year' ? 'year' : (params.get('interval') === 'month' ? 'month' : null);
 
   function postLoginPath() {
-    if (wantsUpgrade) return '/app?upgrade=1';
+    if (wantsUpgrade) {
+      const interval = billingInterval || 'month';
+      try { sessionStorage.setItem('writect_billing_interval', interval); } catch { /* ignore */ }
+      return `/app?upgrade=1&interval=${encodeURIComponent(interval)}`;
+    }
     const next = params.get('next');
     if (next && next.startsWith('/') && !next.startsWith('//')) return next;
     return '/app';
@@ -75,7 +80,10 @@
   }
 
   $('google-btn').addEventListener('click', () => {
-    const redirect = wantsUpgrade ? 'app_upgrade' : 'app';
+    let redirect = 'app';
+    if (wantsUpgrade) {
+      redirect = billingInterval === 'year' ? 'app_upgrade_year' : 'app_upgrade';
+    }
     location.href = `${apiBase}/auth/google?redirect=${encodeURIComponent(redirect)}`;
   });
 
